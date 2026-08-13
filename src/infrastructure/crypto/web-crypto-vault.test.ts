@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { createEmptySensitiveProfile } from '../../domain/profile/create-empty-sensitive-profile';
+import { createVaultEnvelope } from './create-vault-envelope';
 import { unlockVaultSessionKey } from './unlock-vault-session-key';
 import {
   createEncryptedVault,
@@ -43,6 +44,15 @@ describe('Web Crypto sensitive vault', () => {
     );
   });
 
+  it('generates independent salt and IV values for separate vault creations', async () => {
+    const profile = populatedProfile();
+    const first = await createEncryptedVault(profile, 'local-passphrase');
+    const second = await createEncryptedVault(profile, 'local-passphrase');
+
+    expect(first.envelope.kdf.salt).not.toBe(second.envelope.kdf.salt);
+    expect(first.envelope.cipher.iv).not.toBe(second.envelope.cipher.iv);
+  });
+
   it('unlocks with the correct passphrase and returns a usable key', async () => {
     const profile = populatedProfile();
     const passphrase = 'local-vault-passphrase-2026';
@@ -79,6 +89,18 @@ describe('Web Crypto sensitive vault', () => {
     };
 
     await expect(decryptSensitiveProfile(tampered, key)).rejects.toMatchObject(
+      vaultErrorContract,
+    );
+  });
+
+  it('rejects authenticated plaintext that does not satisfy the sensitive profile schema', async () => {
+    const invalidPayload = new TextEncoder().encode('{"unexpected":true}');
+    const { envelope, key } = await createVaultEnvelope(
+      invalidPayload,
+      'local-vault-passphrase-2026',
+    );
+
+    await expect(decryptSensitiveProfile(envelope, key)).rejects.toMatchObject(
       vaultErrorContract,
     );
   });
