@@ -2,7 +2,9 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { browser } from 'wxt/browser';
 import { fakeBrowser } from 'wxt/testing/fake-browser';
 
-import { createEmptyStoredProfile } from '../../domain/profile/create-empty-profile';
+import {
+  createEmptyStoredProfile,
+} from '../../domain/profile/create-empty-profile';
 import {
   ChromeProfileRepository,
   PROFILE_STORAGE_KEY,
@@ -13,13 +15,13 @@ describe('ChromeProfileRepository', () => {
     fakeBrowser.reset();
   });
 
-  it('returns null when no profile has been persisted', async () => {
+  it('returns null when storage is empty', async () => {
     const repository = new ChromeProfileRepository();
 
     await expect(repository.load()).resolves.toBeNull();
   });
 
-  it('round-trips a schema-valid profile through local extension storage', async () => {
+  it('round-trips a schema-valid profile', async () => {
     const repository = new ChromeProfileRepository();
     const profile = createEmptyStoredProfile('2026-08-13T00:00:00.000Z');
     profile.baseProfile.personal.legalName.first = 'Ulil';
@@ -29,7 +31,7 @@ describe('ChromeProfileRepository', () => {
     await expect(repository.load()).resolves.toEqual(profile);
   });
 
-  it('rejects invalid persisted payload instead of passing corrupted data through', async () => {
+  it('rejects a corrupted persisted payload', async () => {
     await browser.storage.local.set({
       [PROFILE_STORAGE_KEY]: {
         schemaVersion: 1,
