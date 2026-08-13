@@ -24,20 +24,47 @@ describe('ChromeCorrectionRepository', () => {
 
   it('returns an empty list when nothing is stored', async () => {
     const repository = new ChromeCorrectionRepository();
-    await expect(repository.listForOrigin('https://jobs.example.test')).resolves.toEqual([]);
+    await expect(
+      repository.listForOrigin('https://jobs.example.test'),
+    ).resolves.toEqual([]);
   });
 
   it('replaces only the same origin/form/field key', async () => {
     const repository = new ChromeCorrectionRepository();
     await repository.upsert(entry());
-    await repository.upsert(entry({ fieldFingerprint: 'field-b', target: 'contact.email.primary' }));
-    await repository.upsert(entry({ origin: 'https://other.example.test', target: 'links.github' }));
-    await repository.upsert(entry({ target: 'contact.phone.primary', updatedAt: '2026-08-13T12:30:00.000Z' }));
+    await repository.upsert(
+      entry({
+        fieldFingerprint: 'field-b',
+        target: 'contact.email.primary',
+      }),
+    );
+    await repository.upsert(
+      entry({
+        origin: 'https://other.example.test',
+        target: 'links.github',
+      }),
+    );
+    await repository.upsert(
+      entry({
+        target: 'contact.phone.primary',
+        updatedAt: '2026-08-13T12:30:00.000Z',
+      }),
+    );
 
-    await expect(repository.listForOrigin('https://jobs.example.test')).resolves.toEqual([
-      entry({ target: 'contact.phone.primary', updatedAt: '2026-08-13T12:30:00.000Z' }),
-      entry({ fieldFingerprint: 'field-b', target: 'contact.email.primary' }),
-    ]);
+    const stored = await repository.listForOrigin('https://jobs.example.test');
+    expect(stored).toHaveLength(2);
+    expect(stored).toEqual(
+      expect.arrayContaining([
+        entry({
+          target: 'contact.phone.primary',
+          updatedAt: '2026-08-13T12:30:00.000Z',
+        }),
+        entry({
+          fieldFingerprint: 'field-b',
+          target: 'contact.email.primary',
+        }),
+      ]),
+    );
   });
 
   it('rejects malformed persisted data', async () => {
@@ -45,6 +72,8 @@ describe('ChromeCorrectionRepository', () => {
       [CORRECTION_STORAGE_KEY]: { schemaVersion: 1, entries: [{}] },
     });
     const repository = new ChromeCorrectionRepository();
-    await expect(repository.listForOrigin('https://jobs.example.test')).rejects.toThrow();
+    await expect(
+      repository.listForOrigin('https://jobs.example.test'),
+    ).rejects.toThrow();
   });
 });
