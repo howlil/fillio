@@ -4,9 +4,9 @@ This file is the single current-state tracker. Do not create permanent iteration
 
 ## Project status
 
-Phase: foundation / pre-implementation
+Phase: foundation review / pre-implementation
 
-Repository state when this document was created: empty application repository with `.agent` operating documentation being established.
+Repository state: the `.agent` project operating system has been established. No application implementation has started yet.
 
 ## Decisions locked
 
@@ -33,7 +33,7 @@ Repository state when this document was created: empty application repository wi
 
 ## Iteration 0 — Project operating system
 
-Status: in progress until all `.agent` documents and skills land in the repository.
+Status: awaiting user review.
 
 Acceptance criteria:
 
@@ -45,11 +45,11 @@ Acceptance criteria:
 - release strategy supports 0.x MVP releases without release-branch complexity
 - role/domain skills exist for extension, frontend UI, matching, security, future backend sync, and testing
 
-Exit condition: all documents are present and self-consistent.
+Internal documentation/self-consistency check is complete. Iteration 0 exits only after the user has reviewed/approved the foundation or requested changes have been incorporated.
 
 ## Iteration 1 — Extension skeleton + profile vertical slice
 
-Status: ready after Iteration 0; not started.
+Status: ready after Iteration 0 approval; not started.
 
 Goal: prove the chosen project structure and persistence path with the smallest end-to-end slice before building the form engine.
 
