@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { createEmptySensitiveProfile } from '../../domain/profile/create-empty-sensitive-profile';
-import { unlockValidatedVaultKey } from './unlock-vault-key';
+import { unlockValidatedVaultKey } from './unlock-validated-vault-key';
 import {
   createEncryptedVault,
   decryptSensitiveProfile,
