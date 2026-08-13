@@ -1,5 +1,6 @@
+import type { FieldCorrection } from '../../domain/corrections/correction-schema';
 import type { FieldContext } from '../../domain/forms/field-context';
-import { matchField } from '../../domain/matching/match-field';
+import { matchFieldWithCorrections } from '../../domain/matching/match-field-with-corrections';
 import type { BaseProfile } from '../../domain/profile/profile-schema';
 import {
   prepareFillPlan,
@@ -21,10 +22,11 @@ export type PageAnalysis = {
 export function analyzeFieldContexts(
   fields: FieldContext[],
   profile: BaseProfile,
+  corrections: FieldCorrection[] = [],
 ): PageAnalysis {
   const analysis = fields.map((context) => ({
     context,
-    match: matchField(context),
+    match: matchFieldWithCorrections(context, corrections),
   }));
   const plan = prepareFillPlan(analysis, profile);
 
