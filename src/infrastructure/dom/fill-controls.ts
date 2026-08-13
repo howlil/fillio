@@ -1,14 +1,137 @@
 import type { FillInstruction } from '../../application/prepare-fill/prepare-fill-plan';
+import { normalizeFieldText } from '../../domain/matching/normalize-field-text';
+import { scanDomFields, type ScannedDomField } from './extract-field-contexts';
 
 export type FillResult = {
   fieldFingerprint: string;
   status: 'filled' | 'not-found' | 'unsupported';
 };
 
+function dispatchEvents(control: HTMLElement, includeInput = true): void {
+  if (includeInput) {
+    control.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  control.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function setInputValue(control: HTMLInputElement, value: string): void {
+  const setter = Object.getOwnPropertyDescriptor(
+    HTMLInputElement.prototype,
+    'value',
+  )?.set;
+  setter?.call(control, value);
+  dispatchEvents(control);
+}
+
+function setTextareaValue(control: HTMLTextAreaElement, value: string): void {
+  const setter = Object.getOwnPropertyDescriptor(
+    HTMLTextAreaElement.prototype,
+    'value',
+  )?.set;
+  setter?.call(control, value);
+  dispatchEvents(control);
+}
+
+function setChecked(control: HTMLInputElement, checked: boolean): void {
+  const setter = Object.getOwnPropertyDescriptor(
+    HTMLInputElement.prototype,
+    'checked',
+  )?.set;
+  setter?.call(control, checked);
+  dispatchEvents(control);
+}
+
+function fillSelect(control: HTMLSelectElement, value: string): boolean {
+  const normalized = normalizeFieldText(value);
+  const option = Array.from(control.options).find(
+    (candidate) =>
+      candidate.value === value ||
+      normalizeFieldText(candidate.textContent ?? '') === normalized,
+  );
+  if (option === undefined) return false;
+
+  const setter = Object.getOwnPropertyDescriptor(
+    HTMLSelectElement.prototype,
+    'value',
+  )?.set;
+  setter?.call(control, option.value);
+  dispatchEvents(control);
+  return true;
+}
+
+function fillRadio(field: ScannedDomField, value: string): boolean {
+  const normalized = normalizeFieldText(value);
+  const index = field.context.options.findIndex(
+    (option) =>
+      option.value === value || normalizeFieldText(option.label) === normalized,
+  );
+  const control = field.controls[index];
+  if (!(control instanceof HTMLInputElement)) return false;
+
+  setChecked(control, true);
+  return true;
+}
+
+function fillField(field: ScannedDomField, instruction: FillInstruction): boolean {
+  const first = field.controls[0];
+  if (first === undefined || instruction.controlKind === 'file') return false;
+
+  if (instruction.controlKind === 'radio') {
+    return typeof instruction.value === 'string'
+      ? fillRadio(field, instruction.value)
+      : false;
+  }
+
+  if (instruction.controlKind === 'checkbox') {
+    if (!(first instanceof HTMLInputElement)) return false;
+    if (typeof instruction.value !== 'boolean') return false;
+    setChecked(first, instruction.value);
+    return true;
+  }
+
+  if (instruction.controlKind === 'select') {
+    if (!(first instanceof HTMLSelectElement)) return false;
+    if (typeof instruction.value !== 'string') return false;
+    return fillSelect(first, instruction.value);
+  }
+
+  if (typeof instruction.value !== 'string') return false;
+
+  if (first instanceof HTMLInputElement) {
+    setInputValue(first, instruction.value);
+    return true;
+  }
+
+  if (first instanceof HTMLTextAreaElement) {
+    setTextareaValue(first, instruction.value);
+    return true;
+  }
+
+  return false;
+}
+
 export function applyFillInstructions(
-  _root: ParentNode,
-  _origin: string,
-  _instructions: FillInstruction[],
+  root: ParentNode,
+  origin: string,
+  instructions: FillInstruction[],
 ): FillResult[] {
-  throw new Error('Not implemented');
+  const fields = scanDomFields(root, origin);
+  const byFingerprint = new Map(
+    fields.map((field) => [field.context.fieldFingerprint, field]),
+  );
+
+  return instructions.map((instruction) => {
+    const field = byFingerprint.get(instruction.fieldFingerprint);
+    if (field === undefined) {
+      return {
+        fieldFingerprint: instruction.fieldFingerprint,
+        status: 'not-found' as const,
+      };
+    }
+
+    return {
+      fieldFingerprint: instruction.fieldFingerprint,
+      status: fillField(field, instruction) ? ('filled' as const) : ('unsupported' as const),
+    };
+  });
 }
