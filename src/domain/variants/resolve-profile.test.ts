@@ -64,6 +64,43 @@ describe('resolveApplicationProfile', () => {
     expect(base.jobPreferences.preferredLocations).toEqual(['Padang']);
   });
 
+  it('does not apply variant fields whose resolution semantics are deferred', () => {
+    const base = createEmptyStoredProfile(
+      '2026-08-13T00:00:00.000Z',
+    ).baseProfile;
+    base.jobPreferences.employmentTypes = ['full-time'];
+    base.customAnswers = [
+      {
+        id: 'base-answer',
+        question: 'Why this role?',
+        answer: 'Base answer',
+        canonicalIntent: 'motivation',
+        tags: [],
+      },
+    ];
+
+    const variant: ApplicationVariant = {
+      id: 'backend',
+      name: 'Backend Engineer',
+      targetRoles: [],
+      employmentTypes: ['contract'],
+      customAnswers: [
+        {
+          id: 'variant-answer',
+          question: 'Why this role?',
+          answer: 'Variant answer',
+          canonicalIntent: 'motivation',
+          tags: [],
+        },
+      ],
+    };
+
+    const resolved = resolveApplicationProfile(base, variant);
+
+    expect(resolved.jobPreferences.employmentTypes).toEqual(['full-time']);
+    expect(resolved.customAnswers).toEqual(base.customAnswers);
+  });
+
   it('clones the base profile when no variant is selected', () => {
     const base = createEmptyStoredProfile(
       '2026-08-13T00:00:00.000Z',
