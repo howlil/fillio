@@ -95,7 +95,7 @@ function formFingerprint(control: LiveControl): string {
   const heading = form.querySelector(
     ':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6, :scope > legend',
   );
-  const identity = [
+  const identity: string[] = [
     form.id,
     form.getAttribute('name'),
     form.getAttribute('action'),
