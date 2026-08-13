@@ -1,117 +1,163 @@
-# Iteration 1 — Extension Skeleton + Profile Vertical Slice Implementation Plan
+# Iteration 1 — Extension Skeleton + Profile Vertical Slice
 
-> **Execution mode:** inline in this session. TDD is mandatory for all production behavior changes. Configuration/bootstrap files use executable verification instead of artificial tests.
+Status: **completed**.
 
-**Goal:** establish a loadable WXT/React Chromium extension with a versioned canonical career profile, local persistence, base-profile + variant resolution, a minimal profile editor, and a popup readiness view.
+This file is the execution record for Iteration 1. Current project state lives in `.agent/iteration-state.md`.
 
-**Architecture:** keep profile meaning and resolution pure in `src/domain`, orchestration/contracts in `src/application`, browser storage in `src/infrastructure`, and React presentation in `src/ui`/entrypoints. The persisted v1 envelope stores only non-vault profile data; sensitive domain shapes are defined for future vault use but are not persisted in plaintext during Iteration 1.
+## Goal
 
-**Tech stack:** WXT, Manifest V3, TypeScript strict, React, Zod, Vitest + WXT Vitest plugin, React Testing Library, ESLint flat config, Prettier, npm.
+Establish a loadable WXT/React Chromium extension with a versioned canonical career profile, local persistence, base-profile + application-variant resolution, a minimal profile editor, and a toolbar popup/readiness view before building the form-analysis/autofill engine.
 
-## Global constraints
+## Architecture delivered
 
-- Chrome/Chromium desktop first.
-- No backend, AI, content-script autofill engine, vault implementation, or ATS-specific code.
-- Domain code imports no React, WXT, Chrome/browser API, or DOM types.
-- Persisted data is versioned and runtime-validated.
-- Variants store overrides only; never duplicate the full base profile.
-- `storage` is the only extension permission required by this iteration.
-- RED → GREEN → REFACTOR for every behavior change.
+The implementation keeps responsibilities separated by volatility:
 
----
+```text
+entrypoints / UI
+      ↓
+application contracts + use-case logic
+      ↓
+domain model + pure behavior
 
-### Task 1: Project bootstrap and quality gates
+infrastructure adapters
+      ↓
+application/domain contracts
+```
 
-**Files:**
-- Create: `package.json`, `package-lock.json`, `tsconfig.json`, `wxt.config.ts`, `vitest.config.ts`, `eslint.config.mjs`, `.prettierrc.json`, `.gitignore`
-- Create composition entrypoints: `entrypoints/options/index.html`, `entrypoints/options/main.tsx`, `entrypoints/popup/index.html`, `entrypoints/popup/main.tsx`
+The persisted v1 envelope stores only normal career-profile data. Sensitive-profile domain structures are defined separately for the future encrypted vault and are not part of normal local persistence.
 
-**Produces:** a WXT React project that can install dependencies, prepare generated WXT types, lint, typecheck, test, build, and zip.
+## Stack
 
-- [ ] Install WXT/React/TypeScript plus test/lint dependencies.
-- [ ] Configure WXT with `@wxt-dev/module-react` and manifest permission `storage` only.
-- [ ] Configure strict TypeScript by extending `.wxt/tsconfig.json` and enabling `strict`/`noUncheckedIndexedAccess`.
-- [ ] Configure Vitest with `WxtVitest()` and jsdom for React tests.
-- [ ] Configure ESLint flat config using `@eslint/js` + `typescript-eslint`; exclude generated/build directories.
-- [ ] Run `npm install`, `npm run prepare`, `npm run typecheck`, and `npm run build` to verify the bootstrap itself.
+- WXT
+- Manifest V3
+- TypeScript strict mode
+- React
+- Zod runtime validation
+- Vitest + WXT testing integration
+- React Testing Library
+- Playwright Chromium smoke verification
+- ESLint flat config
+- Prettier
+- npm lockfile
 
-### Task 2: Canonical profile v1 schema and migration boundary
+## Completed tasks
 
-**Files:**
-- Test first: `src/domain/profile/profile-schema.test.ts`
-- Create after RED: `src/domain/profile/profile-schema.ts`, `src/domain/profile/create-empty-profile.ts`, `src/domain/profile/migrations.ts`
+### 1. Project bootstrap and quality gates
 
-**Produces:**
+Completed:
+
+- WXT/React/TypeScript project bootstrap
+- Manifest V3 configuration
+- extension permission restricted to `storage`
+- strict TypeScript configuration
+- Vitest + jsdom + React cleanup setup
+- ESLint and Prettier
+- reproducible `package-lock.json`
+- GitHub Actions CI
+- build and zip/package commands
+
+### 2. Canonical profile v1 schema and migration boundary
+
+Completed RED → GREEN → REFACTOR cycle for:
+
+- valid v1 profile parsing
+- repeated career entities represented as arrays
+- malformed persisted payload rejection
+- explicit unsupported future-version failure
 - `StoredProfileEnvelopeSchema` / `StoredProfileEnvelope`
-- `SensitiveProfileSchema` / `SensitiveProfile` (defined but not stored in the normal envelope)
-- `createEmptyStoredProfile(): StoredProfileEnvelope`
-- `parseStoredProfile(raw: unknown): StoredProfileEnvelope`
+- separate `SensitiveProfileSchema` / `SensitiveProfile`
+- `createEmptyStoredProfile()`
+- `parseStoredProfile()`
+- v1 migration/version dispatch boundary without invented legacy migrations
 
-- [ ] RED: test that a valid v1 envelope parses, repeated experience/education remain arrays, unknown/invalid persisted structures are rejected, and a future schema version throws an explicit unsupported-version error.
-- [ ] Run focused test and confirm failure because schema/parser do not exist.
-- [ ] GREEN: implement the complete canonical domain shape required by FR-01, separating vault-designated sensitive values from normal v1 persistence.
-- [ ] GREEN: implement a v1-only migration dispatcher; do not invent fake v0 migrations.
-- [ ] Run focused tests until green.
-- [ ] REFACTOR: remove schema duplication and keep factories explicit; rerun tests.
+Sensitive values are deliberately absent from the normal persisted envelope.
 
-### Task 3: Variant resolution and local profile repository
+### 3. Variant resolution and local profile repository
 
-**Files:**
-- Test first: `src/domain/variants/resolve-profile.test.ts`, `src/infrastructure/storage/chrome-profile-repository.test.ts`
-- Create after RED: `src/domain/variants/resolve-profile.ts`, `src/application/profile/profile-repository.ts`, `src/infrastructure/storage/chrome-profile-repository.ts`
+Completed RED → GREEN → REFACTOR cycle for:
 
-**Produces:**
-- `resolveApplicationProfile(baseProfile, variant?)`
-- `ProfileRepository` with `load()` and `save(profile)`
-- `ChromeProfileRepository`
+- pure base-profile cloning and supported application-variant overrides
+- preservation of factual base-profile data
+- explicit deferral of variant fields whose resolution semantics are not part of Iteration 1
+- `ProfileRepository` application port
+- `ChromeProfileRepository` using `browser.storage.local`
+- empty-storage behavior
+- save/load round trip
+- runtime validation of persisted data
 
-- [ ] RED: verify a variant overrides headline/summary/job preferences while base identity/contact/experience remain intact and the variant object contains no full base-profile copy.
-- [ ] RED: verify save/load round-trip through fake `browser.storage.local`, empty storage returns `null`, and invalid stored payload is rejected instead of cast into the UI.
-- [ ] Run focused tests and confirm expected failures before implementation.
-- [ ] GREEN: implement pure variant resolution with immutable object/array handling.
-- [ ] GREEN: implement repository adapter using `wxt/browser`; parse every load through the migration/schema boundary.
-- [ ] Run focused tests and the whole unit suite.
-- [ ] REFACTOR only after green.
+No Chrome/WXT API leaks into domain logic.
 
-### Task 4: Profile editor vertical slice
+### 4. Profile editor vertical slice
 
-**Files:**
-- Test first: `src/ui/profile/ProfilePage.test.tsx`
-- Create after RED: `src/ui/profile/ProfilePage.tsx`, `src/ui/profile/profile.css`, `entrypoints/options/App.tsx`
+Completed RED → GREEN cycle for the options/profile experience:
 
-**Produces:** a profile page supporting the Iteration 1 UI sections: basic identity, contact, links, experience, education, skills, and application variants.
+- load empty or persisted profile
+- edit core identity/contact/link data
+- create career records for experience, education, and skills
+- edit/remove records through the profile UI
+- create lightweight application variants
+- choose and maintain a default variant
+- persist schema-valid profile data through the repository boundary
+- rehydrate persisted state
 
-- [ ] RED: render with an empty profile and verify editing first/last name and primary email updates controlled state.
-- [ ] RED: verify add/remove experience, education, skill, and variant operations update the profile without mutating unrelated sections.
-- [ ] RED: verify Save calls the injected repository once with a schema-valid envelope and reload rehydrates persisted state.
-- [ ] Run UI tests and confirm expected failures before implementation.
-- [ ] GREEN: build the smallest accessible form UI with semantic labels/buttons and no form framework/global state library.
-- [ ] GREEN: `entrypoints/options/App.tsx` is a thin composition root that injects `ChromeProfileRepository`.
-- [ ] Run focused UI tests, full tests, and typecheck.
-- [ ] REFACTOR after green; keep component boundaries driven by reasons to change, not line-count rules.
+The UI uses local React state and small explicit functions. No form framework or global state-management dependency was added.
 
-### Task 5: Popup readiness and Iteration 1 verification
+### 5. Popup readiness and browser verification
 
-**Files:**
-- Test first: `src/application/profile/profile-readiness.test.ts`, `src/ui/popup/PopupPage.test.tsx`
-- Create after RED: `src/application/profile/profile-readiness.ts`, `src/ui/popup/PopupPage.tsx`, `src/ui/popup/popup.css`, `entrypoints/popup/App.tsx`
-- Modify after verification: `.agent/iteration-state.md`
+Completed RED → GREEN cycle for:
 
-**Produces:** a toolbar popup that loads the profile, shows a simple readiness summary, displays base/variant count, and opens the options/profile page.
+- deterministic readiness across identity, contact, links, experience, education, and skills
+- toolbar popup empty/ready states
+- application-variant count and names
+- opening profile settings from the popup
 
-- [ ] RED: define readiness from six useful sections (identity, contact, links, experience, education, skills) and verify deterministic completed/total/percentage output.
-- [ ] RED: verify popup renders empty/ready states from an injected repository and calls injected `openOptions()` from the settings action.
-- [ ] Run focused tests and confirm failures.
-- [ ] GREEN: implement readiness as pure application logic and the popup as a small React component; keep browser API wiring in the entrypoint.
-- [ ] Run focused tests and all tests.
-- [ ] Run final `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, and `npm run zip`.
-- [ ] Inspect generated manifest to confirm Manifest V3 and no permissions beyond `storage` for this iteration.
-- [ ] Update `.agent/iteration-state.md` with verified results only after all gates pass.
+Final verification also includes a real Chromium smoke journey:
 
-## Self-review
+```text
+build unpacked extension
+→ launch Chromium with extension
+→ open options page
+→ enter and save profile data
+→ close browser context
+→ relaunch with same user-data directory
+→ verify persisted values
+→ open popup
+→ verify readiness
+```
 
-- Scope matches Iteration 1 only; no scanner/matcher/filler/floating UI/vault/backend/AI work is pulled forward.
-- Every production behavior task starts with a failing automated test.
-- Stored sensitive values are deliberately deferred to encrypted-vault persistence; defining their domain shape now does not authorize plaintext storage.
-- Storage and UI depend on domain/application contracts; domain remains browser/framework agnostic.
-- No placeholder migration, site adapter, repository-per-entity pattern, or global state layer is introduced.
+## Final quality gates
+
+Verified in CI:
+
+- `npm ci`
+- unit/UI tests
+- strict TypeScript typecheck
+- ESLint
+- Prettier check
+- production WXT build
+- generated Manifest V3 invariant
+- `storage`-only permission invariant
+- popup/options entrypoint invariant
+- Playwright Chromium extension smoke test
+- extension packaging
+
+## Scope intentionally deferred
+
+Iteration 1 did not pull these future concerns forward:
+
+- DOM scanner/extractor
+- field matcher and confidence policy
+- fill-plan/filler engine
+- floating in-page autofill UI
+- site-specific ATS adapters
+- dynamic form observer
+- correction memory
+- encrypted Sensitive Data Vault implementation
+- backend/cloud sync
+- AI
+- automated document upload
+- auto-submit
+
+## Result
+
+Iteration 1 establishes the smallest executable foundation needed for Iteration 2 without introducing backend, AI, site-specific, or generic framework abstractions prematurely.
