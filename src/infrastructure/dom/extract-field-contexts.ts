@@ -4,7 +4,6 @@ import type {
   FieldOption,
 } from '../../domain/forms/field-context';
 import { createFieldFingerprint } from '../../domain/forms/fingerprints';
-import { normalizeFieldText } from '../../domain/matching/normalize-field-text';
 
 type LiveControl = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
 
@@ -91,29 +90,26 @@ function sectionText(control: LiveControl): string {
 
 function formFingerprint(control: LiveControl): string {
   const form = control.closest('form');
-  const scope: ParentNode = form ?? control.ownerDocument;
-  const descriptors = Array.from(
-    scope.querySelectorAll<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >('input, textarea, select'),
-  )
-    .filter(
-      (candidate) =>
-        !(candidate instanceof HTMLInputElement) ||
-        !UNSUPPORTED_INPUT_TYPES.has(candidate.type),
-    )
-    .map((candidate) =>
-      [
-        candidate.tagName.toLowerCase(),
-        inputType(candidate),
-        normalizeFieldText(candidate.getAttribute('name') ?? ''),
-        normalizeFieldText(explicitLabel(candidate)),
-      ].join(':'),
-    );
+  if (form === null) return `form_${hashText('document')}`;
 
-  const action = form?.getAttribute('action') ?? '';
-  const method = form?.getAttribute('method') ?? '';
-  return `form_${hashText(`${action}::${method}::${descriptors.join('|')}`)}`;
+  const heading = form.querySelector(
+    ':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6, :scope > legend',
+  );
+  const identity = [
+    form.id,
+    form.getAttribute('name'),
+    form.getAttribute('action'),
+    form.getAttribute('method'),
+    form.getAttribute('aria-label'),
+    heading?.textContent,
+  ].map(cleanText);
+
+  if (identity.every((part) => part === '')) {
+    const forms = Array.from(control.ownerDocument.querySelectorAll('form'));
+    identity.push(`index:${forms.indexOf(form)}`);
+  }
+
+  return `form_${hashText(identity.join('::'))}`;
 }
 
 function baseContext(
