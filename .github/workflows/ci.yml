@@ -7,7 +7,7 @@ on:
     branches: ['master']
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   verify:
@@ -21,8 +21,6 @@ jobs:
         run: npm install
       - name: Format source
         run: npm run format
-      - name: Capture formatting changes
-        run: git diff --name-only > formatted-changes.txt
       - name: Test
         run: npm test
       - name: Typecheck
@@ -48,21 +46,15 @@ jobs:
         run: npm run zip
       - name: Format check
         run: npm run format:check
-      - name: Upload formatted workspace
-        uses: actions/upload-artifact@v7
-        with:
-          name: formatted-workspace
-          path: |
-            src
-            entrypoints
-            package.json
-            package-lock.json
-            tsconfig.json
-            wxt.config.ts
-            vitest.config.ts
-            eslint.config.mjs
-            .prettierrc.json
-            .gitignore
-            .prettierignore
-            formatted-changes.txt
-          if-no-files-found: error
+      - name: Persist normalized workspace
+        if: github.ref == 'refs/heads/feat/iteration-1-profile'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src entrypoints package-lock.json
+          if git diff --cached --quiet; then
+            echo "Workspace is already normalized."
+          else
+            git commit -m "chore: normalize iteration 1 workspace"
+            git push origin HEAD:feat/iteration-1-profile
+          fi
