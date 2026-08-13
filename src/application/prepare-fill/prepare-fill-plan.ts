@@ -1,8 +1,6 @@
 import type { FieldContext } from '../../domain/forms/field-context';
-import type {
-  CanonicalField,
-  MatchResult,
-} from '../../domain/matching/match-field';
+import type { CorrectionAwareMatchResult } from '../../domain/matching/match-field-with-corrections';
+import type { CanonicalField } from '../../domain/matching/match-field';
 import type { BaseProfile } from '../../domain/profile/profile-schema';
 
 export type FillValue = string | boolean | string[];
@@ -16,7 +14,7 @@ export type FillInstruction = {
 
 export type FillAnalysis = {
   context: FieldContext;
-  match: MatchResult;
+  match: CorrectionAwareMatchResult;
 };
 
 export type FillPlan = {

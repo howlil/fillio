@@ -13,4 +13,12 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'error',
     },
   },
+  {
+    files: ['e2e/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        document: 'readonly',
+      },
+    },
+  },
 );
