@@ -31,6 +31,7 @@ describe('FloatingPanel', () => {
       />,
     );
 
-    expect(screen.getByRole('button', { name: 'No ready fields' })).toBeDisabled();
+    const button = screen.getByRole('button', { name: 'No ready fields' });
+    expect((button as HTMLButtonElement).disabled).toBe(true);
   });
 });
