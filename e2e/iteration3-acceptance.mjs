@@ -62,23 +62,45 @@ try {
   await expect(
     page.getByRole('button', { name: 'Fill 3 ready fields' }),
   ).toBeVisible();
+  expect(await page.evaluate(() => globalThis.__submitCount)).toBe(0);
 
   await page.evaluate(() => {
+    const form = document.querySelector('#application');
     const section = document.querySelector('#application section');
-    if (!section) throw new Error('Fixture section missing');
-    section.innerHTML =
-      '<h2>Second step</h2><label for="step-email">Email</label><input id="step-email" name="step_email" type="email" />';
+    if (!form || !section) throw new Error('Fixture application missing');
+    const next = document.createElement('button');
+    next.type = 'button';
+    next.textContent = 'Next step';
+    next.addEventListener('click', () => {
+      section.innerHTML =
+        '<h2>Second step</h2><label for="step-email">Email</label><input id="step-email" name="step_email" type="email" />';
+    });
+    form.append(next);
   });
+  await page.getByRole('button', { name: 'Next step' }).click();
   await expect(
     page.getByRole('button', { name: 'Fill 1 ready field' }),
   ).toBeVisible();
   await expect(page.getByLabel('Email')).toHaveValue('');
+  expect(await page.evaluate(() => globalThis.__submitCount)).toBe(0);
 
   await page.reload();
   await expect(
     page.getByRole('button', { name: 'Fill 3 ready fields' }),
   ).toBeVisible();
   await expect(page.getByText('0 needs review')).toBeVisible();
+  await expect(page.getByLabel('Name', { exact: true })).toHaveValue('');
+
+  await page.evaluate(() => {
+    const form = document.querySelector('#application');
+    if (!form) throw new Error('Fixture application missing');
+    form.id = 'different-application';
+    form.setAttribute('action', '/different-apply');
+  });
+  await expect(page.getByText('1 needs review')).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Fill 2 ready fields' }),
+  ).toBeVisible();
   await expect(page.getByLabel('Name', { exact: true })).toHaveValue('');
 } finally {
   await context?.close();
