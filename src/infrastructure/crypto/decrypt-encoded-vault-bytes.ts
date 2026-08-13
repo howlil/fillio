@@ -7,10 +7,9 @@ export function decryptEncodedVaultBytes(
   key: CryptoKey,
 ): Promise<Uint8Array> {
   return decryptVaultBytes(
-    // @ts-expect-error TS 5.9 widens decoded Uint8Array to ArrayBufferLike; decodeVaultBytes allocates a fresh ArrayBuffer-backed view.
+    // @ts-ignore TypeScript 5.9 models this freshly allocated byte view as ArrayBufferLike.
     decodeVaultBytes(encodedCiphertext),
     key,
-    // @ts-expect-error Same boundary as ciphertext: decoded hex allocates a fresh ArrayBuffer-backed view.
     decodeVaultBytes(encodedIv),
   );
 }
