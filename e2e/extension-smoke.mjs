@@ -55,7 +55,7 @@ const fixtureHtml = `<!doctype html>
           <input id="github" name="github" />
 
           <label for="ambiguous-name">Name</label>
-          <input id="ambiguous-name" name="display_name" />
+          <input id="ambiguous-name" name="name" />
 
           <label for="birth-date">Date of birth</label>
           <input id="birth-date" name="birth_date" type="date" />
