@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 
 import { createEmptySensitiveProfile } from '../../domain/profile/create-empty-sensitive-profile';
 import { unlockValidatedVaultKey } from './unlock-vault-key';
-import { VaultUnlockError } from './vault-error';
 import {
   createEncryptedVault,
   decryptSensitiveProfile,
@@ -18,6 +17,8 @@ function populatedProfile() {
   profile.compensation.expected.payPeriod = 'monthly';
   return profile;
 }
+
+const vaultErrorContract = { name: 'VaultUnlockError' };
 
 describe('Web Crypto sensitive vault', () => {
   it('encrypts and decrypts a validated sensitive profile without plaintext in the envelope', async () => {
@@ -54,7 +55,7 @@ describe('Web Crypto sensitive vault', () => {
     );
   });
 
-  it('rejects a wrong passphrase with one fail-closed error type', async () => {
+  it('rejects a wrong passphrase with one fail-closed error contract', async () => {
     const { envelope } = await createEncryptedVault(
       populatedProfile(),
       'local-vault-passphrase-2026',
@@ -62,7 +63,7 @@ describe('Web Crypto sensitive vault', () => {
 
     await expect(
       unlockValidatedVaultKey(envelope, 'different-local-passphrase'),
-    ).rejects.toBeInstanceOf(VaultUnlockError);
+    ).rejects.toMatchObject(vaultErrorContract);
   });
 
   it('rejects authenticated ciphertext tampering', async () => {
@@ -77,8 +78,8 @@ describe('Web Crypto sensitive vault', () => {
         (envelope.ciphertext.endsWith('A') ? 'B' : 'A'),
     };
 
-    await expect(decryptSensitiveProfile(tampered, key)).rejects.toBeInstanceOf(
-      VaultUnlockError,
+    await expect(decryptSensitiveProfile(tampered, key)).rejects.toMatchObject(
+      vaultErrorContract,
     );
   });
 
