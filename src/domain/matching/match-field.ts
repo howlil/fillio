@@ -89,7 +89,13 @@ const ALIASES: AliasDefinition[] = [
   },
   {
     field: 'contact.address.city',
-    aliases: ['city', 'current city', 'city of residence', 'kota', 'kota domisili'],
+    aliases: [
+      'city',
+      'current city',
+      'city of residence',
+      'kota',
+      'kota domisili',
+    ],
   },
   {
     field: 'contact.address.state',
@@ -113,7 +119,12 @@ const ALIASES: AliasDefinition[] = [
   },
   {
     field: 'links.portfolio',
-    aliases: ['portfolio', 'portfolio url', 'personal website', 'website portfolio'],
+    aliases: [
+      'portfolio',
+      'portfolio url',
+      'personal website',
+      'website portfolio',
+    ],
   },
   {
     field: 'professional.headline',
@@ -130,11 +141,20 @@ const ALIASES: AliasDefinition[] = [
   },
   {
     field: 'jobPreferences.willingToTravel',
-    aliases: ['willing to travel', 'are you willing to travel', 'bersedia perjalanan dinas'],
+    aliases: [
+      'willing to travel',
+      'are you willing to travel',
+      'bersedia perjalanan dinas',
+    ],
   },
   {
     field: 'jobPreferences.availabilityDate',
-    aliases: ['availability date', 'available from', 'available start date', 'tanggal mulai tersedia'],
+    aliases: [
+      'availability date',
+      'available from',
+      'available start date',
+      'tanggal mulai tersedia',
+    ],
   },
 ];
 
@@ -184,7 +204,11 @@ function signals(context: FieldContext): string[] {
 function containsSensitiveSignal(values: string[]): boolean {
   return values.some((value) =>
     NORMALIZED_SENSITIVE.some(
-      (alias) => value === alias || value.includes(` ${alias} `) || value.startsWith(`${alias} `) || value.endsWith(` ${alias}`),
+      (alias) =>
+        value === alias ||
+        value.includes(` ${alias} `) ||
+        value.startsWith(`${alias} `) ||
+        value.endsWith(` ${alias}`),
     ),
   );
 }
@@ -195,7 +219,9 @@ function tokenScore(signal: string, alias: string): number {
 
   const signalTokens = new Set(signal.split(' '));
   const aliasTokens = new Set(alias.split(' '));
-  const intersection = [...aliasTokens].filter((token) => signalTokens.has(token));
+  const intersection = [...aliasTokens].filter((token) =>
+    signalTokens.has(token),
+  );
   if (intersection.length === 0) return 0;
 
   const precision = intersection.length / signalTokens.size;
