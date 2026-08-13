@@ -1,8 +1,7 @@
 import type { SensitiveProfile } from '../../domain/profile/profile-schema';
-import {
-  createEmptyVaultEnvelope,
-  type StoredVaultEnvelope,
-} from '../../domain/vault/vault-envelope';
+import type { StoredVaultEnvelope } from '../../domain/vault/vault-envelope';
+import { createEncryptedProfileVault } from './create-encrypted-profile-vault';
+import { updateEncryptedProfileVault } from './update-encrypted-profile-vault';
 
 export class VaultUnlockError extends Error {
   constructor() {
@@ -11,15 +10,12 @@ export class VaultUnlockError extends Error {
   }
 }
 
-export async function createEncryptedVault(
-  _profile: SensitiveProfile,
-  _passphrase: string,
+export function createEncryptedVault(
+  profile: SensitiveProfile,
+  passphrase: string,
   now = new Date().toISOString(),
 ): Promise<{ envelope: StoredVaultEnvelope; key: CryptoKey }> {
-  return {
-    envelope: createEmptyVaultEnvelope(now),
-    key: {} as CryptoKey,
-  };
+  return createEncryptedProfileVault(profile, passphrase, now);
 }
 
 export async function unlockVaultKey(
@@ -36,14 +32,11 @@ export async function decryptSensitiveProfile(
   throw new VaultUnlockError();
 }
 
-export async function reencryptSensitiveProfile(
-  _profile: SensitiveProfile,
+export function reencryptSensitiveProfile(
+  profile: SensitiveProfile,
   envelope: StoredVaultEnvelope,
-  _key: CryptoKey,
+  key: CryptoKey,
   now = new Date().toISOString(),
 ): Promise<StoredVaultEnvelope> {
-  return {
-    ...envelope,
-    metadata: { ...envelope.metadata, updatedAt: now },
-  };
+  return updateEncryptedProfileVault(profile, envelope, key, now);
 }
