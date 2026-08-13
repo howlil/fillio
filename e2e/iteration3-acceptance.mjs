@@ -60,7 +60,7 @@ try {
     .click();
   await expect(page.getByLabel('Name', { exact: true })).toHaveValue('');
   await expect(
-    page.getByRole('button', { name: 'Fill 2 ready fields' }),
+    page.getByRole('button', { name: 'Fill 3 ready fields' }),
   ).toBeVisible();
 
   await page.evaluate(() => {
@@ -76,7 +76,7 @@ try {
 
   await page.reload();
   await expect(
-    page.getByRole('button', { name: 'Fill 2 ready fields' }),
+    page.getByRole('button', { name: 'Fill 3 ready fields' }),
   ).toBeVisible();
   await expect(page.getByText('0 needs review')).toBeVisible();
   await expect(page.getByLabel('Name', { exact: true })).toHaveValue('');
