@@ -26,9 +26,7 @@ function field(overrides: Partial<FieldContext>): FieldContext {
   };
 }
 
-function correction(
-  overrides: Partial<FieldCorrection> = {},
-): FieldCorrection {
+function correction(overrides: Partial<FieldCorrection> = {}): FieldCorrection {
   return {
     origin: 'https://jobs.example.test',
     formFingerprint: 'form-a',
@@ -59,17 +57,15 @@ describe('correction memory', () => {
     ).toMatchObject({ status: 'ready', field: 'contact.email.primary' });
 
     expect(
-      matchFieldWithCorrections(
-        { ...context, formFingerprint: 'form-b' },
-        [remembered],
-      ),
+      matchFieldWithCorrections({ ...context, formFingerprint: 'form-b' }, [
+        remembered,
+      ]),
     ).toMatchObject({ status: 'ready', field: 'contact.email.primary' });
 
     expect(
-      matchFieldWithCorrections(
-        { ...context, fieldFingerprint: 'field-b' },
-        [remembered],
-      ),
+      matchFieldWithCorrections({ ...context, fieldFingerprint: 'field-b' }, [
+        remembered,
+      ]),
     ).toMatchObject({ status: 'ready', field: 'contact.email.primary' });
   });
 

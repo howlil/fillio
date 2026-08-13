@@ -66,7 +66,8 @@ export default defineContentScript({
         if (reactRoot === null) return;
         if (
           currentAnalysis === null ||
-          currentAnalysis.summary.ready + currentAnalysis.summary.needsReview ===
+          currentAnalysis.summary.ready +
+            currentAnalysis.summary.needsReview ===
             0
         ) {
           reactRoot.render(null);

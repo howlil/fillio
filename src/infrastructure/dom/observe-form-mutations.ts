@@ -13,12 +13,16 @@ function isFillioElement(element: Element): boolean {
 
 function containsRelevantElement(node: Node): boolean {
   if (!(node instanceof Element) || isFillioElement(node)) return false;
-  return node.matches(FORM_SELECTOR) || node.querySelector(FORM_SELECTOR) !== null;
+  return (
+    node.matches(FORM_SELECTOR) || node.querySelector(FORM_SELECTOR) !== null
+  );
 }
 
 function isRelevantMutation(mutation: MutationRecord): boolean {
   if (mutation.type === 'attributes') {
-    return mutation.target instanceof Element && !isFillioElement(mutation.target);
+    return (
+      mutation.target instanceof Element && !isFillioElement(mutation.target)
+    );
   }
 
   return [...mutation.addedNodes, ...mutation.removedNodes].some(

@@ -60,7 +60,8 @@ describe('dynamic form support', () => {
   });
 
   it('debounces relevant form mutations and ignores unrelated text or Fillio UI', async () => {
-    document.body.innerHTML = '<form id="application"></form><p id="copy">Hello</p>';
+    document.body.innerHTML =
+      '<form id="application"></form><p id="copy">Hello</p>';
     const onChange = vi.fn();
     const watcher = observeRelevantFormMutations(document.body, onChange, {
       delayMs: 200,

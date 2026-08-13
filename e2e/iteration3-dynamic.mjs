@@ -5,7 +5,9 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
 const extensionDir = resolve('.output/chrome-mv3');
-const manifest = JSON.parse(await readFile(join(extensionDir, 'manifest.json'), 'utf8'));
+const manifest = JSON.parse(
+  await readFile(join(extensionDir, 'manifest.json'), 'utf8'),
+);
 const optionsPath = manifest.options_ui?.page ?? manifest.options_page;
 if (!optionsPath) throw new Error('Expected options entrypoint');
 
@@ -26,7 +28,8 @@ async function fixtureServer() {
     server.listen(0, '127.0.0.1', resolvePromise);
   });
   const address = server.address();
-  if (address === null || typeof address === 'string') throw new Error('No fixture port');
+  if (address === null || typeof address === 'string')
+    throw new Error('No fixture port');
   return { server, url: `http://127.0.0.1:${address.port}/apply` };
 }
 
@@ -46,7 +49,10 @@ try {
   context = await chromium.launchPersistentContext(dataDir, {
     channel: 'chromium',
     headless: true,
-    args: [`--disable-extensions-except=${extensionDir}`, `--load-extension=${extensionDir}`],
+    args: [
+      `--disable-extensions-except=${extensionDir}`,
+      `--load-extension=${extensionDir}`,
+    ],
   });
   const id = await extensionId(context);
   const page = await context.newPage();
@@ -59,18 +65,27 @@ try {
 
   await page.goto(fixture.url);
   await expect(page.getByText('1 needs review')).toBeVisible();
-  await page.getByRole('button', { name: 'Use personal.legalName.first for Name' }).click();
+  await page
+    .getByRole('button', { name: 'Use personal.legalName.first for Name' })
+    .click();
   await expect(page.getByLabel('Name')).toHaveValue('');
-  await expect(page.getByRole('button', { name: 'Fill 2 ready fields' })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Fill 2 ready fields' }),
+  ).toBeVisible();
 
   await page.evaluate(() => {
-    document.querySelector('#step').innerHTML = '<h2>Second step</h2><label for="step-email">Email</label><input id="step-email" name="step_email" type="email" />';
+    document.querySelector('#step').innerHTML =
+      '<h2>Second step</h2><label for="step-email">Email</label><input id="step-email" name="step_email" type="email" />';
   });
-  await expect(page.getByRole('button', { name: 'Fill 1 ready field' })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Fill 1 ready field' }),
+  ).toBeVisible();
   await expect(page.getByLabel('Email')).toHaveValue('');
 
   await page.reload();
-  await expect(page.getByRole('button', { name: 'Fill 2 ready fields' })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Fill 2 ready fields' }),
+  ).toBeVisible();
   await expect(page.getByText('0 needs review')).toBeVisible();
   await expect(page.getByLabel('Name')).toHaveValue('');
 } finally {

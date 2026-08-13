@@ -43,7 +43,10 @@ export function FloatingPanel({
       </div>
 
       {reviewItems.length > 0 && onRemember !== undefined ? (
-        <div className="fillio-panel__reviews" aria-label="Fields needing review">
+        <div
+          className="fillio-panel__reviews"
+          aria-label="Fields needing review"
+        >
           {reviewItems.map((item) => {
             if (item.match.status !== 'review') return null;
             const label = fieldLabel(item.context);
