@@ -2,7 +2,7 @@ import type { SensitiveProfile } from '../../domain/profile/profile-schema';
 import type { StoredVaultEnvelope } from '../../domain/vault/vault-envelope';
 import { createEncryptedProfileVault } from './create-encrypted-profile-vault';
 import { decryptEncodedVaultBytes } from './decrypt-encoded-vault-bytes';
-import { unlockValidatedVaultKey } from './unlock-validated-vault-key';
+import { unlockVaultSessionKey } from './unlock-vault-session-key';
 import { updateEncryptedProfileVault } from './update-encrypted-profile-vault';
 import { decodeVaultProfile } from './vault-profile-codec';
 
@@ -25,7 +25,7 @@ export function unlockVaultKey(
   envelope: StoredVaultEnvelope,
   passphrase: string,
 ): Promise<CryptoKey> {
-  return unlockValidatedVaultKey(envelope, passphrase);
+  return unlockVaultSessionKey(envelope, passphrase);
 }
 
 export async function decryptSensitiveProfile(
