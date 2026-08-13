@@ -1,6 +1,10 @@
 import type { FieldContext } from '../../domain/forms/field-context';
+import { matchField } from '../../domain/matching/match-field';
 import type { BaseProfile } from '../../domain/profile/profile-schema';
-import type { FillPlan } from '../prepare-fill/prepare-fill-plan';
+import {
+  prepareFillPlan,
+  type FillPlan,
+} from '../prepare-fill/prepare-fill-plan';
 
 export type PageAnalysisSummary = {
   ready: number;
@@ -15,8 +19,22 @@ export type PageAnalysis = {
 };
 
 export function analyzeFieldContexts(
-  _fields: FieldContext[],
-  _profile: BaseProfile,
+  fields: FieldContext[],
+  profile: BaseProfile,
 ): PageAnalysis {
-  throw new Error('Not implemented');
+  const analysis = fields.map((context) => ({
+    context,
+    match: matchField(context),
+  }));
+  const plan = prepareFillPlan(analysis, profile);
+
+  return {
+    plan,
+    summary: {
+      ready: plan.ready.length,
+      needsReview: plan.needsReview.length,
+      unknown: plan.unknown.length,
+      total: fields.length,
+    },
+  };
 }
