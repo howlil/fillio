@@ -6,7 +6,9 @@ import {
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
-export function encodeVaultProfile(profile: SensitiveProfile): Uint8Array {
+export function encodeVaultProfile(
+  profile: SensitiveProfile,
+): Uint8Array<ArrayBuffer> {
   return encoder.encode(JSON.stringify(SensitiveProfileSchema.parse(profile)));
 }
 
