@@ -5,7 +5,7 @@ import type { ApplicationVariant } from '../profile/profile-schema';
 import { resolveApplicationProfile } from './resolve-profile';
 
 describe('resolveApplicationProfile', () => {
-  it('applies variant overrides without mutating factual base-profile data', () => {
+  it('applies overrides without mutating factual base data', () => {
     const stored = createEmptyStoredProfile('2026-08-13T00:00:00.000Z');
     const base = stored.baseProfile;
 
@@ -64,8 +64,10 @@ describe('resolveApplicationProfile', () => {
     expect(base.jobPreferences.preferredLocations).toEqual(['Padang']);
   });
 
-  it('returns an equivalent independent profile when no variant is selected', () => {
-    const base = createEmptyStoredProfile('2026-08-13T00:00:00.000Z').baseProfile;
+  it('clones the base profile when no variant is selected', () => {
+    const base = createEmptyStoredProfile(
+      '2026-08-13T00:00:00.000Z',
+    ).baseProfile;
 
     const resolved = resolveApplicationProfile(base);
 
