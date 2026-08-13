@@ -1,18 +1,27 @@
+import { browser } from 'wxt/browser';
+
 import type { VaultRepository } from '../../application/vault/vault-repository';
-import type { StoredVaultEnvelope } from '../../domain/vault/vault-envelope';
+import {
+  parseStoredVaultEnvelope,
+  type StoredVaultEnvelope,
+} from '../../domain/vault/vault-envelope';
 
 export const VAULT_STORAGE_KEY = 'fillio.vault';
 
 export class ChromeVaultRepository implements VaultRepository {
-  load(): Promise<StoredVaultEnvelope | null> {
-    return Promise.resolve(null);
+  async load(): Promise<StoredVaultEnvelope | null> {
+    const stored = await browser.storage.local.get(VAULT_STORAGE_KEY);
+    const value = stored[VAULT_STORAGE_KEY];
+    return value === undefined ? null : parseStoredVaultEnvelope(value);
   }
 
-  save(_envelope: StoredVaultEnvelope): Promise<void> {
-    return Promise.resolve();
+  async save(envelope: StoredVaultEnvelope): Promise<void> {
+    await browser.storage.local.set({
+      [VAULT_STORAGE_KEY]: parseStoredVaultEnvelope(envelope),
+    });
   }
 
-  delete(): Promise<void> {
-    return Promise.resolve();
+  async delete(): Promise<void> {
+    await browser.storage.local.remove(VAULT_STORAGE_KEY);
   }
 }
