@@ -3,6 +3,7 @@ import {
   type StoredVaultEnvelope,
 } from '../../domain/vault/vault-envelope';
 import { encryptVaultBytes } from './vault-aead';
+import { toVaultBytes } from './vault-array-bytes';
 import { encodeVaultBytes } from './vault-bytes';
 import { deriveVaultKey } from './vault-key';
 
@@ -14,7 +15,7 @@ export async function createVaultEnvelope(
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const key = await deriveVaultKey(phrase, salt);
-  const encrypted = await encryptVaultBytes(payload, key, iv);
+  const encrypted = await encryptVaultBytes(toVaultBytes(payload), key, iv);
   const envelope = createEmptyVaultEnvelope(now);
 
   return {
