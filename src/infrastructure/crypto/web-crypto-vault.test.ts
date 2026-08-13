@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
 import { createEmptySensitiveProfile } from '../../domain/profile/create-empty-sensitive-profile';
+import { unlockValidatedVaultKey } from './unlock-vault-key';
+import { VaultUnlockError } from './vault-error';
 import {
   createEncryptedVault,
   decryptSensitiveProfile,
   reencryptSensitiveProfile,
-  unlockVaultKey,
-  VaultUnlockError,
 } from './web-crypto-vault';
 
 function populatedProfile() {
@@ -47,7 +47,7 @@ describe('Web Crypto sensitive vault', () => {
     const passphrase = 'local-vault-passphrase-2026';
     const { envelope } = await createEncryptedVault(profile, passphrase);
 
-    const key = await unlockVaultKey(envelope, passphrase);
+    const key = await unlockValidatedVaultKey(envelope, passphrase);
 
     await expect(decryptSensitiveProfile(envelope, key)).resolves.toEqual(
       profile,
@@ -61,7 +61,7 @@ describe('Web Crypto sensitive vault', () => {
     );
 
     await expect(
-      unlockVaultKey(envelope, 'different-local-passphrase'),
+      unlockValidatedVaultKey(envelope, 'different-local-passphrase'),
     ).rejects.toBeInstanceOf(VaultUnlockError);
   });
 
