@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: ['master', 'feat/**', 'fix/**', 'chore/**']
+  pull_request:
+    branches: ['master']
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Install dependencies
+        run: npm install
+      - name: Format check
+        run: npm run format:check
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Test
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: Verify manifest permissions
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const manifest = JSON.parse(fs.readFileSync('.output/chrome-mv3/manifest.json', 'utf8'));
+          if (manifest.manifest_version !== 3) throw new Error(`Expected MV3, received ${manifest.manifest_version}`);
+          const permissions = [...(manifest.permissions ?? [])].sort();
+          if (JSON.stringify(permissions) !== JSON.stringify(['storage'])) {
+            throw new Error(`Unexpected permissions: ${JSON.stringify(permissions)}`);
+          }
+          NODE
+      - name: Package extension
+        run: npm run zip
+      - name: Upload generated lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-lock
+          path: package-lock.json
+          if-no-files-found: error
