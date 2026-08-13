@@ -72,7 +72,10 @@ function fillRadio(field: ScannedDomField, value: string): boolean {
   return true;
 }
 
-function fillField(field: ScannedDomField, instruction: FillInstruction): boolean {
+function fillField(
+  field: ScannedDomField,
+  instruction: FillInstruction,
+): boolean {
   const first = field.controls[0];
   if (first === undefined || instruction.controlKind === 'file') return false;
 
@@ -131,7 +134,9 @@ export function applyFillInstructions(
 
     return {
       fieldFingerprint: instruction.fieldFingerprint,
-      status: fillField(field, instruction) ? ('filled' as const) : ('unsupported' as const),
+      status: fillField(field, instruction)
+        ? ('filled' as const)
+        : ('unsupported' as const),
     };
   });
 }

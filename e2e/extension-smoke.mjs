@@ -185,13 +185,20 @@ try {
 
   await page.goto(fixture.url);
   await expect(page.locator('fillio-form-assistant')).toBeAttached();
-  await expect(page.getByRole('button', { name: 'Fill 7 ready fields' })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Fill 7 ready fields' }),
+  ).toBeVisible();
 
   const serviceWorker = await getServiceWorker(context);
   const summary = await serviceWorker.evaluate(async () => {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
     if (tab?.id === undefined) throw new Error('Active fixture tab not found');
-    return chrome.tabs.sendMessage(tab.id, { type: 'fillio:get-page-analysis' });
+    return chrome.tabs.sendMessage(tab.id, {
+      type: 'fillio:get-page-analysis',
+    });
   });
   expect(summary).toEqual({ ready: 7, needsReview: 1, unknown: 3, total: 11 });
 

@@ -19,7 +19,9 @@ describe('FloatingPanel', () => {
     expect(screen.getByText('2 unknown')).toBeTruthy();
     expect(fill).not.toHaveBeenCalled();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Fill 3 ready fields' }));
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Fill 3 ready fields' }),
+    );
     expect(fill).toHaveBeenCalledTimes(1);
   });
 

@@ -51,15 +51,22 @@ describe('DOM form adapter', () => {
       </main>
     `;
 
-    const contexts = extractFieldContexts(document, 'https://jobs.example.test');
+    const contexts = extractFieldContexts(
+      document,
+      'https://jobs.example.test',
+    );
 
     expect(contexts).toHaveLength(8);
-    expect(contexts.every((context) => typeof context.fieldFingerprint === 'string')).toBe(
-      true,
-    );
-    expect(new Set(contexts.map((context) => context.formFingerprint)).size).toBe(1);
+    expect(
+      contexts.every((context) => typeof context.fieldFingerprint === 'string'),
+    ).toBe(true);
+    expect(
+      new Set(contexts.map((context) => context.formFingerprint)).size,
+    ).toBe(1);
 
-    const firstName = contexts.find((context) => context.name === 'candidate[first_name]');
+    const firstName = contexts.find(
+      (context) => context.name === 'candidate[first_name]',
+    );
     expect(firstName).toMatchObject({
       controlKind: 'input',
       inputType: 'text',
@@ -69,18 +76,24 @@ describe('DOM form adapter', () => {
       origin: 'https://jobs.example.test',
     });
 
-    expect(contexts.find((context) => context.name === 'email')?.label).toBe('Email');
-    expect(contexts.find((context) => context.id === 'headline')?.ariaLabel).toBe(
-      'Professional headline',
+    expect(contexts.find((context) => context.name === 'email')?.label).toBe(
+      'Email',
     );
+    expect(
+      contexts.find((context) => context.id === 'headline')?.ariaLabel,
+    ).toBe('Professional headline');
 
-    expect(contexts.find((context) => context.name === 'city')?.options).toEqual([
+    expect(
+      contexts.find((context) => context.name === 'city')?.options,
+    ).toEqual([
       { value: '', label: 'Choose city' },
       { value: 'jkt', label: 'Jakarta' },
       { value: 'pdg', label: 'Padang' },
     ]);
 
-    expect(contexts.find((context) => context.name === 'arrangement')).toMatchObject({
+    expect(
+      contexts.find((context) => context.name === 'arrangement'),
+    ).toMatchObject({
       controlKind: 'radio',
       label: 'Work arrangement',
       options: [
@@ -89,11 +102,13 @@ describe('DOM form adapter', () => {
       ],
     });
 
-    expect(contexts.find((context) => context.name === 'resume')).toMatchObject({
-      controlKind: 'file',
-      inputType: 'file',
-      label: 'Resume',
-    });
+    expect(contexts.find((context) => context.name === 'resume')).toMatchObject(
+      {
+        controlKind: 'file',
+        inputType: 'file',
+        label: 'Resume',
+      },
+    );
   });
 
   it('produces distinct form fingerprints for distinct form structure', () => {
@@ -102,7 +117,10 @@ describe('DOM form adapter', () => {
       <form id="links"><label>GitHub <input name="github" /></label></form>
     `;
 
-    const contexts = extractFieldContexts(document, 'https://jobs.example.test');
+    const contexts = extractFieldContexts(
+      document,
+      'https://jobs.example.test',
+    );
 
     expect(contexts).toHaveLength(2);
     expect(contexts[0]?.formFingerprint).not.toBe(contexts[1]?.formFingerprint);
@@ -130,7 +148,10 @@ describe('DOM form adapter', () => {
       </form>
     `;
 
-    const contexts = extractFieldContexts(document, 'https://jobs.example.test');
+    const contexts = extractFieldContexts(
+      document,
+      'https://jobs.example.test',
+    );
     const byName = (name: string) => {
       const context = contexts.find((item) => item.name === name);
       if (context === undefined) throw new Error(`Missing context ${name}`);
@@ -138,9 +159,15 @@ describe('DOM form adapter', () => {
     };
 
     const eventLog: string[] = [];
-    for (const control of document.querySelectorAll('input, textarea, select')) {
-      control.addEventListener('input', () => eventLog.push(`${control.getAttribute('name')}:input`));
-      control.addEventListener('change', () => eventLog.push(`${control.getAttribute('name')}:change`));
+    for (const control of document.querySelectorAll(
+      'input, textarea, select',
+    )) {
+      control.addEventListener('input', () =>
+        eventLog.push(`${control.getAttribute('name')}:input`),
+      );
+      control.addEventListener('change', () =>
+        eventLog.push(`${control.getAttribute('name')}:change`),
+      );
     }
 
     const submitSpy = vi.fn((event: Event) => event.preventDefault());
@@ -192,22 +219,29 @@ describe('DOM form adapter', () => {
     );
 
     expect(results.every((result) => result.status === 'filled')).toBe(true);
-    expect((document.querySelector('[name="first_name"]') as HTMLInputElement).value).toBe(
-      'Ulil',
-    );
-    expect((document.querySelector('[name="headline"]') as HTMLTextAreaElement).value).toBe(
-      'Backend Engineer',
-    );
-    expect((document.querySelector('[name="city"]') as HTMLSelectElement).value).toBe('pdg');
-    expect((document.querySelector('[name="relocate"]') as HTMLInputElement).checked).toBe(
-      true,
-    );
     expect(
-      (document.querySelector('[name="arrangement"][value="hybrid"]') as HTMLInputElement)
-        .checked,
+      (document.querySelector('[name="first_name"]') as HTMLInputElement).value,
+    ).toBe('Ulil');
+    expect(
+      (document.querySelector('[name="headline"]') as HTMLTextAreaElement)
+        .value,
+    ).toBe('Backend Engineer');
+    expect(
+      (document.querySelector('[name="city"]') as HTMLSelectElement).value,
+    ).toBe('pdg');
+    expect(
+      (document.querySelector('[name="relocate"]') as HTMLInputElement).checked,
     ).toBe(true);
     expect(
-      (document.querySelector('[name="available_from"]') as HTMLInputElement).value,
+      (
+        document.querySelector(
+          '[name="arrangement"][value="hybrid"]',
+        ) as HTMLInputElement
+      ).checked,
+    ).toBe(true);
+    expect(
+      (document.querySelector('[name="available_from"]') as HTMLInputElement)
+        .value,
     ).toBe('2026-09-01');
     expect(eventLog).toEqual(
       expect.arrayContaining([
@@ -229,28 +263,37 @@ describe('DOM form adapter', () => {
         <label>First name <input name="first_name" /></label>
       </form>
     `;
-    const context = extractFieldContexts(document, 'https://jobs.example.test')[0];
+    const context = extractFieldContexts(
+      document,
+      'https://jobs.example.test',
+    )[0];
     if (context === undefined) throw new Error('Missing first name context');
 
-    const results = applyFillInstructions(document, 'https://jobs.example.test', [
-      {
-        fieldFingerprint: 'fld_missing',
-        field: 'links.github',
-        value: 'https://github.com/howlil',
-        controlKind: 'input',
-      },
-      {
-        fieldFingerprint: context.fieldFingerprint,
-        field: 'personal.legalName.first',
-        value: 'Ulil',
-        controlKind: 'input',
-      },
-    ]);
+    const results = applyFillInstructions(
+      document,
+      'https://jobs.example.test',
+      [
+        {
+          fieldFingerprint: 'fld_missing',
+          field: 'links.github',
+          value: 'https://github.com/howlil',
+          controlKind: 'input',
+        },
+        {
+          fieldFingerprint: context.fieldFingerprint,
+          field: 'personal.legalName.first',
+          value: 'Ulil',
+          controlKind: 'input',
+        },
+      ],
+    );
 
     expect(results).toEqual([
       { fieldFingerprint: 'fld_missing', status: 'not-found' },
       { fieldFingerprint: context.fieldFingerprint, status: 'filled' },
     ]);
-    expect((document.querySelector('input') as HTMLInputElement).value).toBe('Ulil');
+    expect((document.querySelector('input') as HTMLInputElement).value).toBe(
+      'Ulil',
+    );
   });
 });

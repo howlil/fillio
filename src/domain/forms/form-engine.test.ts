@@ -111,14 +111,16 @@ describe('form intelligence core', () => {
     });
 
     expect(
-      matchField(field({ controlKind: 'file', inputType: 'file', label: 'CV' })),
+      matchField(
+        field({ controlKind: 'file', inputType: 'file', label: 'CV' }),
+      ),
     ).toEqual({ status: 'unknown', reason: 'file-input' });
   });
 
   it('leaves unrelated fields unknown', () => {
-    expect(matchField(field({ label: 'Favorite fictional character' }))).toEqual(
-      { status: 'unknown', reason: 'no-match' },
-    );
+    expect(
+      matchField(field({ label: 'Favorite fictional character' })),
+    ).toEqual({ status: 'unknown', reason: 'no-match' });
   });
 
   it('prepares an explicit fill plan without authorizing review, unknown, or missing values', () => {

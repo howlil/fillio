@@ -38,8 +38,7 @@ export default defineContentScript({
         envelope.preferences.defaultVariantId === null
           ? undefined
           : envelope.variants.find(
-              (variant) =>
-                variant.id === envelope.preferences.defaultVariantId,
+              (variant) => variant.id === envelope.preferences.defaultVariantId,
             );
       const profile = resolveApplicationProfile(
         envelope.baseProfile,
