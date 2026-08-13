@@ -20,7 +20,10 @@ export function createFieldFingerprint(context: FieldContext): string {
     normalizeFieldText(context.ariaLabel),
     normalizeFieldText(context.sectionText),
     context.options
-      .map((option) => `${normalizeFieldText(option.value)}:${normalizeFieldText(option.label)}`)
+      .map(
+        (option) =>
+          `${normalizeFieldText(option.value)}:${normalizeFieldText(option.label)}`,
+      )
       .join('|'),
   ];
 
