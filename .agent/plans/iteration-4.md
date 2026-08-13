@@ -8,6 +8,15 @@
 
 **Tech stack:** TypeScript, React, WXT/Manifest V3, Web Crypto API, Zod, Vitest, Testing Library, Playwright Chromium.
 
+## Progress snapshot
+
+- Task 1 domain envelope/profile factory: complete and verified.
+- Task 2 Web Crypto + encrypted repository: complete and verified.
+- Task 3 memory-only `VaultSession`: complete and verified; background broker/messages/client remain pending.
+- Tasks 4–7 remain pending.
+- Current GitHub connector rejects writes that introduce the application/runtime vault broker, vault UI, or sensitive autofill boundary. Do not bypass that guard through low-level Git writes or obfuscation. Continue those tasks only in an execution environment that permits the explicit implementation and tests.
+- Government-ID sensitive autofill remains fail-closed/manual until Task 4/6 are explicitly implemented and verified.
+
 ## Global constraints
 
 - Chromium first; local-first; no backend/account/cloud/AI.
@@ -39,10 +48,10 @@
 - `StoredVaultEnvelope` schema version 1 containing only KDF/cipher metadata, ciphertext, and timestamps.
 - `createEmptySensitiveProfile(): SensitiveProfile` matching the already-defined complete `SensitiveProfileSchema`.
 
-- [ ] RED: tests reject future/malformed envelopes and assert the empty sensitive profile validates.
-- [ ] Run focused tests and verify failure is caused by missing modules.
-- [ ] GREEN: implement strict Zod envelope validation and complete empty sensitive profile factory.
-- [ ] Run focused + full tests; refactor only after green.
+- [x] RED: tests reject future/malformed envelopes and assert the empty sensitive profile validates.
+- [x] Run focused tests and verify failure is caused by missing modules, then behavioral RED.
+- [x] GREEN: implement strict Zod envelope validation and complete empty sensitive profile factory.
+- [x] Run focused + full tests; refactor only after green.
 
 ## Task 2 — Web Crypto sealing/opening and encrypted storage
 
@@ -60,10 +69,10 @@
 - `reencryptSensitiveProfile(profile, envelope, key)` → envelope with same KDF metadata and fresh IV.
 - `VaultRepository.load/save/delete` over storage key `fillio.vault`.
 
-- [ ] RED: round-trip, random salt/IV, wrong passphrase, ciphertext tamper, malformed decrypted JSON, fresh IV on save, no plaintext serialized envelope, storage load/save/delete.
-- [ ] Verify focused RED failures.
-- [ ] GREEN minimal Web Crypto + repository implementation.
-- [ ] Verify full suite, typecheck, lint; refactor encoding helpers only after green.
+- [x] RED: round-trip, random salt/IV, wrong passphrase, ciphertext tamper, malformed decrypted JSON, fresh IV on save, no plaintext serialized envelope, storage load/save/delete.
+- [x] Verify focused RED failures.
+- [x] GREEN minimal Web Crypto + repository implementation.
+- [x] Verify full suite, typecheck, lint, format, build, Chromium journeys, and packaging; refactor encoding/error helpers after green.
 
 ## Task 3 — Memory-only unlock session and background vault broker
 
@@ -80,8 +89,10 @@
 - Typed commands: status, setup, unlock, lock, load-profile, save-profile, read-fields, reset.
 - Background is the only runtime owner of the unlocked key; repository always remains encrypted at rest.
 
-- [ ] RED: locked default, exact inactivity expiry, activity refresh, explicit lock, wrong-passphrase failure, reset lock/delete, no passphrase in responses.
-- [ ] GREEN: implement session and message broker with fail-closed generic errors.
+- [x] RED: locked default, exact inactivity expiry, explicit activity refresh, and explicit lock.
+- [x] GREEN: implement generic memory-only `VaultSession` with 30-minute idle expiry.
+- [ ] RED: broker/message behavior for status, setup, unlock, lock, load/save, reset, and no key/passphrase in responses.
+- [ ] GREEN: implement background broker + typed runtime messages/client with fail-closed errors.
 - [ ] Verify full suite and background build.
 
 ## Task 4 — Sensitive field classification and separate plan
@@ -157,16 +168,16 @@
 
 **Acceptance journey:**
 1. Load extension with no vault; storage contains no vault key.
-2. Setup vault in options with a passphrase and representative NIK/birth-date/expected-salary values.
+2. Setup vault in options with a passphrase and representative sensitive values.
 3. Inspect `browser.storage.local`: encrypted envelope exists while passphrase and sensitive plaintext values are absent from serialized storage.
 4. Navigate to local career fixture containing normal + sensitive fields.
 5. Verify normal Fill does not fill sensitive controls.
 6. Verify sensitive disclosure is locked; wrong passphrase fails; correct unlock succeeds but fields remain empty.
-7. Click explicit site-sensitive Fill; only configured sensitive fields populate and submit count remains zero.
-8. Reload: vault remains encrypted and locked again when background session is explicitly locked; unlock required before another sensitive fill.
+7. Click explicit site-sensitive Fill; only approved configured sensitive fields populate and submit count remains zero.
+8. Reload: vault remains encrypted and requires unlock after explicit/session lock before another sensitive fill.
 9. Verify reset deletes encrypted vault and returns to not-configured state.
 
-**Final gates:** `npm ci`,  all Vitest/UI tests, `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run build`, generated-manifest invariants, all Chromium E2E journeys, `npm run zip`.
+**Final gates:** `npm ci`, all Vitest/UI tests, `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run build`, generated-manifest invariants, all Chromium E2E journeys, `npm run zip`.
 
 - [ ] Run all final gates in read-only CI.
 - [ ] Review diff against `master` for plaintext leaks, new permissions, network/backend/AI/site-specific logic, and accidental auto-fill/submit behavior.
