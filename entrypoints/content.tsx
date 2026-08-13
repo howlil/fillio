@@ -26,7 +26,7 @@ export default defineContentScript({
 
     browser.runtime.onMessage.addListener((message: unknown) => {
       if (isGetPageAnalysisMessage(message)) {
-        return currentSummary;
+        return Promise.resolve(currentSummary);
       }
       return undefined;
     });
