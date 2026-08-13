@@ -1,7 +1,9 @@
 import type { SensitiveProfile } from '../../domain/profile/profile-schema';
 import type { StoredVaultEnvelope } from '../../domain/vault/vault-envelope';
 import { createEncryptedProfileVault } from './create-encrypted-profile-vault';
+import { decryptEncodedVaultBytes } from './decrypt-encoded-vault-bytes';
 import { updateEncryptedProfileVault } from './update-encrypted-profile-vault';
+import { decodeVaultProfile } from './vault-profile-codec';
 
 export class VaultUnlockError extends Error {
   constructor() {
@@ -26,10 +28,19 @@ export async function unlockVaultKey(
 }
 
 export async function decryptSensitiveProfile(
-  _envelope: StoredVaultEnvelope,
-  _key: CryptoKey,
+  envelope: StoredVaultEnvelope,
+  key: CryptoKey,
 ): Promise<SensitiveProfile> {
-  throw new VaultUnlockError();
+  try {
+    const plaintext = await decryptEncodedVaultBytes(
+      envelope.ciphertext,
+      envelope.cipher.iv,
+      key,
+    );
+    return decodeVaultProfile(plaintext);
+  } catch {
+    throw new VaultUnlockError();
+  }
 }
 
 export function reencryptSensitiveProfile(
