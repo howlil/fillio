@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { createEmptySensitiveProfile } from '../../domain/profile/create-empty-sensitive-profile';
-import { unlockValidatedVaultKey } from './unlock-validated-vault-key';
+import { unlockVaultSessionKey } from './unlock-vault-session-key';
 import {
   createEncryptedVault,
   decryptSensitiveProfile,
@@ -48,7 +48,7 @@ describe('Web Crypto sensitive vault', () => {
     const passphrase = 'local-vault-passphrase-2026';
     const { envelope } = await createEncryptedVault(profile, passphrase);
 
-    const key = await unlockValidatedVaultKey(envelope, passphrase);
+    const key = await unlockVaultSessionKey(envelope, passphrase);
 
     await expect(decryptSensitiveProfile(envelope, key)).resolves.toEqual(
       profile,
@@ -62,7 +62,7 @@ describe('Web Crypto sensitive vault', () => {
     );
 
     await expect(
-      unlockValidatedVaultKey(envelope, 'different-local-passphrase'),
+      unlockVaultSessionKey(envelope, 'different-local-passphrase'),
     ).rejects.toMatchObject(vaultErrorContract);
   });
 
