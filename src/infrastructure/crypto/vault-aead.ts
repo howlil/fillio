@@ -4,10 +4,10 @@ const encoder = new TextEncoder();
 const VAULT_AAD = encoder.encode('fillio:vault:v1');
 
 export async function encryptVaultBytes(
-  plaintext: Uint8Array,
+  plaintext: Uint8Array<ArrayBuffer>,
   key: CryptoKey,
-  iv: Uint8Array,
-): Promise<Uint8Array> {
+  iv: Uint8Array<ArrayBuffer>,
+): Promise<Uint8Array<ArrayBuffer>> {
   const result = await crypto.subtle.encrypt(
     {
       name: 'AES-GCM',
@@ -22,10 +22,10 @@ export async function encryptVaultBytes(
 }
 
 export async function decryptVaultBytes(
-  ciphertext: Uint8Array,
+  ciphertext: Uint8Array<ArrayBuffer>,
   key: CryptoKey,
-  iv: Uint8Array,
-): Promise<Uint8Array> {
+  iv: Uint8Array<ArrayBuffer>,
+): Promise<Uint8Array<ArrayBuffer>> {
   const result = await crypto.subtle.decrypt(
     {
       name: 'AES-GCM',
