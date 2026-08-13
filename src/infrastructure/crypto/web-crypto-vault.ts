@@ -4,14 +4,10 @@ import { createEncryptedProfileVault } from './create-encrypted-profile-vault';
 import { decryptEncodedVaultBytes } from './decrypt-encoded-vault-bytes';
 import { unlockVaultSessionKey } from './unlock-vault-session-key';
 import { updateEncryptedProfileVault } from './update-encrypted-profile-vault';
+import { VaultUnlockError } from './vault-error';
 import { decodeVaultProfile } from './vault-profile-codec';
 
-export class VaultUnlockError extends Error {
-  constructor() {
-    super('Vault could not be unlocked.');
-    this.name = 'VaultUnlockError';
-  }
-}
+export { VaultUnlockError };
 
 export function createEncryptedVault(
   profile: SensitiveProfile,
