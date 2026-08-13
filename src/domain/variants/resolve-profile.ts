@@ -31,16 +31,8 @@ export function resolveApplicationProfile(
     ];
   }
 
-  if (variant.employmentTypes !== undefined) {
-    resolved.jobPreferences.employmentTypes = [...variant.employmentTypes];
-  }
-
   if (variant.workArrangements !== undefined) {
     resolved.jobPreferences.workArrangements = [...variant.workArrangements];
-  }
-
-  if (variant.customAnswers !== undefined) {
-    resolved.customAnswers = structuredClone(variant.customAnswers);
   }
 
   return resolved;
