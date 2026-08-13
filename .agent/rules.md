@@ -68,24 +68,30 @@ These rules are defaults for all implementation work unless a requirement explic
 44. Remove dead code rather than commenting it out.
 45. No premature caching. Measure before optimizing except for obvious DOM-mutation hot paths.
 
-## Testing
+## Testing — TDD is mandatory
 
-46. Follow TDD for domain behavior and bug fixes where a failing test can express the requirement: matcher rules, schema migrations, variant resolution, correction precedence, vault policy/crypto, fill planning.
-47. For a bug, reproduce the bug in a test/fixture before fixing when technically feasible.
-48. Test public behavior and invariants, not private implementation details.
-49. Keep most tests fast and browser-free. Use browser/E2E tests only where DOM/extension runtime behavior is the subject.
-50. Every new canonical alias/matcher rule should have representative positive and collision/negative fixtures.
-51. Crypto tests verify round-trip, wrong passphrase, tampering/authentication failure, version parsing, and unique-nonce handling—not only happy path.
-52. Do not weaken or delete a valid test merely to make CI green.
+46. **All production behavior changes must use TDD.** Feature work, bug fixes, domain changes, browser behavior, storage/migration behavior, matcher rules, vault behavior, and refactors that alter observable behavior must follow RED → GREEN → REFACTOR.
+47. **RED first:** before writing or changing production logic, add the smallest automated test or fixture that expresses the intended behavior and run it to confirm it fails for the expected reason. A test written after the implementation does not count as TDD.
+48. **GREEN second:** write only the minimum production code required to make the new failing test pass. Do not implement adjacent future cases during GREEN.
+49. **REFACTOR last:** improve structure only after the relevant tests are green, while keeping them green throughout the refactor.
+50. For every bug fix, reproduce the bug with a failing regression test before changing production code. If reproduction is genuinely impossible at the automated-test layer, document the concrete technical reason in the task/PR and use the nearest executable verification fixture before the fix.
+51. Do not use “too small”, “obvious change”, “MVP”, or “we will add tests later” as reasons to skip TDD. MVP scope may be rough; production behavior still requires a test-first cycle.
+52. Purely non-executable changes such as documentation, comments, repository metadata, or formatting do not require an artificial test. Build/tooling configuration changes require executable verification appropriate to that configuration, and production behavior introduced through configuration still requires a failing check first where technically possible.
+53. Test public behavior and invariants, not private implementation details.
+54. Keep most tests fast and browser-free. Use browser/integration/E2E tests only where DOM, WXT, Chrome/extension runtime, permissions, or browser messaging behavior is the subject.
+55. Every new canonical alias/matcher rule must have representative positive and collision/negative fixtures written before the rule implementation.
+56. Crypto changes require test-first coverage for round-trip, wrong passphrase, tampering/authentication failure, version parsing, and unique-nonce handling as relevant to the change—not only the happy path.
+57. Do not weaken, delete, skip, or rewrite a valid failing test merely to make implementation or CI green unless the requirement itself changed and the corresponding `.agent` requirement is updated in the same task.
+58. A task is not implementation-complete if its production behavior was written first and tests were added afterward. Correct the workflow by establishing the missing failing behavior test before further production changes.
 
 ## Documentation
 
-53. `.agent` is the home for agent/development operating documentation. Do not create random planning files in root/source folders.
-54. When a task changes a locked requirement, architecture boundary, release policy, or iteration status, update the relevant `.agent` document in the same task.
-55. Keep documentation aligned with actual behavior; remove obsolete decisions rather than stacking contradictory notes.
+59. `.agent` is the home for agent/development operating documentation. Do not create random planning files in root/source folders.
+60. When a task changes a locked requirement, architecture boundary, release policy, or iteration status, update the relevant `.agent` document in the same task.
+61. Keep documentation aligned with actual behavior; remove obsolete decisions rather than stacking contradictory notes.
 
 ## Completion
 
-56. Do not claim a task is complete until relevant tests, typecheck, lint, and build have actually been run successfully.
-57. Do not merge with unresolved required review comments or failing mandatory checks.
-58. A partially implemented future abstraction is not completion. Prefer a smaller finished vertical slice.
+62. Do not claim a task is complete until relevant tests, typecheck, lint, and build have actually been run successfully.
+63. Do not merge with unresolved required review comments or failing mandatory checks.
+64. A partially implemented future abstraction is not completion. Prefer a smaller finished vertical slice.
