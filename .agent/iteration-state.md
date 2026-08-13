@@ -4,25 +4,25 @@ This file is the single current-state tracker. Do not create permanent iteration
 
 ## Project status
 
-Phase: foundation review / pre-implementation
+Phase: Iteration 1 complete; Iteration 2 ready.
 
-Repository state: the `.agent` project operating system has been established. No application implementation has started yet.
+Repository state: the Fillio Chromium extension foundation is implemented. The canonical profile v1, local persistence, application variants, options/profile editor, toolbar popup/readiness, CI quality gates, and Chromium persistence smoke test are in place. The generic form analysis/autofill engine has not started.
 
 ## Decisions locked
 
 - Product: career-form autofill browser extension.
 - Desktop Chrome/Chromium first.
 - Local-first MVP; no account/backend/cloud sync.
-- WXT + TypeScript + React + Manifest V3 recommended.
-- Automatic form detection.
-- Floating in-page action + toolbar popup/detail UI.
+- WXT + TypeScript + React + Manifest V3.
+- Automatic form detection is planned for Iteration 2.
+- Floating in-page action + toolbar popup/detail UI; floating UI begins with the form engine, not Iteration 1.
 - Manual profile creation now; future CV import writes into the same canonical schema.
 - Complete canonical profile schema with progressive UI disclosure.
-- Sensitive Data Vault is opt-in, passphrase-protected, encrypted locally.
-- Vault auto-lock: 30 minutes of Fillio inactivity.
+- Sensitive Data Vault is opt-in, passphrase-protected, encrypted locally; implementation is deferred to Iteration 4.
+- Vault auto-lock target: 30 minutes of Fillio inactivity.
 - Sensitive disclosure requires explicit approval for the current site/fill operation.
 - One base profile + lightweight application variants.
-- Variant recommendation uses deterministic page/job keyword scoring in MVP.
+- Variant recommendation uses deterministic page/job keyword scoring when form/page analysis exists.
 - Field confidence: Ready / Needs review / Unknown.
 - User mapping corrections are remembered only for the relevant site/form.
 - Dynamic/multi-step forms trigger debounced automatic rescan, not automatic filling.
@@ -30,74 +30,67 @@ Repository state: the `.agent` project operating system has been established. No
 - No auto-submit.
 - No AI dependency in MVP.
 - Document metadata may be stored; actual file upload remains user-driven in MVP.
+- Production behavior changes use mandatory RED → GREEN → REFACTOR TDD.
 
 ## Iteration 0 — Project operating system
 
-Status: awaiting user review.
+Status: completed.
 
-Acceptance criteria:
-
-- requirements are explicit and internally consistent
-- architecture has clear domain/infrastructure/UI boundaries
-- code patterns prevent browser/DOM concerns leaking into domain logic
-- security rules define vault and sensitive-data behavior
-- git strategy prevents branch and commit spam
-- release strategy supports 0.x MVP releases without release-branch complexity
-- role/domain skills exist for extension, frontend UI, matching, security, future backend sync, and testing
-
-Internal documentation/self-consistency check is complete. Iteration 0 exits only after the user has reviewed/approved the foundation or requested changes have been incorporated.
+The user approved proceeding from the foundation into implementation. Requirements, architecture, code patterns, security rules, git/release strategy, TDD policy, and project skills are established in `.agent`.
 
 ## Iteration 1 — Extension skeleton + profile vertical slice
 
-Status: ready after Iteration 0 approval; not started.
+Status: completed.
 
-Goal: prove the chosen project structure and persistence path with the smallest end-to-end slice before building the form engine.
+Goal achieved: prove the project structure and persistence path with the smallest useful end-to-end slice before building the form engine.
 
-Scope:
+Delivered:
 
-1. Initialize WXT + TypeScript + React project.
-2. Configure strict TypeScript, lint/format, unit test runner, production build.
-3. Create only the module folders required by this iteration.
-4. Define canonical profile envelope `schemaVersion: 1` with the complete domain shape but implement UI for the first useful sections.
-5. Implement `ProfileRepository` with a `chrome.storage.local` adapter.
-6. Implement base profile + application-variant resolution as pure logic.
-7. Build options/profile UI for:
-   - basic identity (non-sensitive subset)
-   - contact
-   - links
-   - experience
-   - education
-   - skills
-   - variant creation/selection
-8. Add popup shell that shows profile readiness and opens profile settings.
-9. Add migrations boundary even though only v1 exists; do not invent migrations yet.
-10. Unit-test schema parsing, persistence serialization, and variant resolution.
+1. WXT + React + strict TypeScript Manifest V3 project.
+2. Reproducible npm lockfile, lint, Prettier, Vitest, WXT test integration, build, packaging, and GitHub Actions CI.
+3. Versioned canonical `schemaVersion: 1` profile envelope with runtime validation and explicit unsupported-version handling.
+4. Complete normal career-profile domain shape plus a separate sensitive-profile domain shape; sensitive values are not persisted in the normal profile envelope.
+5. `ProfileRepository` application port and `ChromeProfileRepository` using `browser.storage.local`.
+6. Pure base-profile + lightweight application-variant resolution.
+7. Options/profile editor for non-sensitive identity, contact, links, experience, education, skills, and application variants.
+8. Toolbar popup with deterministic profile-readiness summary and variant visibility.
+9. Chromium smoke verification that loads the unpacked built extension, saves profile data, restarts the browser context, verifies persisted values, and verifies popup readiness.
+10. Generated-manifest verification: Manifest V3, popup/options entrypoints present, and extension permissions restricted to `storage` for this iteration.
 
-Non-scope:
+TDD/verification evidence:
+
+- Schema behavior was introduced RED-first, then implemented GREEN and refactored.
+- Variant resolution and local repository behavior were introduced RED-first, then implemented GREEN.
+- Profile editor behavior was introduced RED-first, then implemented GREEN.
+- Popup/readiness behavior was introduced RED-first, then implemented GREEN.
+- Chromium smoke verification passes against the built extension and confirms persistence across browser restart.
+- Unit/UI tests, typecheck, lint, format check, production build, manifest invariant check, browser smoke, and extension packaging have all passed in CI.
+
+Acceptance criteria status:
+
+- extension loads unpacked in Chromium: verified by browser smoke test
+- profile can be created, edited, reloaded, and remains after browser restart: verified by UI/repository tests and Chromium restart smoke test
+- variant stores only overrides and resolves correctly with base profile: verified
+- invalid persisted payload cannot silently corrupt UI state: verified
+- domain modules import no Chrome/WXT/React/DOM APIs: architecture preserved and type/lint/build gates pass
+- tests/build/typecheck/lint/format pass: verified
+- no unnecessary extension permissions: generated manifest verified as `storage` only
+
+Non-scope remained out of Iteration 1:
 
 - DOM scanner/matcher/filler
 - floating page UI
 - sensitive vault implementation
-- backend
+- backend/cloud sync
 - AI
 - document binary storage
 - ATS-specific code
 
-Acceptance criteria:
-
-- extension loads unpacked in Chromium
-- profile can be created, edited, reloaded, and remains after browser restart
-- variant stores only overrides and resolves correctly with base profile
-- invalid persisted payload cannot silently corrupt UI state
-- domain modules import no Chrome/WXT/React APIs
-- test/build/typecheck commands pass
-- no unnecessary extension permissions
-
 ## Iteration 2 — Generic form analysis and safe autofill
 
-Status: queued.
+Status: ready; not started.
 
-Goal: first useful autofill on representative static forms.
+Goal: first useful autofill on representative static career forms.
 
 Expected scope:
 
