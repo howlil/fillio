@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 
 import { prepareFillPlan } from '../../application/prepare-fill/prepare-fill-plan';
 import { createEmptyStoredProfile } from '../profile/create-empty-profile';
-import type { FieldContext } from './field-context';
-import { createFieldFingerprint } from './fingerprints';
 import { matchField } from '../matching/match-field';
 import { normalizeFieldText } from '../matching/normalize-field-text';
+import type { FieldContext } from './field-context';
+import { createFieldFingerprint } from './fingerprints';
 
 function field(overrides: Partial<FieldContext>): FieldContext {
   const seed = {
