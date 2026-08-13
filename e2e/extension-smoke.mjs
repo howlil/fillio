@@ -181,7 +181,7 @@ try {
   );
 
   await page.goto(`chrome-extension://${extensionId}/${popupPath}`);
-  await expect(page.getByText('2 of 6 profile sections ready')).toBeVisible();
+  await expect(page.getByText('3 of 6 profile sections ready')).toBeVisible();
 
   await page.goto(fixture.url);
   await expect(page.locator('fillio-form-assistant')).toBeAttached();
@@ -191,12 +191,13 @@ try {
 
   const serviceWorker = await getServiceWorker(context);
   const summary = await serviceWorker.evaluate(async () => {
-    const [tab] = await chrome.tabs.query({
+    const extensionApi = globalThis.chrome;
+    const [tab] = await extensionApi.tabs.query({
       active: true,
       currentWindow: true,
     });
     if (tab?.id === undefined) throw new Error('Active fixture tab not found');
-    return chrome.tabs.sendMessage(tab.id, {
+    return extensionApi.tabs.sendMessage(tab.id, {
       type: 'fillio:get-page-analysis',
     });
   });
@@ -221,8 +222,8 @@ try {
   await expect(page.getByLabel('Resume')).toHaveValue('');
   await expect(page.getByLabel('Favorite color')).toHaveValue('');
 
-  expect(await page.evaluate(() => window.__submitCount)).toBe(0);
-  expect(await page.evaluate(() => window.__eventLog)).toEqual(
+  expect(await page.evaluate(() => globalThis.__submitCount)).toBe(0);
+  expect(await page.evaluate(() => globalThis.__eventLog)).toEqual(
     expect.arrayContaining([
       'first_name:input',
       'first_name:change',
