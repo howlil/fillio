@@ -4,9 +4,9 @@ This file is the single current-state tracker. Do not create permanent iteration
 
 ## Project status
 
-Phase: Iteration 3 complete; Iteration 4 ready.
+Phase: Iteration 4 in progress; encrypted vault foundation complete, runtime/UI disclosure flow pending.
 
-Repository state: the Fillio Chromium extension has a verified local-first profile foundation, generic form analysis and explicit safe autofill, plus dynamic/multi-step re-analysis and scoped user correction memory. It can detect representative career-form controls, map supported factual fields deterministically, expose Ready / Needs review / Unknown results, remember an explicit mapping or ignore decision for the exact site/form/field, re-analyze relevant DOM changes without filling automatically, fill only Ready values after an explicit user action, and surface current-page analysis through the toolbar popup.
+Repository state: the Fillio Chromium extension has a verified local-first profile foundation, generic form analysis and explicit safe autofill, dynamic/multi-step re-analysis, scoped user correction memory, and an encrypted-at-rest Sensitive Data Vault foundation. Vault data has a versioned envelope, authenticated local encryption, validated decryption, encrypted browser persistence, and a generic memory-only inactivity session. The vault is not yet connected to the background runtime, options UI, or per-site sensitive disclosure/fill flow, so Iteration 4 is not complete.
 
 ## Decisions locked
 
@@ -18,9 +18,12 @@ Repository state: the Fillio Chromium extension has a verified local-first profi
 - Floating in-page action + toolbar popup/detail UI.
 - Manual profile creation now; future CV import writes into the same canonical schema.
 - Complete canonical profile schema with progressive UI disclosure.
-- Sensitive Data Vault is opt-in, passphrase-protected, encrypted locally; implementation begins in Iteration 4.
-- Vault auto-lock target: 30 minutes of Fillio inactivity.
-- Sensitive disclosure requires explicit approval for the current site/fill operation.
+- Sensitive Data Vault is opt-in, passphrase-protected, encrypted locally.
+- Vault crypto baseline: PBKDF2-HMAC-SHA-256 with 600,000 iterations, random 16-byte salt, AES-256-GCM, fresh random 12-byte IV per encryption, 128-bit tag, and stable version AAD.
+- Vault key material is non-extractable and intended to live only in the background in-memory unlock session once runtime wiring is introduced.
+- Vault auto-lock target: 30 minutes of Fillio vault inactivity; browser service-worker suspension may lock sooner.
+- Sensitive disclosure requires explicit approval for the current site/fill operation; unlock alone is never fill approval.
+- Government-ID and other sensitive form fields remain fail-closed/manual until the dedicated sensitive disclosure path is implemented and verified.
 - One base profile + lightweight application variants.
 - Variant recommendation uses deterministic page/job keyword scoring when page-level recommendation work is introduced.
 - Field confidence: Ready / Needs review / Unknown.
@@ -124,18 +127,38 @@ Final Iteration 3 branch verification: 57 unit/UI tests plus typecheck, lint, fo
 
 ## Iteration 4 — Sensitive Data Vault
 
-Status: ready.
+Status: in progress.
 
-Expected scope:
+Completed foundation:
 
-- opt-in vault setup
-- PBKDF2/AES-GCM envelope
-- unlock session
-- 30-minute Fillio-inactivity auto-lock
-- sensitive field classification
-- per-site fill disclosure summary/approval
-- reset flow with destructive confirmation
-- security-focused tests
+1. Strict versioned encrypted vault envelope with no plaintext profile/passphrase fields.
+2. Complete empty `SensitiveProfile` factory validated against the existing domain schema.
+3. PBKDF2-HMAC-SHA-256 key derivation at 600,000 iterations and non-extractable AES-256-GCM key material.
+4. AES-GCM authenticated encryption with stable version AAD, random 16-byte salt, and fresh random 12-byte IV.
+5. Sensitive profile serialization/deserialization is schema-validated before encryption and after authenticated decryption.
+6. Wrong passphrase and ciphertext tampering fail closed through the vault unlock error contract.
+7. Re-encryption preserves KDF salt, rotates IV, and updates metadata.
+8. `VaultRepository` port plus `ChromeVaultRepository` storing only the validated encrypted envelope under `fillio.vault`.
+9. Generic memory-only `VaultSession` with explicit lock, explicit activity refresh, and 30-minute idle expiry.
+10. Security regression tests verify no representative plaintext/passphrase is present in the envelope, independent setup salt/IV randomness, authenticated tamper rejection, invalid decrypted-profile rejection, correct/wrong passphrase behavior, and encrypted storage load/save/delete.
+
+Current verification evidence:
+
+- 20 test files / 76 tests pass.
+- Typecheck, lint, Prettier check, production build, generated-manifest invariants, legacy Chromium E2E journeys, and extension packaging pass in read-only CI.
+- Manifest permission surface remains unchanged from Iteration 3.
+
+Remaining before Iteration 4 can be called complete:
+
+- background runtime broker owning `VaultSession<CryptoKey>`
+- typed runtime messages/client for status/setup/unlock/lock/load/save/reset
+- options UI for opt-in setup, unlock, edit/save, explicit lock, and destructive reset
+- dedicated sensitive field classification/fill plan without weakening current fail-closed guards
+- per-site disclosure/approval UI and one-operation sensitive fill
+- Chromium Iteration 4 acceptance covering encrypted storage, lock/unlock, explicit approval, no auto-fill, and zero submit
+- final diff/security review, PR, squash merge, and fresh `master` CI
+
+Do not merge this iteration while any remaining item above is incomplete.
 
 ## Iteration 5 — MVP hardening and release
 
