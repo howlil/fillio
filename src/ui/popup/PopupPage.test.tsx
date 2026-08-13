@@ -65,4 +65,21 @@ describe('PopupPage', () => {
     expect(screen.getByText('1 application variant')).toBeTruthy();
     expect(screen.getByText('Backend Engineer')).toBeTruthy();
   });
+
+  it('shows the current page form analysis summary', async () => {
+    render(
+      <PopupPage
+        repository={createRepository(null)}
+        openOptions={vi.fn()}
+        pageSummary={{ ready: 2, needsReview: 1, unknown: 3, total: 6 }}
+      />,
+    );
+
+    expect(
+      await screen.findByRole('heading', { name: 'Current page' }),
+    ).toBeTruthy();
+    expect(screen.getByText('2 ready')).toBeTruthy();
+    expect(screen.getByText('1 needs review')).toBeTruthy();
+    expect(screen.getByText('3 unknown')).toBeTruthy();
+  });
 });

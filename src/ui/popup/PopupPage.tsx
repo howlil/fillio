@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import type { PageAnalysisSummary } from '../../application/forms/analyze-field-contexts';
 import type { ProfileRepository } from '../../application/profile/profile-repository';
 import { calculateProfileReadiness } from '../../application/profile/profile-readiness';
 import { createEmptyStoredProfile } from '../../domain/profile/create-empty-profile';
@@ -9,9 +10,14 @@ import './popup.css';
 type PopupPageProps = {
   repository: ProfileRepository;
   openOptions: () => void | Promise<void>;
+  pageSummary?: PageAnalysisSummary | null;
 };
 
-export function PopupPage({ repository, openOptions }: PopupPageProps) {
+export function PopupPage({
+  repository,
+  openOptions,
+  pageSummary,
+}: PopupPageProps) {
   const [profile, setProfile] = useState<StoredProfileEnvelope | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
@@ -67,6 +73,19 @@ export function PopupPage({ repository, openOptions }: PopupPageProps) {
           {readiness.completed} of {readiness.total} profile sections ready
         </p>
       </header>
+
+      <section className="popup-card">
+        <h2>Current page</h2>
+        {pageSummary === null || pageSummary === undefined ? (
+          <p className="popup-muted popup-empty">No supported form detected.</p>
+        ) : (
+          <div className="page-summary" aria-label="Current page form analysis">
+            <span>{pageSummary.ready} ready</span>
+            <span>{pageSummary.needsReview} needs review</span>
+            <span>{pageSummary.unknown} unknown</span>
+          </div>
+        )}
+      </section>
 
       <section className="popup-card">
         <div className="popup-row">
