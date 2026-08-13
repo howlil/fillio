@@ -19,6 +19,8 @@ jobs:
           node-version: '24'
       - name: Install dependencies
         run: npm install
+      - name: Format source
+        run: npm run format
       - name: Test
         run: npm test
       - name: Typecheck
@@ -27,7 +29,7 @@ jobs:
         run: npm run lint
       - name: Build
         run: npm run build
-      - name: Verify manifest permissions
+      - name: Verify generated extension
         run: |
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
@@ -37,15 +39,27 @@ jobs:
           if (JSON.stringify(permissions) !== JSON.stringify(['storage'])) {
             throw new Error(`Unexpected permissions: ${JSON.stringify(permissions)}`);
           }
+          if (!manifest.action?.default_popup) throw new Error('Popup entrypoint missing from manifest');
+          if (!manifest.options_ui?.page && !manifest.options_page) throw new Error('Options entrypoint missing from manifest');
           NODE
       - name: Package extension
         run: npm run zip
       - name: Format check
         run: npm run format:check
-      - name: Upload generated lockfile
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Upload formatted workspace
+        uses: actions/upload-artifact@v7
         with:
-          name: package-lock
-          path: package-lock.json
+          name: formatted-workspace
+          path: |
+            src
+            entrypoints
+            package.json
+            package-lock.json
+            tsconfig.json
+            wxt.config.ts
+            vitest.config.ts
+            eslint.config.mjs
+            .prettierrc.json
+            .gitignore
+            .prettierignore
           if-no-files-found: error
