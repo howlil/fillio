@@ -42,6 +42,18 @@ describe('Web Crypto sensitive vault', () => {
     );
   });
 
+  it('unlocks with the correct passphrase and returns a usable key', async () => {
+    const profile = populatedProfile();
+    const passphrase = 'local-vault-passphrase-2026';
+    const { envelope } = await createEncryptedVault(profile, passphrase);
+
+    const key = await unlockVaultKey(envelope, passphrase);
+
+    await expect(decryptSensitiveProfile(envelope, key)).resolves.toEqual(
+      profile,
+    );
+  });
+
   it('rejects a wrong passphrase with one fail-closed error type', async () => {
     const { envelope } = await createEncryptedVault(
       populatedProfile(),
