@@ -11,7 +11,9 @@ const optionsPath = manifest.options_ui?.page ?? manifest.options_page;
 const popupPath = manifest.action?.default_popup;
 
 if (!optionsPath || !popupPath) {
-  throw new Error('Expected options and popup entrypoints in generated manifest');
+  throw new Error(
+    'Expected options and popup entrypoints in generated manifest',
+  );
 }
 
 async function launchExtension(userDataDir) {
@@ -31,7 +33,9 @@ async function getExtensionId(context) {
 
   const extensionId = serviceWorker.url().split('/')[2];
   if (!extensionId) {
-    throw new Error(`Could not determine extension id from ${serviceWorker.url()}`);
+    throw new Error(
+      `Could not determine extension id from ${serviceWorker.url()}`,
+    );
   }
 
   return extensionId;
