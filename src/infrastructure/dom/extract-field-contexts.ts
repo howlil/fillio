@@ -106,7 +106,7 @@ function formFingerprint(control: LiveControl): string {
 
   if (identity.every((part) => part === '')) {
     const forms = Array.from(control.ownerDocument.querySelectorAll('form'));
-    identity.push(`index:${forms.indexOf(form)}`);
+    return `form_${hashText([...identity, `index:${forms.indexOf(form)}`].join('::'))}`;
   }
 
   return `form_${hashText(identity.join('::'))}`;
