@@ -19,7 +19,10 @@ describe('PopupPage', () => {
     const openOptions = vi.fn().mockResolvedValue(undefined);
 
     render(
-      <PopupPage repository={createRepository(null)} openOptions={openOptions} />,
+      <PopupPage
+        repository={createRepository(null)}
+        openOptions={openOptions}
+      />,
     );
 
     expect(

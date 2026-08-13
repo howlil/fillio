@@ -2,9 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { browser } from 'wxt/browser';
 import { fakeBrowser } from 'wxt/testing/fake-browser';
 
-import {
-  createEmptyStoredProfile,
-} from '../../domain/profile/create-empty-profile';
+import { createEmptyStoredProfile } from '../../domain/profile/create-empty-profile';
 import {
   ChromeProfileRepository,
   PROFILE_STORAGE_KEY,

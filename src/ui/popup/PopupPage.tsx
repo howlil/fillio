@@ -72,7 +72,8 @@ export function PopupPage({ repository, openOptions }: PopupPageProps) {
         <div className="popup-row">
           <span>Application profiles</span>
           <strong>
-            {variantCount} application {variantCount === 1 ? 'variant' : 'variants'}
+            {variantCount} application{' '}
+            {variantCount === 1 ? 'variant' : 'variants'}
           </strong>
         </div>
         {profile.variants.length > 0 ? (

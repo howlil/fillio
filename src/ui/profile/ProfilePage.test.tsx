@@ -5,7 +5,9 @@ import type { ProfileRepository } from '../../application/profile/profile-reposi
 import { createEmptyStoredProfile } from '../../domain/profile/create-empty-profile';
 import { ProfilePage } from './ProfilePage';
 
-function createRepository(initial: Awaited<ReturnType<ProfileRepository['load']>>) {
+function createRepository(
+  initial: Awaited<ReturnType<ProfileRepository['load']>>,
+) {
   const load = vi.fn().mockResolvedValue(initial);
   const save = vi.fn().mockResolvedValue(undefined);
   const repository: ProfileRepository = { load, save };
@@ -105,9 +107,8 @@ describe('ProfilePage', () => {
 
     render(<ProfilePage repository={repository} />);
 
-    const firstName = await screen.findByLabelText<HTMLInputElement>(
-      'First name',
-    );
+    const firstName =
+      await screen.findByLabelText<HTMLInputElement>('First name');
 
     expect(firstName.value).toBe('Persisted');
   });

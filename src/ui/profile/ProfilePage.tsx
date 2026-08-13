@@ -181,7 +181,8 @@ export function ProfilePage({ repository }: ProfilePageProps) {
               value={baseProfile.personal.legalName.last}
               onChange={(event) =>
                 changeProfile((draft) => {
-                  draft.baseProfile.personal.legalName.last = event.target.value;
+                  draft.baseProfile.personal.legalName.last =
+                    event.target.value;
                 })
               }
             />
@@ -333,7 +334,8 @@ export function ProfilePage({ repository }: ProfilePageProps) {
                       changeProfile((draft) => {
                         const item =
                           draft.baseProfile.professional.experiences[index];
-                        if (item !== undefined) item.company = event.target.value;
+                        if (item !== undefined)
+                          item.company = event.target.value;
                       })
                     }
                   />
@@ -419,7 +421,8 @@ export function ProfilePage({ repository }: ProfilePageProps) {
                       changeProfile((draft) => {
                         const item =
                           draft.baseProfile.professional.education[index];
-                        if (item !== undefined) item.degree = event.target.value;
+                        if (item !== undefined)
+                          item.degree = event.target.value;
                       })
                     }
                   />
@@ -523,7 +526,8 @@ export function ProfilePage({ repository }: ProfilePageProps) {
               value={profile.preferences.defaultVariantId ?? ''}
               onChange={(event) =>
                 changeProfile((draft) => {
-                  draft.preferences.defaultVariantId = event.target.value || null;
+                  draft.preferences.defaultVariantId =
+                    event.target.value || null;
                 })
               }
             >
