@@ -71,11 +71,11 @@ describe('Web Crypto sensitive vault', () => {
       populatedProfile(),
       'local-vault-passphrase-2026',
     );
+    const lastNibble = envelope.ciphertext.at(-1);
     const tampered = {
       ...envelope,
       ciphertext:
-        envelope.ciphertext.slice(0, -1) +
-        (envelope.ciphertext.endsWith('A') ? 'B' : 'A'),
+        envelope.ciphertext.slice(0, -1) + (lastNibble === '0' ? '1' : '0'),
     };
 
     await expect(decryptSensitiveProfile(tampered, key)).rejects.toMatchObject(
