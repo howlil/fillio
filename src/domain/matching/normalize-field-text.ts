@@ -1,3 +1,9 @@
-export function normalizeFieldText(_value: string): string {
-  throw new Error('Not implemented');
+export function normalizeFieldText(value: string): string {
+  return value
+    .normalize('NFKD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
 }
