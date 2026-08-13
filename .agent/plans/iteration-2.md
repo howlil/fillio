@@ -1,12 +1,14 @@
 # Iteration 2 — Generic Form Analysis and Safe Autofill
 
-Execution mode: one short-lived task branch. Production behavior follows mandatory RED → GREEN → REFACTOR.
+Status: completed and verified.
 
-Goal: detect representative static career forms, extract serializable field context, map common factual fields deterministically, produce an explicit fill plan, and fill only user-authorized Ready fields without submitting the page.
+Execution mode: one short-lived task branch. Production behavior followed mandatory RED → GREEN → REFACTOR.
 
-## Scope
+Goal achieved: detect representative static career forms, extract serializable field context, map common factual fields deterministically, produce an explicit fill plan, and fill only user-authorized Ready fields without submitting the page.
 
-1. Serializable form/field domain contracts and fingerprints.
+## Delivered scope
+
+1. Serializable form/field domain contracts and stable semantic fingerprints.
 2. DOM scanner/extractor for text-like input, textarea, select, checkbox, radio, date, and file detection.
 3. Normalization + Indonesian/English alias catalog for common factual career fields.
 4. Deterministic matcher with Ready / Needs review / Unknown bands and explicit reasons.
@@ -15,9 +17,9 @@ Goal: detect representative static career forms, extract serializable field cont
 7. Generic DOM filler using native value setters and input/change events.
 8. Content-script orchestration and isolated Shadow DOM floating control.
 9. Popup current-page analysis summary through extension messaging.
-10. Representative fixture corpus and Chromium end-to-end smoke verification.
+10. Representative static career-form fixture and Chromium end-to-end verification.
 
-## Non-scope
+## Non-scope preserved
 
 - dynamic MutationObserver rescan pipeline (Iteration 3)
 - correction memory (Iteration 3)
@@ -27,47 +29,69 @@ Goal: detect representative static career forms, extract serializable field cont
 - automatic file upload
 - automatic submit/next/apply clicks
 
-## Acceptance criteria
+## Acceptance evidence
 
-- automatic content script detects a representative static career form
-- common name/email/phone/location/LinkedIn/GitHub/headline fields are recognized deterministically
-- high-confidence safe mappings can be filled only after explicit Fill action
+- automatic content script detects the representative static career form in Chromium
+- common name/email/phone/location/LinkedIn/GitHub fields are recognized deterministically
+- high-confidence safe mappings fill only after explicit Fill action
 - review/unknown/file/sensitive fields are not silently filled
-- select/checkbox/radio/date filling is covered by deterministic tests where supported in the fixture corpus
-- filling dispatches normal browser events and does not submit the form
-- injected UI is isolated in Shadow DOM and stays hidden when no useful fields are recognized
-- popup can show current-page Ready / Needs review / Unknown counts
-- domain matcher/fill-plan logic contains no DOM/browser imports
-- generated manifest permissions remain minimal and justified
-- unit/UI tests, typecheck, lint, format, build, manifest checks, Chromium E2E, and package all pass
+- text/textarea/select/checkbox/radio/date filling primitives have deterministic adapter tests
+- filling dispatches normal browser events and the Chromium fixture records zero form submissions
+- in-page UI is mounted through WXT Shadow DOM UI infrastructure and remains absent when no useful fields are recognized
+- popup current-page Ready / Needs review / Unknown rendering is unit tested; real content-script summary messaging is Chromium verified
+- domain matcher/fill-plan contracts contain no DOM/browser objects
+- generated manifest keeps normal extension permissions at `storage`, has no separate `host_permissions`, and explicitly verifies only HTTP/HTTPS content-script matches
+- 43 unit/UI tests, typecheck, lint, format, production build, manifest checks, Chromium E2E, and package all pass in read-only CI
 
-## TDD slices
+## TDD execution record
 
 ### Slice 1 — form contracts, normalization, fingerprints
-RED first for serializable FieldContext, normalization behavior, and stable fingerprints. GREEN with pure domain modules.
+
+RED: tests introduced serializable context, normalization, and stable fingerprint expectations before implementation.
+
+GREEN: pure domain contracts, normalization, and semantic fingerprinting implemented.
 
 ### Slice 2 — deterministic matcher
-RED first for exact aliases, structured heuristic collisions, review state, unknown state, and sensitive fail-closed behavior. GREEN with centralized alias/config tables.
+
+RED: exact/common aliases, bilingual mapping, structured signals, ambiguity, sensitive fail-closed behavior, and unknown cases failed before implementation.
+
+GREEN: centralized deterministic aliases/config and conservative matcher implemented.
 
 ### Slice 3 — resolved value lookup + fill plan
-RED first for supported canonical values, missing values, review/unknown exclusion, file detection, and sensitive exclusion. GREEN with pure application/domain logic.
+
+RED: fill-plan test required available Ready values while excluding review, unknown, and missing-profile values.
+
+GREEN: explicit fill-plan generation implemented without DOM mutation.
 
 ### Slice 4 — DOM extractor + filler
-RED first with jsdom fixtures for labels/name/id/placeholder/aria/options and native event behavior for text/select/checkbox/radio/date. GREEN in infrastructure/dom only.
+
+RED: extraction/filling tests first failed on missing modules and then `Not implemented` skeletons.
+
+GREEN: labels, options, radio grouping, form fingerprints, native setters, event dispatch, select/checkbox/radio/date behavior, per-field failure isolation, and no-submit behavior implemented.
 
 ### Slice 5 — content script + floating UI + popup messaging
-RED first for analysis summary/fill action orchestration. GREEN with WXT content script running in isolated world and a Shadow DOM mount.
+
+RED: page-analysis, floating explicit-fill action, and popup current-page summary tests failed before implementation.
+
+GREEN: pure analysis orchestration, isolated floating React UI, popup message contract, and content-script composition implemented.
 
 ### Slice 6 — Chromium acceptance corpus
-Build representative static career-form fixtures and verify extension detection, isolated floating control, explicit fill, no-submit behavior, popup summary, and persistence/profile integration in real Chromium.
 
-## Implementation constraints
+RED 1: real Chromium exposed synchronous content-script messaging returning `undefined`.
+
+GREEN 1: listener changed to asynchronous promise response.
+
+Fixture correction: `display_name` was correctly interpreted as a preferred-name signal and therefore was not a valid ambiguity fixture. It was replaced with truly generic `name` metadata; matcher behavior/assertions were not weakened.
+
+GREEN final: Chromium verifies persisted profile integration, automatic form detection, Ready / Needs review / Unknown counts, explicit safe filling, select mapping, unchanged sensitive/file/unknown fields, browser events, and zero form submissions.
+
+## Implementation constraints verified
 
 - raw DOM elements never cross into domain/application matching contracts
-- content script does not own profile persistence rules; it reads through the existing repository boundary
+- content script reads profile data through the existing repository boundary
 - matching never mutates DOM
 - filler never decides semantics
 - no site hostname branches
 - no network calls
 - no auto-submit
-- broad content-script match scope, if required for automatic detection, is the only new host-access surface and must be asserted in manifest verification
+- broad static content-script matching is limited to HTTP/HTTPS and is asserted in generated-manifest CI
