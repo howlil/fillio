@@ -7,7 +7,7 @@ const encoder = new TextEncoder();
 
 export async function deriveVaultKey(
   phrase: string,
-  salt: Uint8Array,
+  salt: Uint8Array<ArrayBuffer>,
 ): Promise<CryptoKey> {
   const material = await crypto.subtle.importKey(
     'raw',
