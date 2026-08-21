@@ -2,6 +2,48 @@
 
 These rules are defaults for all implementation work unless a requirement explicitly overrides them.
 
+## Delivery operating model
+
+Optimize for **fast verified delivery**, not raw coding activity. The preferred loop is:
+
+```text
+goal
+  -> acceptance criteria
+  -> RED
+  -> GREEN
+  -> REFACTOR
+  -> focused verification
+  -> PR / CI
+  -> review and fixes on the same branch
+  -> merge
+  -> observe
+```
+
+- Keep work in the smallest coherent vertical slice that produces useful behavior or removes a measured risk.
+- Keep WIP low. One agent should normally drive one coherent task end-to-end before starting unrelated implementation work.
+- Prefer the shortest safe feedback loop: focused tests during development, then broader gates according to risk before merge.
+- Stay on the same task branch and PR through RED/GREEN cycles, CI failures, review fixes, and small same-task follow-ups.
+- Do not over-plan trivial low-risk work. Use deeper design work for storage-schema changes, browser permissions, vault/crypto, privacy/data-flow boundaries, broad matcher behavior, and release changes.
+- Apply YAGNI aggressively. Delivery speed never justifies weakening correctness, privacy, sensitive-data handling, migration safety, or explicit-user-action guarantees.
+
+## Delivery metrics
+
+Use metrics to improve the engineering system, never to score developer/agent activity.
+
+Prefer:
+
+- cycle time
+- PR lead time
+- CI feedback time
+- change failure rate
+- escaped defect rate
+- rework rate
+- flaky-test rate
+- WIP age
+- release/deployment frequency when a reliable release signal exists
+
+Commit count, branch count, PR count, lines changed, and generated-code volume are **not productivity KPIs**. A fast change with high rework, regressions, or privacy/correctness failures is unhealthy delivery. When flow degrades, inspect scope size, CI latency, flaky tests, architecture coupling, review latency, or unclear acceptance criteria before pushing more work into the system.
+
 ## Product and scope
 
 1. Build the smallest end-to-end behavior required by the current iteration.
@@ -83,6 +125,16 @@ These rules are defaults for all implementation work unless a requirement explic
 56. Crypto changes require test-first coverage for round-trip, wrong passphrase, tampering/authentication failure, version parsing, and unique-nonce handling as relevant to the change—not only the happy path.
 57. Do not weaken, delete, skip, or rewrite a valid failing test merely to make implementation or CI green unless the requirement itself changed and the corresponding `.agent` requirement is updated in the same task.
 58. A task is not implementation-complete if its production behavior was written first and tests were added afterward. Correct the workflow by establishing the missing failing behavior test before further production changes.
+
+### Verification by risk
+
+All executable behavior still follows TDD; the tiers below decide how far verification expands before merge.
+
+- **Low risk:** docs, repository metadata, formatting, or behavior-preserving local refactor. Run the smallest relevant static/focused checks; do not invent expensive tests with no signal.
+- **Medium risk:** matcher/scanner/extractor/filler behavior, correction memory, popup/options UI behavior, browser messaging, or normal storage behavior. Run focused unit/component tests plus the relevant browser/integration journey when the runtime boundary is touched.
+- **High risk:** vault/crypto, sensitive disclosure, browser permissions, schema migration/backward compatibility, destructive reset, privacy/data-flow changes, or broad autofill safety invariants. Require focused RED/GREEN evidence, negative-path/security coverage, migration/backward-compatibility verification when relevant, browser acceptance for the affected critical journey, and the full mandatory CI suite.
+
+Treat flaky tests and slow CI as delivery-system defects. Do not normalize rerunning nondeterministic gates until they happen to pass.
 
 ## Documentation
 
