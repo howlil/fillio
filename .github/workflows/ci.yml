@@ -26,20 +26,24 @@ jobs:
         id: scope
         shell: bash
         run: |
-          runtime=true
+          runtime=false
+          landing=false
 
-          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-            runtime=false
-            while IFS= read -r file; do
-              [[ -z "$file" ]] && continue
-              case "$file" in
-                *.md|.agents/*) ;;
-                *) runtime=true; break ;;
-              esac
-            done < <(git diff --name-only HEAD^1 HEAD)
-          fi
+          while IFS= read -r file; do
+            [[ -z "$file" ]] && continue
+
+            if [[ "$file" == landing/* ]]; then
+              landing=true
+            fi
+
+            case "$file" in
+              *.md|.agents/*) ;;
+              *) runtime=true ;;
+            esac
+          done < <(git diff --name-only HEAD^1 HEAD)
 
           echo "runtime=$runtime" >> "$GITHUB_OUTPUT"
+          echo "landing=$landing" >> "$GITHUB_OUTPUT"
 
       - uses: pnpm/action-setup@v5
         if: steps.scope.outputs.runtime == 'true'
@@ -86,6 +90,16 @@ jobs:
           fi
 
           exit "$status"
+
+      - name: Install landing dependencies
+        if: steps.scope.outputs.landing == 'true'
+        working-directory: landing
+        run: pnpm install --frozen-lockfile
+
+      - name: Build landing
+        if: steps.scope.outputs.landing == 'true'
+        working-directory: landing
+        run: pnpm build
 
       - name: Verify generated extension
         if: steps.scope.outputs.runtime == 'true'
