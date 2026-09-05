@@ -75,6 +75,7 @@ html {
 body {
   margin: 0;
   min-width: 320px;
+  overflow-x: hidden;
   background: var(--jf-background);
   color: var(--jf-ink);
   font-family: var(--font-sans);
@@ -91,6 +92,217 @@ body {
   outline-offset: 3px;
 }
 
+.hero-lines {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-lines::before,
+.hero-lines::after {
+  position: absolute;
+  content: '';
+  border: 1px solid var(--jf-border);
+  opacity: 0.7;
+}
+
+.hero-lines::before {
+  top: 8%;
+  right: -13%;
+  width: min(58vw, 780px);
+  aspect-ratio: 1.35;
+  border-radius: 34px;
+  transform: rotate(-7deg);
+}
+
+.hero-lines::after {
+  top: 18%;
+  right: -5%;
+  width: min(47vw, 630px);
+  aspect-ratio: 1.25;
+  border-radius: 28px;
+  transform: rotate(4deg);
+}
+
+.hero-lines-bottom::before {
+  top: auto;
+  right: auto;
+  bottom: -42%;
+  left: -15%;
+}
+
+.hero-lines-bottom::after {
+  top: auto;
+  right: auto;
+  bottom: -34%;
+  left: -5%;
+}
+
+.hero-enter {
+  animation: hero-enter 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--hero-delay, 0ms);
+}
+
+.premium-button {
+  transition:
+    transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.premium-button:hover {
+  transform: translateY(-1px);
+  border-color: var(--jf-ink);
+  box-shadow: 0 8px 22px rgb(0 0 0 / 0.08);
+}
+
+.premium-stage-wrap {
+  --stage-x: 0;
+  --stage-y: 0;
+  position: relative;
+  transform: perspective(1400px)
+    rotateX(calc(var(--stage-y) * -0.8deg))
+    rotateY(calc(var(--stage-x) * 0.9deg));
+  transform-style: preserve-3d;
+  transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.premium-stage {
+  overflow: hidden;
+  border: 1px solid var(--jf-border-strong);
+  border-radius: 22px;
+  background: var(--jf-surface);
+  box-shadow:
+    0 30px 80px rgb(0 0 0 / 0.11),
+    0 1px 0 rgb(255 255 255 / 0.45) inset;
+  transform: translateZ(0);
+}
+
+.assistant-float {
+  animation: assistant-float 7s ease-in-out infinite;
+}
+
+.stage-caption {
+  animation: caption-float 8s ease-in-out 420ms infinite;
+}
+
+.showcase-step {
+  opacity: 0.48;
+  transform: translateX(0);
+  transition:
+    opacity 320ms ease,
+    transform 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 320ms ease;
+}
+
+.showcase-step[aria-current='step'] {
+  opacity: 1;
+  transform: translateX(7px);
+  border-color: var(--jf-border-strong);
+}
+
+.showcase-panel {
+  position: absolute;
+  inset: 44px 0 0;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0;
+  filter: blur(4px);
+  transform: translateY(20px) scale(0.985);
+  transform-origin: 50% 65%;
+  pointer-events: none;
+  transition:
+    opacity 420ms ease,
+    filter 560ms ease,
+    transform 560ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.showcase-panel[data-active='true'] {
+  z-index: 1;
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0) scale(1);
+}
+
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes assistant-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes caption-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(4px, -3px, 0);
+  }
+}
+
+@keyframes section-reveal {
+  from {
+    opacity: 0.45;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  [data-reveal] {
+    animation: section-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 8% cover 32%;
+  }
+}
+
+@media (max-width: 1023px) {
+  .premium-stage-wrap {
+    transform: none;
+  }
+
+  .showcase-step {
+    opacity: 1;
+  }
+
+  .showcase-step[aria-current='step'] {
+    transform: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .premium-stage {
+    box-shadow:
+      0 30px 90px rgb(0 0 0 / 0.38),
+      0 1px 0 rgb(255 255 255 / 0.06) inset;
+  }
+
+  .premium-button:hover {
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.3);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -103,5 +315,21 @@ body {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  .hero-enter,
+  [data-reveal],
+  .assistant-float,
+  .stage-caption {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .premium-stage-wrap {
+    transform: none !important;
+  }
+
+  .showcase-panel {
+    filter: none !important;
   }
 }
