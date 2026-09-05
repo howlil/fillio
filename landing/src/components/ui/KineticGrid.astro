@@ -1,0 +1,357 @@
+---
+interface Props {
+  class?: string;
+}
+
+const className = Astro.props.class ?? '';
+---
+
+<div class:list={['kinetic-grid', className]} data-kinetic-grid aria-hidden="true">
+  <canvas data-kinetic-grid-canvas></canvas>
+</div>
+
+<style>
+  .kinetic-grid {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .kinetic-grid canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<script>
+  interface Point {
+    x: number;
+    y: number;
+  }
+
+  interface Ripple {
+    x: number;
+    y: number;
+    radius: number;
+    opacity: number;
+    born: number;
+  }
+
+  const CELL_SIZE = 64;
+  const INFLUENCE_RADIUS = 230;
+  const MAX_WARP = 15;
+  const DOT_SPACING = 32;
+  const LERP_SPEED = 0.1;
+
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+  const smoothstep = (value: number) => value * value * (3 - 2 * value);
+
+  const roots = document.querySelectorAll<HTMLElement>('[data-kinetic-grid]');
+
+  roots.forEach((root) => {
+    const canvas = root.querySelector<HTMLCanvasElement>('[data-kinetic-grid-canvas]');
+    const surface = root.closest<HTMLElement>('[data-kinetic-surface]');
+    if (!canvas || !surface) return;
+
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const finePointer = window.matchMedia('(pointer: fine)');
+    const darkMode = window.matchMedia('(prefers-color-scheme: dark)');
+
+    let width = 0;
+    let height = 0;
+    let frame = 0;
+    let pointerActive = false;
+    let mouse: Point = { x: -9999, y: -9999 };
+    let targetMouse: Point = { x: -9999, y: -9999 };
+    const ripples: Ripple[] = [];
+
+    const palette = () =>
+      darkMode.matches
+        ? {
+            line: 'rgba(250,250,250,0.055)',
+            lineActive: [250, 250, 250, 0.36] as const,
+            node: 'rgba(250,250,250,0.09)',
+            nodeActive: [250, 250, 250, 0.58] as const,
+            dot: 'rgba(250,250,250,0.035)',
+            ripple: [250, 250, 250] as const,
+          }
+        : {
+            line: 'rgba(23,23,23,0.055)',
+            lineActive: [23, 23, 23, 0.3] as const,
+            node: 'rgba(23,23,23,0.08)',
+            nodeActive: [23, 23, 23, 0.48] as const,
+            dot: 'rgba(23,23,23,0.03)',
+            ripple: [23, 23, 23] as const,
+          };
+
+    const activeColor = (
+      baseAlpha: number,
+      active: readonly [number, number, number, number],
+      amount: number,
+    ) => {
+      const alpha = lerp(baseAlpha, active[3], amount);
+      return `rgba(${active[0]},${active[1]},${active[2]},${alpha.toFixed(3)})`;
+    };
+
+    const warpedPoint = (
+      gx: number,
+      gy: number,
+      col: number,
+      row: number,
+      cols: number,
+      rows: number,
+    ) => {
+      const edgeMargin = 1.5;
+      const colPin = Math.min(col / edgeMargin, (cols - 1 - col) / edgeMargin, 1);
+      const rowPin = Math.min(row / edgeMargin, (rows - 1 - row) / edgeMargin, 1);
+      const pinFactor = colPin * colPin * rowPin * rowPin;
+
+      const dx = gx - mouse.x;
+      const dy = gy - mouse.y;
+      const distance = Math.hypot(dx, dy);
+      const proximity = Math.max(0, 1 - distance / INFLUENCE_RADIUS) * pinFactor;
+
+      let rippleX = 0;
+      let rippleY = 0;
+      for (const ripple of ripples) {
+        const rippleDx = gx - ripple.x;
+        const rippleDy = gy - ripple.y;
+        const rippleDistance = Math.hypot(rippleDx, rippleDy);
+        const waveWidth = 52;
+        const difference = rippleDistance - ripple.radius;
+        if (Math.abs(difference) >= waveWidth) continue;
+
+        const strength =
+          (1 - Math.abs(difference) / waveWidth) * ripple.opacity * 12 * pinFactor;
+        const angle = Math.atan2(rippleDy, rippleDx);
+        const direction = difference < 0 ? -1 : 1;
+        rippleX += Math.cos(angle) * strength * direction * -1;
+        rippleY += Math.sin(angle) * strength * direction * -1;
+      }
+
+      if (distance < INFLUENCE_RADIUS && distance > 0 && pinFactor > 0) {
+        const t = distance / INFLUENCE_RADIUS;
+        const falloff = t < 0.01 ? 0 : (1 - t) * (1 - t) * Math.min(1, distance / 60);
+        const warp = falloff * MAX_WARP * pinFactor;
+        const angle = Math.atan2(dy, dx);
+        return {
+          point: {
+            x: gx - Math.cos(angle) * warp + rippleX,
+            y: gy - Math.sin(angle) * warp + rippleY,
+          },
+          proximity,
+        };
+      }
+
+      return {
+        point: { x: gx + rippleX, y: gy + rippleY },
+        proximity,
+      };
+    };
+
+    const draw = (now = performance.now()) => {
+      if (width === 0 || height === 0) return;
+      const colors = palette();
+
+      context.clearRect(0, 0, width, height);
+
+      context.fillStyle = colors.dot;
+      for (let x = DOT_SPACING / 2; x < width; x += DOT_SPACING) {
+        for (let y = DOT_SPACING / 2; y < height; y += DOT_SPACING) {
+          context.beginPath();
+          context.arc(x, y, 0.6, 0, Math.PI * 2);
+          context.fill();
+        }
+      }
+
+      for (let index = ripples.length - 1; index >= 0; index -= 1) {
+        const ripple = ripples[index];
+        const age = (now - ripple.born) / 1000;
+        ripple.radius = Math.max(0, age * 330);
+        ripple.opacity = Math.max(0, 1 - age * 1.25);
+        if (ripple.opacity <= 0) ripples.splice(index, 1);
+      }
+
+      const cols = Math.max(2, Math.ceil(width / CELL_SIZE)) + 1;
+      const rows = Math.max(2, Math.ceil(height / CELL_SIZE)) + 1;
+      const cellWidth = width / (cols - 1);
+      const cellHeight = height / (rows - 1);
+      const points: Point[][] = [];
+      const proximity: number[][] = [];
+
+      for (let row = 0; row < rows; row += 1) {
+        points[row] = [];
+        proximity[row] = [];
+        for (let col = 0; col < cols; col += 1) {
+          const result = warpedPoint(
+            col * cellWidth,
+            row * cellHeight,
+            col,
+            row,
+            cols,
+            rows,
+          );
+          points[row][col] = result.point;
+          proximity[row][col] = result.proximity;
+        }
+      }
+
+      const drawSegment = (a: Point, b: Point, proximityA: number, proximityB: number) => {
+        const amount = smoothstep((proximityA + proximityB) / 2);
+        context.beginPath();
+        context.moveTo(a.x, a.y);
+        context.lineTo(b.x, b.y);
+        context.strokeStyle =
+          amount > 0.001
+            ? activeColor(0.055, colors.lineActive, amount)
+            : colors.line;
+        context.lineWidth = lerp(0.65, 1.15, amount);
+        context.stroke();
+      };
+
+      context.lineCap = 'butt';
+      for (let row = 0; row < rows; row += 1) {
+        for (let col = 0; col < cols - 1; col += 1) {
+          drawSegment(
+            points[row][col],
+            points[row][col + 1],
+            proximity[row][col],
+            proximity[row][col + 1],
+          );
+        }
+      }
+      for (let col = 0; col < cols; col += 1) {
+        for (let row = 0; row < rows - 1; row += 1) {
+          drawSegment(
+            points[row][col],
+            points[row + 1][col],
+            proximity[row][col],
+            proximity[row + 1][col],
+          );
+        }
+      }
+
+      for (let row = 0; row < rows; row += 1) {
+        for (let col = 0; col < cols; col += 1) {
+          const point = points[row][col];
+          const amount = smoothstep(proximity[row][col]);
+          context.beginPath();
+          context.arc(point.x, point.y, lerp(1.1, 2.15, amount), 0, Math.PI * 2);
+          context.fillStyle =
+            amount > 0.001
+              ? activeColor(0.08, colors.nodeActive, amount)
+              : colors.node;
+          context.fill();
+        }
+      }
+
+      for (const ripple of ripples) {
+        context.beginPath();
+        context.arc(ripple.x, ripple.y, Math.max(0, ripple.radius), 0, Math.PI * 2);
+        context.strokeStyle = `rgba(${colors.ripple[0]},${colors.ripple[1]},${colors.ripple[2]},${(
+          ripple.opacity * 0.14
+        ).toFixed(3)})`;
+        context.lineWidth = 1;
+        context.stroke();
+      }
+    };
+
+    const stopFrame = () => {
+      if (frame !== 0) cancelAnimationFrame(frame);
+      frame = 0;
+    };
+
+    const animate = (now: number) => {
+      mouse = {
+        x: lerp(mouse.x, targetMouse.x, LERP_SPEED),
+        y: lerp(mouse.y, targetMouse.y, LERP_SPEED),
+      };
+      draw(now);
+
+      const moving =
+        pointerActive &&
+        (Math.abs(mouse.x - targetMouse.x) > 0.1 ||
+          Math.abs(mouse.y - targetMouse.y) > 0.1);
+      if (moving || ripples.length > 0) frame = requestAnimationFrame(animate);
+      else frame = 0;
+    };
+
+    const ensureAnimation = () => {
+      if (frame === 0 && !reducedMotion.matches) {
+        frame = requestAnimationFrame(animate);
+      }
+    };
+
+    const resize = () => {
+      const rect = root.getBoundingClientRect();
+      width = Math.max(1, rect.width);
+      height = Math.max(1, rect.height);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw();
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (!finePointer.matches || reducedMotion.matches) return;
+      const rect = root.getBoundingClientRect();
+      const next = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+      if (!pointerActive) mouse = next;
+      pointerActive = true;
+      targetMouse = next;
+      ensureAnimation();
+    };
+
+    const onPointerLeave = () => {
+      if (!pointerActive) return;
+      pointerActive = false;
+      mouse = { x: -9999, y: -9999 };
+      targetMouse = { x: -9999, y: -9999 };
+      stopFrame();
+      draw();
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (!finePointer.matches || reducedMotion.matches) return;
+      if (event.target instanceof Element && event.target.closest('a, button, input, select, textarea')) return;
+      const rect = root.getBoundingClientRect();
+      ripples.push({
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+        radius: 0,
+        opacity: 1,
+        born: performance.now(),
+      });
+      ensureAnimation();
+    };
+
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(root);
+    surface.addEventListener('pointermove', onPointerMove);
+    surface.addEventListener('pointerleave', onPointerLeave);
+    surface.addEventListener('pointerdown', onPointerDown);
+    darkMode.addEventListener('change', draw);
+    reducedMotion.addEventListener('change', draw);
+    resize();
+
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        stopFrame();
+        resizeObserver.disconnect();
+        surface.removeEventListener('pointermove', onPointerMove);
+        surface.removeEventListener('pointerleave', onPointerLeave);
+        surface.removeEventListener('pointerdown', onPointerDown);
+        darkMode.removeEventListener('change', draw);
+        reducedMotion.removeEventListener('change', draw);
+      },
+      { once: true },
+    );
+  });
+</script>
