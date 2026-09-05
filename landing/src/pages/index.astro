@@ -18,14 +18,14 @@ const showcaseSteps = [
   {
     id: 'review',
     number: '02',
-    title: 'Surface what needs judgment',
-    text: 'Ready, ambiguous, unknown, and sensitive fields are separated so uncertain data never disappears behind automation.',
+    title: 'Review what needs judgment',
+    text: 'Ready, ambiguous, unknown, and sensitive fields stay visibly separated so uncertainty never disappears behind automation.',
   },
   {
     id: 'fill',
     number: '03',
-    title: 'Fill only approved values',
-    text: 'One explicit action writes the safe fields. Unknown and sensitive fields stay untouched until you decide otherwise.',
+    title: 'Fill ready fields',
+    text: 'One explicit action writes only the ready fields. Unknown and sensitive fields remain untouched until you decide otherwise.',
   },
   {
     id: 'track',
@@ -35,33 +35,23 @@ const showcaseSteps = [
   },
 ];
 
-const capabilityRows = [
-  {
-    title: 'Autofill',
-    meta: '14 ready · 3 review · 1 sensitive',
-    detail: 'Page analysis, Application Profile recommendation, answer memory, and explicit document attachment.',
-  },
-  {
-    title: 'Pipeline',
-    meta: 'Current role · local lifecycle',
-    detail: 'Capture the exact opportunity and update its status without creating a second tracking surface.',
-  },
-  {
-    title: 'Sensitive',
-    meta: 'Encrypted vault · site approval',
-    detail: 'Sensitive values remain behind the local vault and require a separate current-site disclosure decision.',
-  },
-  {
-    title: 'Application Profiles',
-    meta: 'Role-aware · deterministic',
-    detail: 'Use lightweight profile variants chosen from local role, seniority, domain, and skill evidence.',
-  },
+const pageCapabilities = [
+  ['Autofill', 'Analyze the current page, review uncertain mappings, fill ready fields, and attach recommended documents explicitly.'],
+  ['Pipeline', 'Review and save the exact job you are applying to without leaving the application page.'],
+  ['Sensitive', 'Unlock encrypted values separately and approve disclosure for the current site before sensitive fill.'],
+];
+
+const workspaceCapabilities = [
+  ['Career profile', 'Keep reusable experience, education, projects, preferences, links, and contact data in one place.'],
+  ['Application Profiles', 'Maintain lightweight role-specific variants and let the deterministic recommender choose from page context.'],
+  ['Documents', 'Store CVs and supporting files locally for explicit recommendation and attachment.'],
+  ['Autofill Memory', 'Inspect, delete, reset, or reuse remembered mappings and stable answers.'],
 ];
 
 const worksToday = [
   'Chromium desktop',
   'Native and ATS-shaped forms',
-  'Dynamic / multi-step forms',
+  'Dynamic and multi-step forms',
   'PDF, DOCX, and TXT CV import',
   'Resume, cover letter, portfolio, transcript, and certificate fields',
   'Reusable answers and Autofill Memory',
@@ -90,23 +80,23 @@ const dataPaths = [
 
 <BaseLayout
   title="Jobflow — Stop retyping job applications"
-  description="Keep one local career profile, review what Jobflow detects, fill only approved fields, and submit job applications yourself."
+  description="Keep one local career profile, review what Jobflow detects, fill only ready fields, and submit job applications yourself."
 >
-  <header class="sticky top-0 z-50 border-b border-border bg-background/95">
-    <div class="mx-auto flex h-14 max-w-[1200px] items-center justify-between px-5 lg:px-7">
+  <header class="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
+    <div class="mx-auto flex h-14 max-w-[1120px] items-center justify-between px-5 lg:px-6">
       <a href="#top" class="flex items-center gap-2.5 text-sm font-semibold tracking-[-0.02em] text-ink" aria-label="Jobflow home">
         <span class="grid size-8 place-items-center rounded-md border border-border-strong bg-ink text-xs font-bold text-background">J</span>
         <span>Jobflow</span>
       </a>
 
-      <nav class="hidden items-center gap-7 text-sm text-muted md:flex" aria-label="Primary navigation">
-        <a class="transition-colors hover:text-ink" href="#showcase">Showcase</a>
-        <a class="transition-colors hover:text-ink" href="#capabilities">Product</a>
-        <a class="transition-colors hover:text-ink" href="#trust">Trust</a>
+      <nav class="hidden items-center gap-6 text-sm text-muted md:flex" aria-label="Primary navigation">
+        <a class="transition-colors duration-150 hover:text-ink" href="#showcase">Workflow</a>
+        <a class="transition-colors duration-150 hover:text-ink" href="#capabilities">Product</a>
+        <a class="transition-colors duration-150 hover:text-ink" href="#trust">Privacy</a>
       </nav>
 
       <a
-        class="premium-button inline-flex h-9 items-center justify-center rounded-md border border-border-strong px-3.5 text-sm font-medium text-ink"
+        class="landing-action inline-flex h-9 items-center justify-center rounded-md border border-border-strong px-3.5 text-sm font-medium text-ink"
         href="https://github.com/howlil/jobflow"
         target="_blank"
         rel="noreferrer"
@@ -117,40 +107,37 @@ const dataPaths = [
   </header>
 
   <main id="main">
-    <section id="top" class="relative overflow-hidden border-b border-border">
-      <div class="hero-lines" aria-hidden="true"></div>
-      <div class="mx-auto grid min-h-[760px] max-w-[1200px] gap-14 px-5 pb-16 pt-20 lg:grid-cols-[0.78fr_1.22fr] lg:items-center lg:px-7 lg:pb-24 lg:pt-24">
-        <div class="relative z-10">
-          <p class="hero-enter mb-5 font-mono text-xs font-medium uppercase tracking-[0.14em] text-subtle" style="--hero-delay: 60ms">
+    <section id="top" class="border-b border-border">
+      <div class="mx-auto grid min-h-[660px] max-w-[1120px] gap-12 px-5 py-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:px-6 lg:py-20">
+        <div>
+          <p class="hero-enter mb-4 font-mono text-xs font-medium uppercase tracking-[0.12em] text-subtle" style="--hero-delay: 40ms">
             Local-first job application workspace
           </p>
-          <h1 class="hero-enter max-w-[11ch] text-[clamp(3rem,6vw,5.4rem)] font-semibold leading-[0.92] tracking-[-0.065em] text-ink" style="--hero-delay: 120ms">
+          <h1 class="hero-enter max-w-[11ch] text-[clamp(2.85rem,5.6vw,4.65rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-ink" style="--hero-delay: 90ms">
             Stop retyping every job application.
           </h1>
-          <p class="hero-enter mt-7 max-w-[580px] text-[17px] leading-7 text-muted" style="--hero-delay: 200ms">
-            Keep one reusable career profile. Jobflow prepares safe fields for the application you are on, flags what needs review, and never submits for you.
+          <p class="hero-enter mt-6 max-w-[560px] text-[16px] leading-7 text-muted" style="--hero-delay: 150ms">
+            Keep one reusable career profile. Jobflow prepares the current application, shows what needs review, fills only ready fields when you ask, and never submits for you.
           </p>
 
-          <div class="hero-enter mt-8 flex flex-wrap items-center gap-3" style="--hero-delay: 280ms">
+          <div class="hero-enter mt-7 flex flex-wrap items-center gap-3" style="--hero-delay: 210ms">
             <a
-              class="premium-button inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-medium text-background"
+              class="landing-action inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-medium text-background"
               href="https://github.com/howlil/jobflow#local-development"
               target="_blank"
               rel="noreferrer"
             >
-              Build & install Jobflow <span aria-hidden="true" class="ml-1.5">↗</span>
+              Build locally <span aria-hidden="true" class="ml-1.5">↗</span>
             </a>
             <a
-              class="premium-button inline-flex h-10 items-center justify-center rounded-md border border-border-strong px-4 text-sm font-medium text-ink"
-              href="https://github.com/howlil/jobflow"
-              target="_blank"
-              rel="noreferrer"
+              class="landing-action inline-flex h-10 items-center justify-center rounded-md border border-border-strong px-4 text-sm font-medium text-ink"
+              href="#showcase"
             >
-              View source
+              See the workflow
             </a>
           </div>
 
-          <div class="hero-enter mt-7 flex flex-wrap gap-x-5 gap-y-2 text-xs text-subtle" style="--hero-delay: 340ms">
+          <div class="hero-enter mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-subtle" style="--hero-delay: 250ms">
             <span>Local-first</span>
             <span>No account</span>
             <span>No auto-submit</span>
@@ -158,102 +145,72 @@ const dataPaths = [
           </div>
         </div>
 
-        <div class="hero-enter relative z-10 lg:pl-3" style="--hero-delay: 180ms">
-          <div class="premium-stage-wrap" data-parallax-stage>
-            <div class="premium-stage" aria-label="Jobflow product showcase">
-              <div class="flex h-12 items-center justify-between border-b border-border px-4 sm:px-5">
-                <div class="flex items-center gap-2" aria-hidden="true">
-                  <span class="size-2.5 rounded-full border border-border-strong"></span>
-                  <span class="size-2.5 rounded-full border border-border-strong"></span>
-                  <span class="size-2.5 rounded-full border border-border-strong"></span>
-                </div>
-                <div class="flex min-w-0 items-center gap-2 rounded-md border border-border px-3 py-1.5 font-mono text-[11px] text-subtle">
-                  <span class="size-1.5 shrink-0 rounded-full bg-success"></span>
-                  <span class="truncate">jobs.example.com/apply/backend-engineer</span>
-                </div>
-                <span class="w-[52px]"></span>
+        <div class="hero-enter lg:pl-2" style="--hero-delay: 130ms">
+          <div class="product-stage" aria-label="Faithful Jobflow assistant preview">
+            <div class="flex h-11 items-center justify-between border-b border-border px-4">
+              <div class="flex items-center gap-2" aria-hidden="true">
+                <span class="size-2.5 rounded-full border border-border-strong"></span>
+                <span class="size-2.5 rounded-full border border-border-strong"></span>
+                <span class="size-2.5 rounded-full border border-border-strong"></span>
               </div>
-
-              <div class="relative min-h-[570px] overflow-hidden p-5 sm:p-7">
-                <div class="max-w-[62%] sm:max-w-[66%]">
-                  <div class="flex items-start justify-between gap-4">
-                    <div>
-                      <p class="text-sm font-semibold text-ink">Senior Backend Engineer</p>
-                      <p class="mt-1 text-xs text-subtle">Application · Step 2 of 4</p>
-                    </div>
-                    <span class="hidden rounded-md border border-border px-2 py-1 font-mono text-[10px] text-subtle sm:inline-flex">Workday-like</span>
-                  </div>
-
-                  <div class="mt-7 space-y-5" aria-hidden="true">
-                    <div>
-                      <div class="mb-2 flex items-center justify-between"><div class="h-2.5 w-24 rounded-sm bg-accent-soft"></div><span class="size-1.5 rounded-full bg-success"></span></div>
-                      <div class="h-10 rounded-md border border-border bg-surface"></div>
-                    </div>
-                    <div>
-                      <div class="mb-2 flex items-center justify-between"><div class="h-2.5 w-32 rounded-sm bg-accent-soft"></div><span class="size-1.5 rounded-full bg-success"></span></div>
-                      <div class="h-10 rounded-md border border-border bg-surface"></div>
-                    </div>
-                    <div>
-                      <div class="mb-2 flex items-center justify-between"><div class="h-2.5 w-28 rounded-sm bg-accent-soft"></div><span class="size-1.5 rounded-full bg-warning"></span></div>
-                      <div class="h-10 rounded-md border border-border bg-surface"></div>
-                    </div>
-                    <div>
-                      <div class="mb-2 flex items-center justify-between"><div class="h-2.5 w-36 rounded-sm bg-accent-soft"></div><span class="size-1.5 rounded-full bg-subtle"></span></div>
-                      <div class="h-28 rounded-md border border-border bg-surface"></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="assistant-float absolute bottom-5 right-4 w-[min(390px,calc(100%-2rem))] overflow-hidden rounded-[10px] border border-border-strong bg-surface-raised shadow-[0_18px_50px_rgb(0_0_0/0.16)] sm:bottom-7 sm:right-7">
-                  <div class="flex h-11 items-center justify-between border-b border-border px-4">
-                    <div class="flex items-center gap-2">
-                      <span class="grid size-6 place-items-center rounded-md bg-ink text-[10px] font-bold text-background">J</span>
-                      <div>
-                        <p class="text-xs font-semibold text-ink">Jobflow</p>
-                        <p class="font-mono text-[10px] text-subtle">18 fields detected</p>
-                      </div>
-                    </div>
-                    <span class="flex items-center gap-1.5 font-mono text-[10px] text-success"><span class="size-1.5 rounded-full bg-success"></span>ready</span>
-                  </div>
-
-                  <div class="grid grid-cols-3 border-b border-border text-center text-xs font-medium">
-                    <span class="border-r border-border bg-surface-muted px-2 py-2.5 text-ink">Autofill</span>
-                    <span class="border-r border-border px-2 py-2.5 text-muted">Pipeline</span>
-                    <span class="px-2 py-2.5 text-muted">Sensitive</span>
-                  </div>
-
-                  <div class="p-4">
-                    <div class="flex items-start justify-between gap-3 border-b border-border pb-3">
-                      <div>
-                        <p class="text-sm font-medium text-ink">Backend profile</p>
-                        <p class="mt-0.5 text-xs text-subtle">Recommended from role signals</p>
-                      </div>
-                      <span class="rounded-md border border-border px-2 py-1 font-mono text-[10px] text-subtle">92% fit</span>
-                    </div>
-
-                    <div class="grid grid-cols-3 divide-x divide-border border-b border-border py-3 text-center">
-                      <div><p class="font-mono text-lg font-semibold text-ink">14</p><p class="mt-0.5 text-[11px] text-subtle">Ready</p></div>
-                      <div><p class="font-mono text-lg font-semibold text-warning">3</p><p class="mt-0.5 text-[11px] text-subtle">Review</p></div>
-                      <div><p class="font-mono text-lg font-semibold text-muted">1</p><p class="mt-0.5 text-[11px] text-subtle">Sensitive</p></div>
-                    </div>
-
-                    <div class="mt-3 space-y-2">
-                      <div class="flex items-center justify-between text-xs"><span class="text-muted">First name</span><span class="font-mono text-[10px] text-success">ready</span></div>
-                      <div class="flex items-center justify-between text-xs"><span class="text-muted">Current role</span><span class="font-mono text-[10px] text-warning">review</span></div>
-                    </div>
-
-                    <div class="mt-4 flex items-center justify-between gap-3 border-t border-border pt-3">
-                      <p class="max-w-[170px] text-[11px] leading-4 text-subtle">Unknown and sensitive fields stay untouched.</p>
-                      <button type="button" class="h-9 shrink-0 rounded-md bg-accent px-3 text-xs font-medium text-background">Fill 14 safe fields</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <span class="font-mono text-[11px] text-subtle">jobs.example.com/apply/backend-engineer</span>
+              <span class="w-[48px]"></span>
             </div>
 
-            <div class="stage-caption absolute -bottom-4 left-5 hidden items-center gap-3 rounded-md border border-border-strong bg-surface-raised px-3 py-2 font-mono text-[10px] text-subtle shadow-[0_10px_30px_rgb(0_0_0/0.1)] sm:flex">
-              <span class="size-1.5 rounded-full bg-success"></span>
-              user-triggered fill · no submit automation
+            <div class="relative min-h-[500px] overflow-hidden p-5 sm:p-6" aria-hidden="true">
+              <div class="max-w-[58%]">
+                <p class="text-sm font-semibold text-ink">Backend Engineer</p>
+                <p class="mt-1 text-xs text-subtle">Application form</p>
+                <div class="mt-6 space-y-4">
+                  {[24, 32, 28, 36].map((width, index) => (
+                    <div>
+                      <div class="mb-2 flex items-center justify-between">
+                        <div class="h-2.5 rounded-sm bg-accent-soft" style={`width:${width}%`}></div>
+                        <span class:list={['size-1.5 rounded-full', index < 2 ? 'bg-success' : index === 2 ? 'bg-warning' : 'bg-subtle']}></span>
+                      </div>
+                      <div class:list={['rounded-md border border-border bg-surface', index === 3 ? 'h-24' : 'h-9']}></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div class="absolute bottom-5 right-4 w-[min(380px,calc(100%-2rem))] overflow-hidden rounded-lg border border-border-strong bg-surface-raised shadow-[0_12px_32px_rgb(0_0_0/0.12)] sm:right-5">
+                <div class="flex items-start justify-between border-b border-border px-4 py-3">
+                  <div>
+                    <p class="font-mono text-[10px] uppercase tracking-[0.08em] text-subtle">Job Flow</p>
+                    <p class="mt-1 text-sm font-semibold text-ink">Backend profile</p>
+                    <p class="mt-0.5 text-[11px] text-subtle">jobs.example.com</p>
+                  </div>
+                  <span class="font-mono text-[10px] text-subtle">×</span>
+                </div>
+
+                <div class="grid grid-cols-3 border-b border-border text-center text-xs font-medium">
+                  <span class="border-r border-border bg-surface-muted px-2 py-2.5 text-ink">Autofill <small class="ml-1 font-mono text-[9px]">3</small></span>
+                  <span class="border-r border-border px-2 py-2.5 text-muted">Pipeline</span>
+                  <span class="px-2 py-2.5 text-muted">Sensitive <small class="ml-1 font-mono text-[9px]">1</small></span>
+                </div>
+
+                <div class="p-4">
+                  <div class="border-b border-border pb-3">
+                    <p class="text-xs font-medium text-ink">Application profile</p>
+                    <div class="mt-2 rounded-md border border-border px-3 py-2 text-xs text-muted">Automatic</div>
+                    <p class="mt-1.5 text-[11px] leading-4 text-subtle">Automatic recommendation: Backend profile.</p>
+                  </div>
+
+                  <div class="py-3">
+                    <strong class="text-sm text-ink">14 ready</strong>
+                    <p class="mt-0.5 text-[11px] text-subtle">3 review · 1 sensitive</p>
+                  </div>
+
+                  <span class="flex h-9 items-center justify-center rounded-md bg-accent px-3 text-xs font-medium text-background">Fill 14 ready fields</span>
+
+                  <div class="mt-3 border-t border-border pt-3">
+                    <p class="text-xs font-medium text-ink">Needs attention</p>
+                    <div class="mt-2 flex items-center justify-between text-xs text-muted"><span>Review reusable fields</span><strong class="font-mono text-ink">3</strong></div>
+                    <div class="mt-2 flex items-center justify-between text-xs text-muted"><span>Sensitive fields</span><strong class="font-mono text-ink">1</strong></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -261,9 +218,9 @@ const dataPaths = [
     </section>
 
     <section class="border-b border-border">
-      <div class="mx-auto grid max-w-[1200px] divide-y divide-border px-5 lg:grid-cols-4 lg:divide-x lg:divide-y-0 lg:px-7">
+      <div class="mx-auto grid max-w-[1120px] divide-y divide-border px-5 lg:grid-cols-4 lg:divide-x lg:divide-y-0 lg:px-6">
         {['One profile', 'Explicit review', 'Local data', 'You submit'].map((label, index) => (
-          <div class="flex items-center gap-3 py-4 lg:px-5 lg:first:pl-0">
+          <div class="flex items-center gap-3 py-4 lg:px-4 lg:first:pl-0">
             <span class="font-mono text-[10px] text-subtle">0{index + 1}</span>
             <span class="text-sm font-medium text-ink">{label}</span>
           </div>
@@ -271,16 +228,15 @@ const dataPaths = [
       </div>
     </section>
 
-    <section class="mx-auto max-w-[1200px] px-5 py-20 lg:px-7 lg:py-24" data-reveal>
-      <div class="grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
+    <section class="mx-auto max-w-[1120px] px-5 py-16 lg:px-6 lg:py-20" data-reveal>
+      <div class="grid gap-9 lg:grid-cols-[0.72fr_1.28fr]">
         <div>
-          <p class="font-mono text-xs text-subtle">THE PRODUCT DELTA</p>
-          <h2 class="mt-4 max-w-[11ch] text-3xl font-semibold tracking-[-0.04em] text-ink sm:text-4xl">Remove repetition. Keep judgment.</h2>
+          <p class="font-mono text-xs uppercase tracking-[0.08em] text-subtle">Product delta</p>
+          <h2 class="mt-3 max-w-[12ch] text-3xl font-semibold tracking-[-0.035em] text-ink">Remove repetition. Keep judgment.</h2>
         </div>
-
         <div class="border-t border-border">
           {productDelta.map(([before, after]) => (
-            <div class="grid gap-3 border-b border-border py-5 sm:grid-cols-[1fr_34px_1fr] sm:items-center sm:gap-5">
+            <div class="grid gap-3 border-b border-border py-4 sm:grid-cols-[1fr_28px_1fr] sm:items-center sm:gap-4">
               <p class="text-sm leading-6 text-muted">{before}</p>
               <span class="hidden text-center font-mono text-xs text-subtle sm:block">→</span>
               <p class="text-sm font-medium leading-6 text-ink">{after}</p>
@@ -291,17 +247,16 @@ const dataPaths = [
     </section>
 
     <section class="border-y border-border bg-surface">
-      <div class="mx-auto grid max-w-[1200px] gap-10 px-5 py-20 lg:grid-cols-2 lg:px-7 lg:py-24" data-reveal>
-        <div class="border-t border-border pt-5">
-          <span class="font-mono text-xs text-subtle">SET UP ONCE</span>
-          <h2 class="mt-4 text-2xl font-semibold tracking-[-0.035em] text-ink">Build your reusable career context.</h2>
-          <p class="mt-4 max-w-xl text-sm leading-6 text-muted">Experience, education, projects, documents, reusable answers, preferences, and lightweight Application Profiles live in one local workspace.</p>
+      <div class="mx-auto grid max-w-[1120px] gap-9 px-5 py-16 lg:grid-cols-2 lg:px-6 lg:py-20" data-reveal>
+        <div class="border-t border-border pt-4">
+          <span class="font-mono text-xs uppercase tracking-[0.08em] text-subtle">Set up once</span>
+          <h2 class="mt-3 text-2xl font-semibold tracking-[-0.03em] text-ink">Build your reusable career context.</h2>
+          <p class="mt-3 max-w-xl text-sm leading-6 text-muted">Experience, education, projects, documents, reusable answers, preferences, and Application Profiles live in one local workspace.</p>
         </div>
-
-        <div class="border-t border-border pt-5">
-          <span class="font-mono text-xs text-subtle">EVERY APPLICATION</span>
-          <h2 class="mt-4 text-2xl font-semibold tracking-[-0.035em] text-ink">Use the same controlled loop.</h2>
-          <div class="mt-5 flex flex-wrap items-center gap-2 text-xs font-medium text-ink">
+        <div class="border-t border-border pt-4">
+          <span class="font-mono text-xs uppercase tracking-[0.08em] text-subtle">Every application</span>
+          <h2 class="mt-3 text-2xl font-semibold tracking-[-0.03em] text-ink">Use the same controlled loop.</h2>
+          <div class="mt-4 flex flex-wrap items-center gap-2 text-xs font-medium text-ink">
             {['Open', 'Detect', 'Review', 'Fill', 'Submit yourself', 'Track'].map((step, index, list) => (
               <>
                 <span class="rounded-md border border-border-strong px-2.5 py-1.5">{step}</span>
@@ -314,25 +269,25 @@ const dataPaths = [
     </section>
 
     <section id="showcase" class="border-b border-border">
-      <div class="mx-auto max-w-[1200px] px-5 py-20 lg:px-7 lg:py-28">
-        <div class="mb-14 max-w-2xl" data-reveal>
-          <p class="font-mono text-xs text-subtle">PRODUCT SHOWCASE</p>
-          <h2 class="mt-4 text-3xl font-semibold tracking-[-0.045em] text-ink sm:text-4xl">See the decision boundary, not a fake automation demo.</h2>
-          <p class="mt-5 text-[15px] leading-7 text-muted">Scroll through the real interaction model. Jobflow automates repetitive entry while leaving ambiguity, disclosure, and submission visible to you.</p>
+      <div class="mx-auto max-w-[1120px] px-5 py-16 lg:px-6 lg:py-20">
+        <div class="mb-10 max-w-2xl" data-reveal>
+          <p class="font-mono text-xs uppercase tracking-[0.08em] text-subtle">Application workflow</p>
+          <h2 class="mt-3 text-3xl font-semibold tracking-[-0.035em] text-ink">The same assistant, four visible states.</h2>
+          <p class="mt-4 text-[15px] leading-7 text-muted">Scroll through how Jobflow moves from page detection to explicit fill and local tracking. The shell stays stable; only the state changes.</p>
         </div>
 
-        <div class="grid gap-12 lg:grid-cols-[0.72fr_1.28fr]" data-showcase-root data-active-state="detect">
-          <div class="space-y-0">
+        <div class="grid gap-10 lg:grid-cols-[0.72fr_1.28fr]" data-showcase-root data-active-state="detect">
+          <div>
             {showcaseSteps.map((step, index) => (
               <article
-                class="showcase-step border-t border-border py-8 last:border-b"
+                class="showcase-step border-t border-border py-7 last:border-b"
                 data-showcase-step={step.id}
                 aria-current={index === 0 ? 'step' : undefined}
               >
                 <div class="flex items-start gap-4">
                   <span class="mt-1 font-mono text-xs text-subtle">{step.number}</span>
                   <div>
-                    <h3 class="text-lg font-semibold tracking-[-0.025em] text-ink">{step.title}</h3>
+                    <h3 class="text-base font-semibold tracking-[-0.02em] text-ink">{step.title}</h3>
                     <p class="mt-2 max-w-md text-sm leading-6 text-muted">{step.text}</p>
                   </div>
                 </div>
@@ -341,59 +296,66 @@ const dataPaths = [
           </div>
 
           <div class="lg:sticky lg:top-24 lg:self-start">
-            <div class="showcase-stage relative min-h-[500px] overflow-hidden rounded-[18px] border border-border-strong bg-surface shadow-[0_24px_70px_rgb(0_0_0/0.1)]" aria-hidden="true">
-              <div class="flex h-11 items-center justify-between border-b border-border px-4">
-                <span class="font-mono text-[10px] text-subtle">JOBFLOW / APPLICATION ASSISTANT</span>
-                <span class="flex items-center gap-1.5 font-mono text-[10px] text-success"><span class="size-1.5 rounded-full bg-success"></span>local</span>
+            <div class="showcase-stage relative min-h-[480px] overflow-hidden rounded-[10px] border border-border-strong bg-surface shadow-[0_12px_32px_rgb(0_0_0/0.08)]" aria-hidden="true">
+              <div class="flex min-h-16 items-start justify-between border-b border-border px-4 py-3">
+                <div>
+                  <p class="font-mono text-[10px] uppercase tracking-[0.08em] text-subtle">Job Flow</p>
+                  <p class="mt-1 text-sm font-semibold text-ink">Application assistant</p>
+                  <p class="mt-0.5 text-[11px] text-subtle">jobs.example.com</p>
+                </div>
+                <span class="font-mono text-[10px] text-subtle">×</span>
+              </div>
+              <div class="grid grid-cols-3 border-b border-border text-center text-xs font-medium">
+                <span class="border-r border-border bg-surface-muted px-2 py-2.5 text-ink">Autofill</span>
+                <span class="border-r border-border px-2 py-2.5 text-muted">Pipeline</span>
+                <span class="px-2 py-2.5 text-muted">Sensitive</span>
               </div>
 
               <div class="showcase-panel" data-showcase-panel="detect" data-active="true">
-                <div class="p-6 sm:p-8">
-                  <div class="flex items-center justify-between border-b border-border pb-5">
-                    <div><p class="text-sm font-semibold text-ink">Application detected</p><p class="mt-1 text-xs text-subtle">Senior Backend Engineer · Step 2 of 4</p></div>
-                    <span class="rounded-md border border-border px-2 py-1 font-mono text-[10px] text-subtle">18 fields</span>
+                <div class="p-5 sm:p-6">
+                  <p class="text-xs font-medium text-ink">Form analysis</p>
+                  <div class="mt-3 border-y border-border">
+                    <div class="flex items-center justify-between py-3 text-sm"><span class="text-muted">Ready</span><strong class="font-mono text-ink">14</strong></div>
+                    <div class="flex items-center justify-between border-t border-border py-3 text-sm"><span class="text-muted">Needs review</span><strong class="font-mono text-warning">3</strong></div>
+                    <div class="flex items-center justify-between border-t border-border py-3 text-sm"><span class="text-muted">Sensitive</span><strong class="font-mono text-ink">1</strong></div>
                   </div>
-                  <div class="mt-6 grid gap-3 sm:grid-cols-2">
-                    {['Personal details', 'Experience', 'Role questions', 'Documents'].map((label, index) => (
-                      <div class="rounded-lg border border-border p-4">
-                        <div class="flex items-center justify-between"><span class="text-sm font-medium text-ink">{label}</span><span class:list={['size-2 rounded-full', index < 2 ? 'bg-success' : index === 2 ? 'bg-warning' : 'bg-subtle']}></span></div>
-                        <div class="mt-4 space-y-2" aria-hidden="true"><div class="h-2 w-3/4 rounded bg-accent-soft"></div><div class="h-2 w-1/2 rounded bg-accent-soft"></div></div>
-                      </div>
-                    ))}
-                  </div>
+                  <p class="mt-4 text-xs leading-5 text-subtle">Nothing is written during analysis.</p>
                 </div>
               </div>
 
               <div class="showcase-panel" data-showcase-panel="review">
-                <div class="p-6 sm:p-8">
-                  <div class="border-b border-border pb-5"><p class="text-sm font-semibold text-ink">Review before fill</p><p class="mt-1 text-xs text-subtle">Three fields need your judgment.</p></div>
-                  <div class="mt-5 divide-y divide-border border-y border-border">
-                    <div class="grid grid-cols-[1fr_auto] gap-4 py-4"><div><p class="text-sm font-medium text-ink">Current role</p><p class="mt-1 text-xs text-muted">Two saved values could match this question.</p></div><span class="font-mono text-[10px] text-warning">REVIEW</span></div>
-                    <div class="grid grid-cols-[1fr_auto] gap-4 py-4"><div><p class="text-sm font-medium text-ink">Visa sponsorship</p><p class="mt-1 text-xs text-muted">Sensitive disclosure stays outside normal fill.</p></div><span class="font-mono text-[10px] text-subtle">SENSITIVE</span></div>
-                    <div class="grid grid-cols-[1fr_auto] gap-4 py-4"><div><p class="text-sm font-medium text-ink">Why this company?</p><p class="mt-1 text-xs text-muted">No trusted reusable answer exists yet.</p></div><span class="font-mono text-[10px] text-muted">UNKNOWN</span></div>
+                <div class="p-5 sm:p-6">
+                  <p class="text-xs font-medium text-ink">Resolve ambiguous fields</p>
+                  <div class="mt-3 divide-y divide-border border-y border-border">
+                    <div class="py-4"><p class="text-sm font-medium text-ink">Current role</p><p class="mt-1 text-xs text-muted">Two saved values could match.</p><div class="mt-3 flex gap-2"><span class="rounded-md border border-border-strong px-2.5 py-1.5 text-xs text-ink">Professional headline</span><span class="rounded-md border border-border-strong px-2.5 py-1.5 text-xs text-ink">Ignore</span></div></div>
+                    <div class="py-4"><p class="text-sm font-medium text-ink">Why this company?</p><p class="mt-1 text-xs text-muted">No trusted reusable answer exists yet.</p></div>
                   </div>
                 </div>
               </div>
 
               <div class="showcase-panel" data-showcase-panel="fill">
-                <div class="p-6 sm:p-8">
-                  <div class="flex items-center justify-between border-b border-border pb-5"><div><p class="text-sm font-semibold text-ink">Safe fill plan</p><p class="mt-1 text-xs text-subtle">Only deterministic ready fields are included.</p></div><span class="font-mono text-lg font-semibold text-ink">14</span></div>
-                  <div class="mt-6 space-y-3">
-                    {['First name', 'Last name', 'Email', 'Phone', 'LinkedIn'].map((label) => (
-                      <div class="flex items-center justify-between rounded-md border border-border px-3 py-2.5"><span class="text-sm text-muted">{label}</span><span class="flex items-center gap-1.5 font-mono text-[10px] text-success"><span class="size-1.5 rounded-full bg-success"></span>ready</span></div>
-                    ))}
+                <div class="p-5 sm:p-6">
+                  <strong class="text-sm text-ink">14 ready</strong>
+                  <p class="mt-0.5 text-[11px] text-subtle">3 review · 1 sensitive</p>
+                  <span class="mt-4 flex h-9 items-center justify-center rounded-md bg-accent px-3 text-xs font-medium text-background">Fill 14 ready fields</span>
+                  <div class="mt-4 border-t border-border pt-4">
+                    <p class="text-xs font-medium text-ink">After fill</p>
+                    <p class="mt-2 text-xs leading-5 text-muted">Ready fields are written. Remaining review and sensitive items stay visible for manual action.</p>
                   </div>
-                  <div class="mt-5 flex justify-end"><span class="rounded-md bg-accent px-3 py-2 text-xs font-medium text-background">Fill 14 safe fields</span></div>
                 </div>
               </div>
 
               <div class="showcase-panel" data-showcase-panel="track">
-                <div class="p-6 sm:p-8">
-                  <div class="border-b border-border pb-5"><p class="text-sm font-semibold text-ink">Current opportunity</p><p class="mt-1 text-xs text-subtle">Saved only when you ask Jobflow to keep it.</p></div>
-                  <div class="mt-6 rounded-lg border border-border-strong p-5">
-                    <div class="flex items-start justify-between gap-4"><div><p class="text-base font-semibold text-ink">Senior Backend Engineer</p><p class="mt-1 text-sm text-muted">Example Company · Remote</p></div><span class="rounded-md border border-border px-2 py-1 font-mono text-[10px] text-subtle">READY</span></div>
-                    <div class="mt-6 grid grid-cols-3 divide-x divide-border border-y border-border py-3 text-center"><div><p class="font-mono text-xs text-subtle">SOURCE</p><p class="mt-1 text-xs text-ink">Current page</p></div><div><p class="font-mono text-xs text-subtle">STATUS</p><p class="mt-1 text-xs text-ink">Saved</p></div><div><p class="font-mono text-xs text-subtle">SUBMIT</p><p class="mt-1 text-xs text-ink">You</p></div></div>
+                <div class="p-5 sm:p-6">
+                  <p class="text-xs font-medium text-ink">Pipeline</p>
+                  <h3 class="mt-2 text-lg font-semibold tracking-[-0.02em] text-ink">Review job details</h3>
+                  <p class="mt-1 text-xs leading-5 text-muted">Confirm the job details before saving this local application.</p>
+                  <div class="mt-4 space-y-3">
+                    <div><p class="mb-1.5 text-[11px] text-subtle">Company</p><div class="h-9 rounded-md border border-border px-3 py-2 text-xs text-ink">Example Company</div></div>
+                    <div><p class="mb-1.5 text-[11px] text-subtle">Role</p><div class="h-9 rounded-md border border-border px-3 py-2 text-xs text-ink">Backend Engineer</div></div>
+                    <div><p class="mb-1.5 text-[11px] text-subtle">Stage</p><div class="h-9 rounded-md border border-border px-3 py-2 text-xs text-ink">Applying</div></div>
                   </div>
+                  <span class="mt-4 flex h-9 items-center justify-center rounded-md bg-accent px-3 text-xs font-medium text-background">Save to pipeline</span>
                 </div>
               </div>
             </div>
@@ -403,105 +365,118 @@ const dataPaths = [
     </section>
 
     <section id="capabilities" class="border-b border-border bg-surface">
-      <div class="mx-auto max-w-[1200px] px-5 py-20 lg:px-7 lg:py-24">
-        <div class="grid gap-10 lg:grid-cols-[0.62fr_1.38fr]" data-reveal>
+      <div class="mx-auto max-w-[1120px] px-5 py-16 lg:px-6 lg:py-20" data-reveal>
+        <div class="mb-9 max-w-2xl">
+          <p class="font-mono text-xs uppercase tracking-[0.08em] text-subtle">Product architecture</p>
+          <h2 class="mt-3 text-3xl font-semibold tracking-[-0.035em] text-ink">Application tools on the page. Career context in the workspace.</h2>
+        </div>
+
+        <div class="grid gap-9 lg:grid-cols-2">
           <div>
-            <p class="font-mono text-xs text-subtle">FOUR CORE SURFACES</p>
-            <h2 class="mt-4 max-w-[10ch] text-3xl font-semibold tracking-[-0.04em] text-ink">The product, not a feature wall.</h2>
+            <p class="border-b border-border pb-3 font-mono text-xs uppercase tracking-[0.08em] text-subtle">On the application page</p>
+            <div>
+              {pageCapabilities.map(([title, detail]) => (
+                <article class="border-b border-border py-4">
+                  <h3 class="text-sm font-semibold text-ink">{title}</h3>
+                  <p class="mt-1.5 text-sm leading-6 text-muted">{detail}</p>
+                </article>
+              ))}
+            </div>
           </div>
-          <div class="grid border-t border-border sm:grid-cols-2">
-            {capabilityRows.map((item, index) => (
-              <article class:list={['min-h-[190px] border-b border-border p-5 sm:p-6', index % 2 === 0 && 'sm:border-r']}>
-                <div class="flex items-start justify-between gap-4"><h3 class="text-base font-semibold text-ink">{item.title}</h3><span class="font-mono text-[10px] text-subtle">0{index + 1}</span></div>
-                <p class="mt-7 font-mono text-[11px] text-subtle">{item.meta}</p>
-                <p class="mt-3 text-sm leading-6 text-muted">{item.detail}</p>
-              </article>
-            ))}
+          <div>
+            <p class="border-b border-border pb-3 font-mono text-xs uppercase tracking-[0.08em] text-subtle">In the workspace</p>
+            <div>
+              {workspaceCapabilities.map(([title, detail]) => (
+                <article class="border-b border-border py-4">
+                  <h3 class="text-sm font-semibold text-ink">{title}</h3>
+                  <p class="mt-1.5 text-sm leading-6 text-muted">{detail}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </div>
     </section>
 
     <section class="border-b border-border">
-      <div class="mx-auto grid max-w-[1200px] gap-12 px-5 py-20 lg:grid-cols-2 lg:px-7 lg:py-24" data-reveal>
+      <div class="mx-auto grid max-w-[1120px] gap-10 px-5 py-16 lg:grid-cols-2 lg:px-6 lg:py-20" data-reveal>
         <div>
-          <p class="font-mono text-xs text-subtle">WORKS TODAY</p>
-          <div class="mt-5 divide-y divide-border border-y border-border">
-            {worksToday.map((item) => <div class="flex items-center gap-3 py-3.5 text-sm text-ink"><span class="size-1.5 rounded-full bg-success"></span>{item}</div>)}
+          <p class="font-mono text-xs uppercase tracking-[0.08em] text-subtle">Works today</p>
+          <div class="mt-4 divide-y divide-border border-y border-border">
+            {worksToday.map((item) => <div class="flex items-center gap-3 py-3 text-sm text-ink"><span class="size-1.5 rounded-full bg-success"></span>{item}</div>)}
           </div>
         </div>
         <div>
-          <p class="font-mono text-xs text-subtle">INTENTIONALLY NOT SUPPORTED</p>
-          <div class="mt-5 divide-y divide-border border-y border-border">
-            {intentionallyNotSupported.map((item) => <div class="flex items-center gap-3 py-3.5 text-sm text-muted"><span class="size-1.5 rounded-full border border-border-strong"></span>{item}</div>)}
+          <p class="font-mono text-xs uppercase tracking-[0.08em] text-subtle">Intentional boundaries</p>
+          <div class="mt-4 divide-y divide-border border-y border-border">
+            {intentionallyNotSupported.map((item) => <div class="flex items-center gap-3 py-3 text-sm text-muted"><span class="size-1.5 rounded-full border border-border-strong"></span>{item}</div>)}
           </div>
-          <p class="mt-5 max-w-xl text-sm leading-6 text-muted">These are product boundaries, not roadmap omissions. Jobflow is designed to remove repetitive entry without becoming an autonomous application bot.</p>
+          <p class="mt-4 max-w-xl text-sm leading-6 text-muted">Jobflow removes repetitive entry without becoming an autonomous application bot.</p>
         </div>
       </div>
     </section>
 
     <section id="trust" class="border-b border-border bg-surface">
-      <div class="mx-auto grid max-w-[1200px] gap-12 px-5 py-20 lg:grid-cols-[0.72fr_1.28fr] lg:px-7 lg:py-24" data-reveal>
+      <div class="mx-auto grid max-w-[1120px] gap-10 px-5 py-16 lg:grid-cols-[0.72fr_1.28fr] lg:px-6 lg:py-20" data-reveal>
         <div>
-          <p class="font-mono text-xs text-subtle">TRUST IS A DATA PATH</p>
-          <h2 class="mt-4 max-w-[12ch] text-3xl font-semibold tracking-[-0.04em] text-ink">Your career data does not need a backend.</h2>
-          <p class="mt-5 max-w-md text-sm leading-6 text-muted">The strongest privacy claim is an inspectable implementation boundary. Jobflow keeps the core workflow local and leaves submission outside the extension.</p>
+          <p class="font-mono text-xs uppercase tracking-[0.08em] text-subtle">Data & privacy</p>
+          <h2 class="mt-3 max-w-[12ch] text-3xl font-semibold tracking-[-0.035em] text-ink">Your career data stays local.</h2>
+          <p class="mt-4 max-w-md text-sm leading-6 text-muted">The privacy model is an implementation boundary: core matching and storage stay on-device, while submission remains outside the extension.</p>
         </div>
-
         <div class="border-t border-border font-mono text-xs">
           {dataPaths.map(([subject, value]) => (
-            <div class="grid grid-cols-[1fr_auto] gap-6 border-b border-border py-4"><span class="text-muted">{subject}</span><span class="text-right text-ink">{value}</span></div>
+            <div class="grid grid-cols-[1fr_auto] gap-6 border-b border-border py-3.5"><span class="text-muted">{subject}</span><span class="text-right text-ink">{value}</span></div>
           ))}
         </div>
       </div>
     </section>
 
     <section class="border-b border-border">
-      <div class="mx-auto grid max-w-[1200px] gap-12 px-5 py-20 lg:grid-cols-[0.82fr_1.18fr] lg:px-7 lg:py-24" data-reveal>
+      <div class="mx-auto grid max-w-[1120px] gap-10 px-5 py-16 lg:grid-cols-[0.82fr_1.18fr] lg:px-6 lg:py-20" data-reveal>
         <div>
-          <p class="font-mono text-xs text-subtle">BUILT IN THE OPEN</p>
-          <h2 class="mt-4 max-w-[12ch] text-3xl font-semibold tracking-[-0.04em] text-ink">Inspect it. Build it. Change it.</h2>
-          <p class="mt-5 max-w-md text-sm leading-6 text-muted">Review the matcher, persistence, extension permissions, vault boundaries, privacy model, and compatibility strategy directly in the repository.</p>
+          <p class="font-mono text-xs uppercase tracking-[0.08em] text-subtle">Build & inspect</p>
+          <h2 class="mt-3 max-w-[12ch] text-3xl font-semibold tracking-[-0.035em] text-ink">Build Jobflow locally today.</h2>
+          <p class="mt-4 max-w-md text-sm leading-6 text-muted">There is no packaged public release yet. Build the verified Chromium extension from source and inspect the matcher, storage, privacy, and compatibility model directly.</p>
         </div>
 
-        <div class="overflow-hidden rounded-[14px] border border-border-strong bg-surface shadow-[0_18px_50px_rgb(0_0_0/0.08)]">
+        <div class="overflow-hidden rounded-lg border border-border-strong bg-surface shadow-[0_8px_24px_rgb(0_0_0/0.06)]">
           <div class="flex items-center justify-between border-b border-border px-4 py-3 font-mono text-[10px] text-subtle"><span>LOCAL BUILD</span><span>Chromium</span></div>
           <pre class="overflow-x-auto p-5 font-mono text-xs leading-7 text-ink"><code>git clone https://github.com/howlil/jobflow.git
 cd jobflow
 pnpm install --frozen-lockfile
 pnpm build</code></pre>
           <div class="flex flex-wrap gap-2 border-t border-border p-4">
-            <a class="premium-button inline-flex h-9 items-center rounded-md border border-border-strong px-3 text-xs font-medium text-ink" href="https://github.com/howlil/jobflow" target="_blank" rel="noreferrer">Source ↗</a>
-            <a class="premium-button inline-flex h-9 items-center rounded-md border border-border-strong px-3 text-xs font-medium text-ink" href="https://github.com/howlil/jobflow/blob/master/docs/privacy.md" target="_blank" rel="noreferrer">Privacy ↗</a>
-            <a class="premium-button inline-flex h-9 items-center rounded-md border border-border-strong px-3 text-xs font-medium text-ink" href="https://github.com/howlil/jobflow/blob/master/docs/compatibility.md" target="_blank" rel="noreferrer">Compatibility ↗</a>
+            <a class="landing-action inline-flex h-9 items-center rounded-md border border-border-strong px-3 text-xs font-medium text-ink" href="https://github.com/howlil/jobflow" target="_blank" rel="noreferrer">Source ↗</a>
+            <a class="landing-action inline-flex h-9 items-center rounded-md border border-border-strong px-3 text-xs font-medium text-ink" href="https://github.com/howlil/jobflow/blob/master/docs/privacy.md" target="_blank" rel="noreferrer">Privacy ↗</a>
+            <a class="landing-action inline-flex h-9 items-center rounded-md border border-border-strong px-3 text-xs font-medium text-ink" href="https://github.com/howlil/jobflow/blob/master/docs/compatibility.md" target="_blank" rel="noreferrer">Compatibility ↗</a>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="relative overflow-hidden">
-      <div class="hero-lines hero-lines-bottom" aria-hidden="true"></div>
-      <div class="relative z-10 mx-auto max-w-[1200px] px-5 py-24 text-center lg:px-7 lg:py-32" data-reveal>
-        <p class="font-mono text-xs text-subtle">JOBFLOW</p>
-        <h2 class="mx-auto mt-5 max-w-[13ch] text-4xl font-semibold tracking-[-0.05em] text-ink sm:text-5xl">Stop retyping the next application.</h2>
-        <p class="mx-auto mt-5 max-w-xl text-[15px] leading-7 text-muted">Keep one local career profile, review the fields that matter, and leave submission in your hands.</p>
-        <div class="mt-8 flex flex-wrap justify-center gap-3">
-          <a class="premium-button inline-flex h-10 items-center rounded-md bg-accent px-4 text-sm font-medium text-background" href="https://github.com/howlil/jobflow#local-development" target="_blank" rel="noreferrer">Build Jobflow ↗</a>
-          <a class="premium-button inline-flex h-10 items-center rounded-md border border-border-strong px-4 text-sm font-medium text-ink" href="https://github.com/howlil/jobflow" target="_blank" rel="noreferrer">Browse source</a>
+    <section>
+      <div class="mx-auto max-w-[1120px] px-5 py-20 lg:px-6 lg:py-24" data-reveal>
+        <div class="max-w-2xl">
+          <p class="font-mono text-xs uppercase tracking-[0.08em] text-subtle">Jobflow</p>
+          <h2 class="mt-3 text-4xl font-semibold tracking-[-0.045em] text-ink">Stop retyping the next application.</h2>
+          <p class="mt-4 max-w-xl text-[15px] leading-7 text-muted">Keep one local career profile, review uncertain fields, fill what is ready, and submit on the employer site yourself.</p>
+          <div class="mt-7 flex flex-wrap gap-3">
+            <a class="landing-action inline-flex h-10 items-center rounded-md bg-accent px-4 text-sm font-medium text-background" href="https://github.com/howlil/jobflow#local-development" target="_blank" rel="noreferrer">Build locally ↗</a>
+            <a class="landing-action inline-flex h-10 items-center rounded-md border border-border-strong px-4 text-sm font-medium text-ink" href="https://github.com/howlil/jobflow" target="_blank" rel="noreferrer">Browse source</a>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="border-t border-border">
-    <div class="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 py-6 text-xs text-subtle sm:flex-row sm:items-center sm:justify-between lg:px-7">
+    <div class="mx-auto flex max-w-[1120px] flex-col gap-3 px-5 py-6 text-xs text-subtle sm:flex-row sm:items-center sm:justify-between lg:px-6">
       <span>Jobflow · local-first career operations</span>
       <span>Chromium · deterministic core · explicit control</span>
     </div>
   </footer>
 
   <script>
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const showcaseRoot = document.querySelector('[data-showcase-root]');
 
     if (showcaseRoot) {
@@ -528,26 +503,10 @@ pnpm build</code></pre>
           const state = visible?.target.getAttribute('data-showcase-step');
           if (state) activate(state);
         },
-        { rootMargin: '-30% 0px -42% 0px', threshold: [0, 0.2, 0.45, 0.7] },
+        { rootMargin: '-30% 0px -42% 0px', threshold: [0, 0.25, 0.5, 0.75] },
       );
 
       steps.forEach((step) => observer.observe(step));
-    }
-
-    const stage = document.querySelector('[data-parallax-stage]');
-    const finePointer = window.matchMedia('(pointer: fine)').matches;
-    if (stage && finePointer && !reducedMotion) {
-      stage.addEventListener('pointermove', (event) => {
-        const rect = stage.getBoundingClientRect();
-        const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
-        const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
-        stage.style.setProperty('--stage-x', x.toFixed(3));
-        stage.style.setProperty('--stage-y', y.toFixed(3));
-      });
-      stage.addEventListener('pointerleave', () => {
-        stage.style.setProperty('--stage-x', '0');
-        stage.style.setProperty('--stage-y', '0');
-      });
     }
   </script>
 </BaseLayout>
