@@ -1,4 +1,5 @@
 ---
+import CapabilityShowcase from '../components/ui/CapabilityShowcase.astro';
 import KineticGrid from '../components/ui/KineticGrid.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
@@ -34,19 +35,6 @@ const showcaseSteps = [
     title: 'Keep the opportunity',
     text: 'Save the role to the local pipeline and mark it applied only after you submit on the employer site.',
   },
-];
-
-const pageCapabilities = [
-  ['Autofill', 'Analyze the current page, review uncertain mappings, fill ready fields, and attach recommended documents explicitly.'],
-  ['Pipeline', 'Review and save the exact job you are applying to without leaving the application page.'],
-  ['Sensitive', 'Unlock encrypted values separately and approve disclosure for the current site before sensitive fill.'],
-];
-
-const workspaceCapabilities = [
-  ['Career profile', 'Keep reusable experience, education, projects, preferences, links, and contact data in one place.'],
-  ['Application Profiles', 'Maintain lightweight role-specific variants and let the deterministic recommender choose from page context.'],
-  ['Documents', 'Store CVs and supporting files locally for explicit recommendation and attachment.'],
-  ['Autofill Memory', 'Inspect, delete, reset, or reuse remembered mappings and stable answers.'],
 ];
 
 const worksToday = [
@@ -366,39 +354,7 @@ const dataPaths = [
       </div>
     </section>
 
-    <section id="capabilities" class="border-b border-border bg-surface">
-      <div class="mx-auto max-w-[1120px] px-5 py-16 lg:px-6 lg:py-20" data-reveal>
-        <div class="mb-9 max-w-2xl">
-          <p class="font-mono text-xs uppercase tracking-[0.08em] text-subtle">Product architecture</p>
-          <h2 class="mt-3 text-3xl font-semibold tracking-[-0.035em] text-ink">Application tools on the page. Career context in the workspace.</h2>
-        </div>
-
-        <div class="grid gap-9 lg:grid-cols-2">
-          <div>
-            <p class="border-b border-border pb-3 font-mono text-xs uppercase tracking-[0.08em] text-subtle">On the application page</p>
-            <div>
-              {pageCapabilities.map(([title, detail]) => (
-                <article class="border-b border-border py-4">
-                  <h3 class="text-sm font-semibold text-ink">{title}</h3>
-                  <p class="mt-1.5 text-sm leading-6 text-muted">{detail}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-          <div>
-            <p class="border-b border-border pb-3 font-mono text-xs uppercase tracking-[0.08em] text-subtle">In the workspace</p>
-            <div>
-              {workspaceCapabilities.map(([title, detail]) => (
-                <article class="border-b border-border py-4">
-                  <h3 class="text-sm font-semibold text-ink">{title}</h3>
-                  <p class="mt-1.5 text-sm leading-6 text-muted">{detail}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <CapabilityShowcase />
 
     <section class="border-b border-border">
       <div class="mx-auto grid max-w-[1120px] gap-10 px-5 py-16 lg:grid-cols-2 lg:px-6 lg:py-20" data-reveal>
