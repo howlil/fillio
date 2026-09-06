@@ -1,59 +1,47 @@
 :root {
-  --app-bg: 235 236 233;
-  --app-surface: 247 248 246;
+  --app-bg: 246 247 248;
+  --app-surface: 255 255 255;
   --app-surface-raised: 255 255 255;
-  --app-surface-muted: 241 243 239;
-  --app-border: 224 227 221;
-  --app-border-strong: 201 206 197;
-  --app-ink: 42 48 55;
-  --app-muted: 89 97 107;
-  --app-subtle: 133 141 150;
-  --app-accent: 76 145 214;
-  --app-accent-strong: 43 116 188;
-  --app-accent-soft: 221 236 249;
-  --app-danger: 214 90 90;
-  --app-danger-soft: 252 238 238;
-  --app-warning: 201 138 45;
-  --app-warning-soft: 251 244 226;
-  --app-info: 76 145 214;
-  --app-info-soft: 232 243 252;
-  --app-success: 45 156 106;
-  --app-success-soft: 233 247 239;
-  --jobflow-shadow-card:
-    0 1px 2px rgb(31 41 55 / 0.04), 0 14px 32px rgb(31 41 55 / 0.07);
-  --jobflow-shadow-control:
-    0 1px 2px rgb(31 41 55 / 0.05), inset 0 1px 0 rgb(255 255 255 / 0.85);
-  --jobflow-shadow-active:
-    0 8px 20px rgb(76 145 214 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.24);
+  --app-surface-muted: 242 244 246;
+  --app-border: 226 229 233;
+  --app-border-strong: 199 204 211;
+  --app-ink: 31 36 43;
+  --app-muted: 83 91 102;
+  --app-subtle: 128 136 147;
+  --app-accent: 61 126 193;
+  --app-accent-strong: 39 98 158;
+  --app-accent-soft: 230 239 248;
+  --app-danger: 201 67 67;
+  --app-danger-soft: 252 239 239;
+  --app-warning: 183 121 28;
+  --app-warning-soft: 250 244 229;
+  --app-info: 61 126 193;
+  --app-info-soft: 234 242 250;
+  --app-success: 39 143 95;
+  --app-success-soft: 234 247 239;
 }
 
 .dark {
-  --app-bg: 23 26 29;
-  --app-surface: 30 34 38;
-  --app-surface-raised: 37 42 47;
-  --app-surface-muted: 32 37 42;
-  --app-border: 52 58 64;
-  --app-border-strong: 74 82 90;
-  --app-ink: 244 246 247;
-  --app-muted: 193 199 205;
-  --app-subtle: 142 150 158;
-  --app-accent: 118 181 237;
-  --app-accent-strong: 155 203 250;
-  --app-accent-soft: 36 57 76;
-  --app-danger: 241 126 126;
-  --app-danger-soft: 74 38 38;
-  --app-warning: 235 183 93;
-  --app-warning-soft: 70 56 31;
-  --app-info: 118 181 237;
-  --app-info-soft: 35 55 72;
-  --app-success: 92 202 149;
-  --app-success-soft: 35 67 51;
-  --jobflow-shadow-card:
-    0 1px 2px rgb(0 0 0 / 0.18), 0 18px 38px rgb(0 0 0 / 0.24);
-  --jobflow-shadow-control:
-    0 1px 2px rgb(0 0 0 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.05);
-  --jobflow-shadow-active:
-    0 10px 24px rgb(16 47 78 / 0.48), inset 0 1px 0 rgb(255 255 255 / 0.08);
+  --app-bg: 20 22 25;
+  --app-surface: 27 30 34;
+  --app-surface-raised: 30 34 38;
+  --app-surface-muted: 34 38 43;
+  --app-border: 48 53 59;
+  --app-border-strong: 72 79 87;
+  --app-ink: 242 244 246;
+  --app-muted: 188 194 201;
+  --app-subtle: 137 145 154;
+  --app-accent: 104 165 221;
+  --app-accent-strong: 139 187 231;
+  --app-accent-soft: 35 52 68;
+  --app-danger: 235 112 112;
+  --app-danger-soft: 70 37 37;
+  --app-warning: 224 171 80;
+  --app-warning-soft: 67 53 30;
+  --app-info: 104 165 221;
+  --app-info-soft: 34 52 68;
+  --app-success: 87 194 139;
+  --app-success-soft: 34 64 49;
 }
 
 html,
@@ -62,189 +50,142 @@ body {
 }
 
 body {
-  background-image:
-    radial-gradient(
-      circle at 13% 4%,
-      rgb(255 255 255 / 0.56),
-      transparent 30rem
-    ),
-    linear-gradient(
-      180deg,
-      rgb(var(--app-bg)) 0%,
-      color-mix(in srgb, rgb(var(--app-bg)) 94%, white 6%) 100%
-    );
-  background-attachment: fixed;
-}
-
-.dark body {
-  background-image:
-    radial-gradient(
-      circle at 12% 0%,
-      rgb(118 181 237 / 0.05),
-      transparent 28rem
-    ),
-    linear-gradient(
-      180deg,
-      rgb(var(--app-bg)) 0%,
-      color-mix(in srgb, rgb(var(--app-bg)) 92%, black 8%) 100%
-    );
+  background-image: none;
 }
 
 .jobflow-soft-shell {
-  gap: 0.75rem;
-  padding: 0.75rem;
+  gap: 0;
+  padding: 0;
 }
 
-.jobflow-sidebar,
-.jobflow-mobile-nav,
-.jobflow-header {
-  border: 1px solid rgb(var(--app-border));
-  background: rgb(var(--app-surface-raised));
-  box-shadow: var(--jobflow-shadow-card);
-}
-
-.jobflow-sidebar,
-.jobflow-sidebar-surface,
-.jobflow-mobile-nav,
-.jobflow-header {
-  border-radius: 1.5rem;
+.jobflow-sidebar {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .jobflow-sidebar-surface {
-  border: 1px solid rgb(var(--app-border));
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.44), transparent 30%),
-    rgb(var(--app-surface-raised));
+  border: 0;
+  border-right: 1px solid rgb(var(--app-border));
+  border-radius: 0;
+  background: rgb(var(--app-surface));
+  box-shadow: none !important;
 }
 
-.dark .jobflow-sidebar-surface {
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.025), transparent 30%),
-    rgb(var(--app-surface-raised));
+.jobflow-mobile-nav {
+  border: 0;
+  border-bottom: 1px solid rgb(var(--app-border));
+  border-radius: 0;
+  background: rgb(var(--app-surface));
+  box-shadow: none;
 }
 
 .jobflow-header {
-  top: 0.75rem;
+  top: 0;
   overflow: hidden;
+  border: 0;
+  border-bottom: 1px solid rgb(var(--app-border));
+  border-radius: 0;
+  background: rgb(var(--app-surface));
+  box-shadow: none;
 }
 
 .jobflow-workspace-canvas {
-  min-height: calc(100vh - 6.5rem);
-  margin-top: 0.75rem;
+  min-height: calc(100vh - 3rem);
+  margin: 0;
   padding: 0.75rem;
-  border: 1px solid color-mix(in srgb, rgb(var(--app-border)) 82%, white 18%);
-  border-radius: 1.75rem;
-  background:
-    linear-gradient(145deg, rgb(255 255 255 / 0.23), transparent 36%),
-    rgb(var(--app-surface-muted));
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.56);
-}
-
-.dark .jobflow-workspace-canvas {
-  border-color: rgb(var(--app-border));
-  background:
-    linear-gradient(145deg, rgb(255 255 255 / 0.018), transparent 36%),
-    rgb(var(--app-surface-muted));
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.025);
+  border: 0;
+  border-radius: 0;
+  background: rgb(var(--app-bg));
+  box-shadow: none;
 }
 
 .jobflow-bento-card,
 .profile-readiness,
 .workspace-tool-section {
   border: 1px solid rgb(var(--app-border)) !important;
-  border-radius: 1.4rem !important;
-  background:
-    linear-gradient(145deg, rgb(255 255 255 / 0.54), transparent 40%),
-    rgb(var(--app-surface-raised)) !important;
-  box-shadow: var(--jobflow-shadow-card) !important;
-}
-
-.dark .jobflow-bento-card,
-.dark .profile-readiness,
-.dark .workspace-tool-section {
-  background:
-    linear-gradient(145deg, rgb(255 255 255 / 0.025), transparent 40%),
-    rgb(var(--app-surface-raised)) !important;
+  border-radius: 0.625rem !important;
+  background: rgb(var(--app-surface)) !important;
+  box-shadow: none !important;
 }
 
 .profile-readiness,
 .workspace-tool-section {
   margin: 0 !important;
-  padding: 1rem !important;
+  padding: 0.75rem !important;
+}
+
+.profile-page {
+  padding: 0 !important;
 }
 
 .profile-page > div,
 .profile-page > form {
-  gap: 0.75rem !important;
+  gap: 0.5rem !important;
 }
 
 .record-card,
 .workspace-card,
 .jobflow-record-card {
-  border: 1px solid rgb(var(--app-border)) !important;
-  border-radius: 1rem !important;
-  background: rgb(var(--app-surface-raised)) !important;
-  box-shadow:
-    0 1px 2px rgb(31 41 55 / 0.04),
-    0 8px 18px rgb(31 41 55 / 0.05) !important;
+  border: 0 !important;
+  border-top: 1px solid rgb(var(--app-border)) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
-.dark .record-card,
-.dark .workspace-card,
-.dark .jobflow-record-card {
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 0.16),
-    0 10px 20px rgb(0 0 0 / 0.18) !important;
+.record-card:first-child,
+.workspace-card:first-child,
+.jobflow-record-card:first-child {
+  border-top: 0 !important;
 }
 
-.record-card {
-  padding: 0.875rem !important;
+.record-card,
+.jobflow-record-card {
+  padding: 0.625rem 0 !important;
 }
 
 .record-list,
 .document-list {
-  gap: 0.65rem !important;
+  gap: 0 !important;
 }
 
 .cv-dropzone {
-  border-radius: 1.25rem !important;
+  border-radius: 0.5rem !important;
   border-color: rgb(var(--app-border-strong)) !important;
-  background:
-    linear-gradient(145deg, rgb(var(--app-accent-soft) / 0.4), transparent 56%),
-    rgb(var(--app-surface-raised)) !important;
-  box-shadow: var(--jobflow-shadow-control) !important;
+  background: rgb(var(--app-surface-muted)) !important;
+  box-shadow: none !important;
+}
+
+.jobflow-button,
+.jobflow-icon-button,
+.jobflow-nav-item {
+  box-shadow: none !important;
+  transform: none !important;
 }
 
 .jobflow-button,
 .jobflow-icon-button {
-  border-radius: 0.75rem !important;
-  border-color: rgb(var(--app-border)) !important;
-  background: rgb(var(--app-surface-raised)) !important;
-  box-shadow: var(--jobflow-shadow-control) !important;
+  border-radius: 0.4375rem !important;
+  background: rgb(var(--app-surface)) !important;
   transition:
-    transform 140ms ease,
-    box-shadow 140ms ease,
-    background-color 140ms ease,
-    border-color 140ms ease,
-    color 140ms ease !important;
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease !important;
 }
 
 .jobflow-button:hover:not(:disabled),
 .jobflow-icon-button:hover:not(:disabled) {
   border-color: rgb(var(--app-border-strong)) !important;
-  transform: translateY(-1px);
+  background: rgb(var(--app-surface-muted)) !important;
 }
 
 .jobflow-button-primary,
 .jobflow-button-accent {
   border-color: rgb(var(--app-accent)) !important;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, rgb(var(--app-accent)) 92%, white 8%),
-    rgb(var(--app-accent))
-  ) !important;
+  background: rgb(var(--app-accent)) !important;
   color: white !important;
-  box-shadow: var(--jobflow-shadow-active) !important;
 }
 
 .jobflow-button-primary:hover:not(:disabled),
@@ -263,7 +204,7 @@ body {
 .jobflow-status,
 .profile-section > [role='status'],
 .profile-section > [role='alert'] {
-  border-radius: 0.8rem !important;
+  border-radius: 0.4375rem !important;
 }
 
 .jobflow-chip {
@@ -276,10 +217,10 @@ body {
 .workspace-tool-section input:not([type='checkbox']):not([type='file']),
 .workspace-tool-section select,
 .workspace-tool-section textarea {
-  border-radius: 0.75rem !important;
+  border-radius: 0.4375rem !important;
   border-color: rgb(var(--app-border)) !important;
-  background: rgb(var(--app-surface-raised)) !important;
-  box-shadow: var(--jobflow-shadow-control) !important;
+  background: rgb(var(--app-surface)) !important;
+  box-shadow: none !important;
 }
 
 .profile-page input:not([type='checkbox']):not([type='file']):focus,
@@ -289,57 +230,36 @@ body {
 .workspace-tool-section select:focus,
 .workspace-tool-section textarea:focus {
   border-color: rgb(var(--app-accent)) !important;
-  box-shadow:
-    0 0 0 4px rgb(var(--app-accent-soft) / 0.92),
-    var(--jobflow-shadow-control) !important;
+  box-shadow: 0 0 0 2px rgb(var(--app-accent-soft)) !important;
 }
 
 .description-preview-list {
-  border-radius: 0.9rem !important;
+  border-radius: 0.4375rem !important;
   background: rgb(var(--app-surface-muted)) !important;
 }
 
 .jobflow-empty-row {
   border: 0 !important;
-  border-radius: 1rem;
-  background: rgb(var(--app-surface-raised));
-  padding: 0.75rem 0.9rem !important;
-  box-shadow: var(--jobflow-shadow-control);
+  border-radius: 0;
+  background: transparent;
+  padding: 0.625rem 0 !important;
+  box-shadow: none;
 }
 
 @media (max-width: 767px) {
   .jobflow-soft-shell {
     display: block;
-    padding: 0.5rem;
-  }
-
-  .jobflow-mobile-nav,
-  .jobflow-header {
-    border-radius: 1.25rem;
-  }
-
-  .jobflow-header {
-    top: 0.5rem;
-    margin-top: 0.5rem;
+    padding: 0;
   }
 
   .jobflow-workspace-canvas {
     min-height: auto;
-    margin-top: 0.5rem;
     padding: 0.5rem;
-    border-radius: 1.35rem;
   }
 
   .jobflow-bento-card,
   .profile-readiness,
   .workspace-tool-section {
-    border-radius: 1.15rem !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .jobflow-button,
-  .jobflow-icon-button {
-    transform: none !important;
+    border-radius: 0.5rem !important;
   }
 }

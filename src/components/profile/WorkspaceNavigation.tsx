@@ -46,7 +46,7 @@ type WorkspaceNavigationProps = {
 };
 
 const navItemBase =
-  'jobflow-nav-item relative flex h-10 min-h-10 w-10 items-center justify-center rounded-[13px] border text-left text-sm font-medium transition-[width,padding,gap,background-color,border-color,color,transform,box-shadow] duration-150 focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-app-accent-soft group-data-[expanded=true]/sidebar:w-full group-data-[expanded=true]/sidebar:justify-start group-data-[expanded=true]/sidebar:gap-2 group-data-[expanded=true]/sidebar:px-2';
+  'jobflow-nav-item relative flex h-9 min-h-9 w-9 items-center justify-center rounded-[7px] border text-left text-[13px] font-medium transition-[width,padding,gap,background-color,border-color,color] duration-150 focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft group-data-[expanded=true]/sidebar:w-full group-data-[expanded=true]/sidebar:justify-start group-data-[expanded=true]/sidebar:gap-2 group-data-[expanded=true]/sidebar:px-2';
 
 export function WorkspaceNavigation({
   activeSection,
@@ -57,7 +57,7 @@ export function WorkspaceNavigation({
       <SelectField
         className="md:hidden"
         label="Section"
-        selectClassName="text-sm"
+        selectClassName="text-[13px]"
         value={activeSection}
         onChange={(event) => onChange(event.target.value as WorkspaceSection)}
       >
@@ -73,15 +73,15 @@ export function WorkspaceNavigation({
       </SelectField>
 
       <nav
-        className="hidden space-y-3 md:block"
+        className="hidden space-y-2 md:block"
         aria-label="Jobflow workspace sections"
       >
         {groups.map((group) => (
-          <div className="pt-2 first:pt-0" key={group.label}>
-            <p className="pointer-events-none m-0 max-h-0 overflow-hidden px-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-app-subtle opacity-0 transition-[max-height,margin,opacity] duration-150 group-data-[expanded=true]/sidebar:mb-1 group-data-[expanded=true]/sidebar:max-h-5 group-data-[expanded=true]/sidebar:opacity-100">
+          <div className="pt-1.5 first:pt-0" key={group.label}>
+            <p className="pointer-events-none m-0 max-h-0 overflow-hidden px-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-app-subtle opacity-0 transition-[max-height,margin,opacity] duration-150 group-data-[expanded=true]/sidebar:mb-1 group-data-[expanded=true]/sidebar:max-h-4 group-data-[expanded=true]/sidebar:opacity-100">
               {group.label}
             </p>
-            <div className="grid gap-1.5">
+            <div className="grid gap-1">
               {group.items.map((item) => {
                 const Icon = item.icon;
                 const active = activeSection === item.id;
@@ -89,8 +89,8 @@ export function WorkspaceNavigation({
                   <button
                     className={`${navItemBase} ${
                       active
-                        ? 'border-app-accent/25 bg-app-accent-soft text-app-accent-strong shadow-[inset_0_1px_0_rgb(255_255_255/0.7),0_5px_14px_rgb(var(--app-accent)/0.12)]'
-                        : 'border-transparent bg-transparent text-app-text hover:border-app-border hover:bg-app-raised hover:text-app-ink hover:shadow-[0_4px_12px_rgb(31_41_55/0.05)]'
+                        ? 'border-app-accent/20 bg-app-accent-soft text-app-accent-strong'
+                        : 'border-transparent bg-transparent text-app-text hover:border-app-border hover:bg-app-muted hover:text-app-ink'
                     }`}
                     type="button"
                     key={item.id}
@@ -102,10 +102,10 @@ export function WorkspaceNavigation({
                     <Icon
                       className="shrink-0"
                       aria-hidden="true"
-                      size={19}
+                      size={18}
                       strokeWidth={active ? 2 : 1.8}
                     />
-                    <span className="pointer-events-none max-w-0 overflow-hidden truncate whitespace-nowrap opacity-0 transition-[max-width,opacity] duration-150 group-data-[expanded=true]/sidebar:max-w-[168px] group-data-[expanded=true]/sidebar:opacity-100">
+                    <span className="pointer-events-none max-w-0 overflow-hidden truncate whitespace-nowrap opacity-0 transition-[max-width,opacity] duration-150 group-data-[expanded=true]/sidebar:max-w-[152px] group-data-[expanded=true]/sidebar:opacity-100">
                       {item.label}
                     </span>
                   </button>

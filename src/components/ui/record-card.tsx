@@ -11,12 +11,12 @@ export function RecordCard({
   return (
     <article
       className={classes(
-        'jobflow-record-card relative grid gap-3 rounded-[16px] border border-app-border bg-app-raised p-3.5 shadow-[0_1px_2px_rgb(31_41_55/0.04),0_8px_18px_rgb(31_41_55/0.05)]',
+        'jobflow-record-card relative grid gap-2 border-t border-app-border py-2.5 first:border-t-0',
         className,
       )}
       {...props}
     >
-      {action ? <div className="absolute right-3 top-3">{action}</div> : null}
+      {action ? <div className="absolute right-0 top-2.5">{action}</div> : null}
       {children}
     </article>
   );
@@ -36,22 +36,22 @@ export function RecordHeader({
   return (
     <div
       className={classes(
-        'grid min-w-0 gap-1 pr-9 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start sm:gap-x-3',
+        'grid min-w-0 gap-0.5 pr-9 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start sm:gap-x-3',
         className,
       )}
     >
-      <div className="grid min-w-0 gap-1">
-        <strong className="truncate text-sm font-semibold text-app-ink">
+      <div className="grid min-w-0 gap-0.5">
+        <strong className="truncate text-[13px] font-semibold text-app-ink">
           {title}
         </strong>
         {context ? (
-          <span className="truncate text-[13px] font-medium text-app-subtle">
+          <span className="truncate text-xs font-medium text-app-subtle">
             {context}
           </span>
         ) : null}
       </div>
       {meta ? (
-        <span className="text-[13px] font-medium text-app-subtle sm:text-right">
+        <span className="text-xs font-medium text-app-subtle sm:text-right">
           {meta}
         </span>
       ) : null}
