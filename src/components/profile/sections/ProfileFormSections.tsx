@@ -31,7 +31,7 @@ export function ProfileFormSections({
   const sectionProps = { activeSection, changeProfile, profile };
 
   return (
-    <div className="grid gap-3">
+    <div className="grid gap-0">
       <PersonalDetailsSection {...sectionProps} />
       <ExperienceSection {...sectionProps} />
       <CareerRecordsSection {...sectionProps} />
