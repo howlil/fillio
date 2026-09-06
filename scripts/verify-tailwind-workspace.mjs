@@ -34,7 +34,9 @@ for (const [label, pattern] of forbiddenTailwindPatterns) {
 }
 
 const cssFiles = await collectCssFiles(uiRoot);
-const unexpectedCss = cssFiles.filter((path) => resolve(path) !== resolve(tailwindPath));
+const unexpectedCss = cssFiles.filter(
+  (path) => resolve(path) !== resolve(tailwindPath),
+);
 if (unexpectedCss.length > 0) {
   throw new Error(
     `Component CSS files are not allowed in the extension workspace:\n${unexpectedCss
@@ -48,13 +50,8 @@ const cssImports = [
   ...optionsMain.matchAll(/import\s+['"]([^'"]+\.css)['"];?/g),
 ].map((match) => match[1]);
 const expectedCssImport = '../../src/components/ui/tailwind.css';
-if (
-  cssImports.length !== 1 ||
-  cssImports[0] !== expectedCssImport
-) {
+if (cssImports.length !== 1 || cssImports[0] !== expectedCssImport) {
   throw new Error(
     `Options workspace must import only ${expectedCssImport}; found ${cssImports.join(', ') || 'none'}.`,
   );
 }
-
-console.log('Workspace styling is Tailwind-owned with no component CSS cascade.');
