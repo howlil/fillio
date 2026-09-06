@@ -11,12 +11,12 @@ export function RecordCard({
   return (
     <article
       className={classes(
-        'relative grid gap-3 border-t border-app-border bg-app-surface py-3 shadow-none first:border-t-0',
+        'jobflow-record-card relative grid gap-3 rounded-[16px] border border-app-border bg-app-raised p-3.5 shadow-[0_1px_2px_rgb(31_41_55/0.04),0_8px_18px_rgb(31_41_55/0.05)]',
         className,
       )}
       {...props}
     >
-      {action ? <div className="absolute right-0 top-3">{action}</div> : null}
+      {action ? <div className="absolute right-3 top-3">{action}</div> : null}
       {children}
     </article>
   );

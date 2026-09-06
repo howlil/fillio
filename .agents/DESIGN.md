@@ -2,145 +2,156 @@
 
 This file is the visual source of truth for Jobflow. Product behavior lives in `PROJECT.md`; software/runtime boundaries live in `ARCHITECTURE.md`.
 
-Jobflow is a local-first career operations tool. It should feel like a compact desktop workspace, not a generic SaaS dashboard assembled from cards and not a decorative AI assistant.
+## 1. Design direction
 
-## 1. Product character
+Jobflow uses **Soft Skeuomorphic Bento UI**: a calm career workspace built from softly elevated modular surfaces, large rounded geometry, restrained pastel depth, and clear task-oriented hierarchy.
 
-The authenticated/options workspace and the in-page assistant are:
+The reference character is closer to a polished desktop file/storage utility than a generic SaaS dashboard:
 
-- operational rather than promotional;
-- compact rather than spacious;
-- flat rather than elevated;
-- monochrome by default;
-- information-dense without tiny text;
-- structured by alignment, padding, typography, and 1px strokes;
-- explicit about saved, detected, sensitive, ambiguous, and actionable state.
+- warm cloud-gray workspace background;
+- white/near-white raised tiles;
+- large rounded cards and containers;
+- very soft ambient shadows plus subtle inner highlights;
+- selective blue as the primary product accent;
+- low-saturation semantic colors for warning/error/success states;
+- simplified object-like visual treatment where it improves recognition;
+- compact operational content inside visually calm bento surfaces.
 
-Avoid decorative gradients, glassmorphism, glowing chrome, card stacks, unnecessary shadows, oversized whitespace, decorative accent colors, and explanatory filler.
+This is **not** glassmorphism. Ordinary surfaces are opaque and do not depend on backdrop blur. It is also not full neumorphism: controls must retain enough boundary contrast, focus visibility, and semantic clarity to remain usable.
 
-Color is semantic. Elevation represents a real overlay layer. Rounded rectangles represent interactive controls or genuine inset entities, not every level of hierarchy.
+## 2. Product adaptation
 
-## 2. Application shell
+The style must serve Jobflow's actual jobs: manage applications, maintain reusable profile data, import documents, review autofill state, and handle sensitive fields safely.
 
-### Desktop workspace
+Therefore:
 
-- Global header height: **56px**.
-- Collapsed navigation rail width: **56px**.
-- Navigation expands only through an explicit **Expand sidebar** control and collapses through an explicit **Collapse sidebar** control.
-- Expanded navigation is approximately **240px** and overlays the workspace rather than resizing it.
-- Expanded navigation MUST NOT resize or reflow main workspace content.
-- Main workspace begins immediately after the 56px rail and below the 56px header.
-- Sidebar owns navigation only.
-- Header owns current workspace context and suitable global/status metadata.
-- Hover or focus may improve a control's visual affordance, but MUST NOT silently change persistent sidebar expansion state.
+- bento grouping may change visual hierarchy, never workflow ownership;
+- critical state, consent, validation, and destructive actions remain explicit;
+- low contrast is used for ambient structure, not for important text or controls;
+- decorative pastel color never substitutes for semantic state;
+- forms stay dense enough for real career-data editing;
+- the in-page assistant remains an overlay and never reflows the host page.
 
-### Workspace geometry
+## 3. Foundation palette
 
-Full-tab career/application/data operations are edge-to-edge structural workspace content.
-
-- Do not add a generic route-level `max-w-*` wrapper.
-- Do not separate first-level regions with floating-card gaps.
-- Consecutive first-level operational regions use structural dividers.
-- Use internal padding to make fields readable; do not create page-level whitespace solely to make sections look like cards.
-- Dialogs, popovers, repeated records, dropzones, and other genuinely inset interaction regions may have an explicit boundary.
-
-### Mobile
-
-Mobile uses the same single navigation owner with a conventional full-width selector rather than the desktop rail. Preserve the same authorized destinations and interaction semantics. Do not duplicate interactive navigation trees merely to support responsive layout.
-
-## 3. One-workspace-fill invariant
-
-Ordinary operational workspace regions use one base surface.
-
-Do not create hierarchy by alternating neutral fills between:
-
-- first-level sections;
-- section headers and bodies;
-- application/pipeline regions;
-- profile sections;
-- table-like lists;
-- pagination/toolbars;
-- idle inputs and secondary actions;
-- ordinary hover states.
-
-Hierarchy is communicated by:
-
-- 1px dividers and boundaries;
-- stroke contrast;
-- alignment and spacing;
-- typography;
-- semantic dots/icons;
-- focus and selection indicators.
-
-Different fills are reserved for:
-
-- semantic warning/error/success/info feedback;
-- primary/destructive actions;
-- true overlays;
-- technical output when a dedicated technical surface exists;
-- selected navigation where a restrained neutral fill communicates selection.
-
-## 4. Foundation tokens
-
-Runtime token sources:
-
-- `tailwind.config.ts` maps semantic Tailwind names to CSS variables;
-- `src/components/ui/tailwind.css` owns light/dark token values and compatibility grammar;
-- `src/components/floating/floating-styles.ts` mirrors the same visual contract inside Shadow DOM.
+Runtime tokens remain centralized in the shared UI layer.
 
 ### Light
 
 ```text
-background        #FAFAFA
-surface           #FFFFFF
-surface-muted     #F7F7F7
+background        #EBECE9
+surface           #F7F8F6
 surface-raised    #FFFFFF
-border            #DEDEDE
-border-strong     #C9C9C9
-ink               #171717
-muted             #525252
-subtle            #737373
-accent            #171717
-accent-strong     #0A0A0A
-accent-soft       #E5E5E5
-danger            #DC2626
-warning           #D97706
-info              #0284C7
-success           #059669
+surface-muted     #F1F3EF
+border            #E0E3DD
+border-strong     #C9CEC5
+ink               #2A3037
+text              #59616B
+subtle            #858D96
+accent            #4C91D6
+accent-strong     #2B74BC
+accent-soft       #DDECF9
+success           #2D9C6A
+warning           #C98A2D
+danger            #D65A5A
+info               #4C91D6
 ```
 
-### Dark token readiness
+### Dark
+
+Dark mode preserves the same soft-depth model rather than falling back to flat black.
 
 ```text
-background        #0A0A0A
-surface           #141414
-surface-muted     #1A1A1A
-surface-raised    #171717
-border            #303030
-border-strong     #4A4A4A
-ink               #FAFAFA
-muted             #A3A3A3
-subtle            #737373
-accent            #FAFAFA
-accent-strong     #FFFFFF
-accent-soft       #333333
-danger            #F87171
-warning           #FBBF24
-info              #38BDF8
-success           #34D399
+background        #171A1D
+surface           #1E2226
+surface-raised    #252A2F
+surface-muted     #20252A
+border            #343A40
+border-strong     #4A525A
+ink               #F4F6F7
+text              #C1C7CD
+subtle            #8E969E
+accent            #76B5ED
+accent-strong     #9BCBFA
+accent-soft       #24394C
 ```
 
-Dark tokens exist so components do not hard-code a light-only visual grammar. Theme activation is a separate product/runtime concern; do not invent a second palette in feature code.
+## 4. Geometry
 
-## 5. Typography
+Canonical geometry:
 
-Primary family:
+```text
+workspace outer radius      24–30px
+first-level bento card      20–24px
+record / inset entity       14–18px
+input / button              10–12px
+pill                         999px
+control height              36px minimum
+coarse-pointer target       44px minimum
+```
+
+Rounded geometry is a primary visual device in this system, but nesting still needs restraint. A field inside a record inside a bento card should not gain another decorative wrapper unless that wrapper has an interaction or grouping purpose.
+
+## 5. Depth model
+
+Depth should feel soft and diffuse.
+
+Use three levels:
+
+1. **Workspace canvas** — large cloud-gray inset container.
+2. **Raised bento tile** — white/near-white card with soft ambient shadow and faint top highlight.
+3. **Inset control/entity** — shallow boundary, soft inner highlight, little or no ambient shadow.
+
+Typical raised-card shadow:
+
+```css
+0 1px 2px rgb(31 41 55 / 0.04),
+0 14px 32px rgb(31 41 55 / 0.07)
+```
+
+Do not use hard drop shadows, black halos, large glow fields, or glass blur as default hierarchy.
+
+## 6. Application shell
+
+### Desktop
+
+- The workspace uses a padded outer canvas instead of edge-to-edge structural chrome.
+- The collapsed navigation rail remains explicit and user-controlled.
+- Expanded navigation still overlays the workspace rather than resizing application content.
+- Sidebar, header, and active workspace canvas are distinct soft surfaces.
+- Navigation remains compact; the design must not trade workspace width for decoration.
+
+### Mobile
+
+- Use the same navigation owner and destinations.
+- The mobile navigation block becomes a rounded raised surface.
+- Workspace gutters shrink, but cards keep enough radius and padding to preserve the design language.
+
+## 7. Bento composition
+
+Jobflow's bento system is **functional**, not a decorative dashboard grid.
+
+Use cards for independently understandable modules such as:
+
+- pipeline summaries and views;
+- profile sections;
+- document import and document records;
+- application records;
+- backup/recovery operations;
+- autofill-memory records;
+- sensitive-data workflows.
+
+Cards may remain single-column when the task requires width. Do not force every route into a 3-column dashboard. Responsive bento composition means modular raised surfaces with deliberate sizing, not arbitrary masonry.
+
+## 8. Typography
+
+Primary family remains:
 
 ```text
 Inter Variable -> Inter -> system sans
 ```
 
-Technical identifiers/output may use:
+Technical identifiers may use:
 
 ```text
 IBM Plex Mono -> system monospace
@@ -149,331 +160,170 @@ IBM Plex Mono -> system monospace
 Targets:
 
 ```text
-body/control/table     14–15px
-section title          15–16px
-supporting text        13px
-technical mono         12–13px
-real page/object title 20–24px when needed
+body/control/table      14–15px
+section title           15–17px
+supporting text         13px
+technical mono          12–13px
+page/object title       18–22px
 ```
 
-Compactness comes from layout and chrome, not unreadable 10–11px body text. Uppercase eyebrow text may use 11px because it is short navigational metadata. Tiny numeric notification badges may be smaller when their geometry requires it; body/helper/record metadata may not use that exception.
+The soft visual treatment must not reduce text contrast below comfortable reading levels.
 
-## 6. Geometry
+## 9. Controls
 
-Canonical desktop control geometry:
-
-```text
-text/input/select/button height   36px
-icon-only control                 36x36px
-coarse-pointer target             44px minimum
-control text                      14px
-control radius                    6px
-overlay radius                    8px
-structural stroke                 1px
-```
+### Primary action
 
-Button size variants must not create route-local height drift. Horizontal padding may vary when needed; adjacent actions and fields align vertically.
+- blue accent surface;
+- white text;
+- soft blue shadow;
+- 10–12px radius;
+- restrained hover lift/darken;
+- one dominant primary action per local workflow.
 
-## 7. Strokes and elevation
+### Secondary/default
 
-- Structural dividers are 1px.
-- First-level workspace regions do not use rounded outer silhouettes.
-- First-level workspace regions do not use shadows.
-- Repeated entity records and explicit inset controls may use a 6px radius and 1px border.
-- Overlays/popovers may use an 8px radius and `0 12px 28px rgb(0 0 0 / 0.14)` shadow.
-- The in-page assistant is a true overlay and may use overlay elevation; its internal sections remain flat.
-- Avoid border nesting where every parent and child draws a full rectangle.
+- raised light surface;
+- quiet border;
+- shallow ambient shadow;
+- no unnecessary accent fill.
 
-## 8. Controls
+### Inputs
 
-Inputs and actions belong to one control system.
+- raised/inset white surface;
+- low-contrast border;
+- faint inner top highlight;
+- clear blue focus boundary/ring;
+- disabled state remains visibly non-editable.
 
-<<<<<<< HEAD
-### Idle
-=======
-The assistant overlays the host page and never becomes part of the site's layout. It is a compact contextual popup, not a sidebar or drawer.
->>>>>>> origin/master
+### Danger
 
-- transparent fill inherited from parent surface;
-- visible low-contrast border;
-- readable neutral text.
+Danger remains semantic red. Never recolor destructive actions blue merely for visual consistency.
 
-<<<<<<< HEAD
-### Hover
+## 10. Cards and records
 
-- fill normally remains unchanged;
-- boundary/text may become slightly clearer;
-- no decorative accent color.
+### First-level bento card
 
-### Focus
+- 20–24px radius;
+- raised surface;
+- low-contrast border;
+- soft ambient shadow;
+- 16–20px internal padding;
+- clear title/context/action ownership.
 
-- focus is the strongest normal boundary state;
-- use the shared monochrome focus border/ring;
-- focus must remain visible in supported themes.
-=======
-```text
-position: fixed
-right: 14–18px
-bottom: 14–18px
-approx. 46–48px circle
-highest extension interaction z-index
-```
+### Repeated record
 
-Expanded popup:
+- 14–18px radius;
+- raised or slightly inset surface;
+- 1px subtle boundary;
+- smaller shadow than its parent;
+- compact 12–14px padding.
 
-```text
-position: fixed
-right: 12–18px
-bottom: ~70–78px
-width: min(~390px, viewport minus safe gutters)
-max-height: viewport minus launcher/header clearance
-rounded bordered popover
-internal content scroll only
-```
+Avoid stacking several equally strong shadows. Parent depth should be stronger than child depth.
 
-The popup has exactly three top-level tabs:
+## 11. Color usage
 
-```text
-Autofill
-  page analysis, Application Profile, safe fill, unresolved review,
-  remembered answers, explicit document attachment, local completion status
+Blue is the product accent for:
 
-Pipeline
-  review/save current job, follow-up details, explicit mark-as-applied
+- primary actions;
+- selected navigation;
+- focus;
+- active tabs;
+- intentional highlighted objects.
 
-Sensitive
-  sensitive-field review, vault unlock/setup, explicit current-site fill
-```
+Pastel pink, lilac, and related soft tones may be used only for secondary visualization or categorical distinction where meaning is clear. They are not default decoration for every card.
 
-Unresolved-field review is a subflow of **Autofill**, not a fourth top-level tab. The launcher remains the single persistent in-page entry point. Do not restore a full-height right drawer or mid-right edge handle unless the product interaction model is explicitly changed again.
+Semantic colors retain their meanings:
 
-On narrow viewports the popup uses viewport gutters and bounded height rather than becoming a permanent full-screen panel. The assistant is mounted in Shadow DOM; its styling isolation is intentional and must not be removed merely because the workspace uses Tailwind.
->>>>>>> origin/master
+- green = success;
+- amber = warning/due attention;
+- red = destructive/error;
+- blue = product action/info.
 
-### Disabled/read-only
+Never rely on color alone for critical states.
 
-Use muted text and restrained muted fill only when needed to make non-editability unambiguous.
+## 12. Navigation
 
-### Actions
+- Collapsed navigation remains icon-first and keyboard accessible.
+- Active destination uses a soft blue selected tile rather than monochrome inversion.
+- Expanded labels appear within the same raised sidebar surface.
+- Group headings are quiet metadata, not hard section bars.
+- Generic UI icons come from `lucide-react`.
+- Icon-only controls require accessible labels/titles.
 
-- Primary: monochrome inversion; one dominant action per local workflow surface.
-- Secondary/default: transparent fill + neutral border.
-- Ghost: borderless/low emphasis until interaction.
-- Danger: semantic danger only for destructive actions.
-- Loading/disabled states preserve geometry.
+## 13. Motion
 
-Reuse `Button`, `IconButton`, `TextField`, `TextareaField`, `SelectField`, `CheckboxField`, and shared compatibility classes. Do not introduce route-local button/input palettes.
+Use Motion for React only where it clarifies spatial change:
 
-## 9. Sections and repeated records
+- sidebar width transition;
+- overlay/panel enter and exit;
+- meaningful view transitions.
 
-### First-level workspace sections
+CSS transitions handle:
 
-First-level profile/application/data sections are structural regions:
+- hover lift;
+- shadow change;
+- border/focus changes;
+- button press feedback.
 
-```text
-section header/context
----------------------- 1px divider when open/needed
-section body
-====================== divider to next first-level region
-```
+Motion should be short and damped. The style is soft, not floaty. Respect `prefers-reduced-motion` everywhere.
 
-They are not floating cards.
+## 14. In-page assistant
 
-### Repeated records
+The assistant remains isolated in Shadow DOM and overlays the host page.
 
-Experience, education, applications, variants, projects, and other repeated entities may use an inset record boundary because each row/entity is independently actionable.
+Its visual direction should converge on the same system:
 
-Record grammar:
+- rounded raised panel;
+- soft border and shadow;
+- blue active/primary states;
+- white/near-white controls;
+- compact information density;
+- semantic warnings and sensitive states remain explicit.
 
-- 1px border;
-- 6px radius;
-- shared workspace/surface fill;
-- no shadow;
-- consistent 12px internal spacing;
-- clear title/context/meta;
-- local actions owned by the record.
+Do not convert it into a permanent sidebar, full-screen sheet, glass panel, or decorative chat assistant.
 
-## 10. Navigation
+## 15. Accessibility and safety invariants
 
-Desktop sidebar defaults to the 56px icon rail and uses explicit user-owned expansion state.
+The visual refactor must preserve:
 
-- **Expand sidebar** changes the overlay rail from 56px to approximately 240px.
-- **Collapse sidebar** returns it to 56px.
-- Expansion/collapse does not reflow the main workspace.
-- Labels are revealed only while expanded; collapsed icons retain accessible names/tooltips.
-- Active navigation may use a restrained neutral fill because it communicates selection.
-- Idle navigation does not show persistent borders.
-- Generic UI icons come from `lucide-react` only.
-- Icon semantics must match the actual operation.
-- Icon-only controls require an accessible label/title where appropriate.
+- keyboard operation;
+- visible focus;
+- readable text contrast;
+- explicit disabled/loading states;
+- screen-reader labels;
+- error and validation visibility;
+- sensitive-data consent boundaries;
+- explicit document attachment actions;
+- explicit application-state changes;
+- reduced-motion behavior.
 
-## 11. Status and semantic feedback
+Soft visual hierarchy may never obscure a safety or consent boundary.
 
-Ordinary runtime/state metadata should prefer a small status dot + readable text when a full alert is unnecessary.
-
-Semantic surfaces are reserved for states that require explanation or action:
-
-- success;
-- warning;
-- danger/error;
-- info.
-
-Do not turn every status into a tinted pill. Do not repeat the same state in nearby components without a functional reason. Never hide destructive, sensitive, stale, blocking validation, or failure information to make the UI cleaner.
-
-## 12. Pipeline and data-dense regions
-
-Lists/tables are workspace content, not cards.
-
-Recommended order:
-
-```text
-context/title
-local toolbar
-column/list header when applicable
-rows
-pagination/result count
-```
-
-Pipeline lanes share the normal workspace/surface fill. Lane grouping may use a 1px boundary and 6px radius but not a tinted neutral background or elevation. Long URLs, job titles, company names, document names, and identifiers truncate or wrap deliberately rather than stretching the workspace.
-
-## 13. Floating in-page assistant
-
-The assistant remains isolated in Shadow DOM and overlays the host page. Styling isolation is intentional.
-
-It uses the same system:
-
-- 14px control/body text;
-- 13px support text;
-- 36px controls;
-- 6px control radius;
-- `#DEDEDE`/`#C9C9C9` structural strokes;
-- monochrome primary action;
-- semantic color only for real state;
-- no glass/background blur;
-- no card stack inside the panel;
-- one overlay shadow for the panel/launcher layer only.
-
-Internal panel sections are separated by dividers. Fields are transparent at rest. The host page must never be reflowed by the assistant.
-
-## 14. Product interaction rules
-
-Design must preserve the existing safety/consent model.
-
-### Autofill
-
-Expose semantic states such as Ready, Needs review, Unknown, and Sensitive. Never rely on color alone. Review keeps accept/remap/skip behavior where applicable.
-
-### CV import
-
-```text
-Choose PDF/DOCX/TXT
--> local extraction
--> deterministic parser
--> review draft/conflicts
--> explicit Apply selected data
-```
-
-Selecting a file never silently overwrites the profile.
-
-### Sensitive data
-
-```text
-detect sensitive field
--> show label/count only
--> user opens Sensitive view
--> unlock vault if needed
--> explicit current-site fill action
-```
-
-Unlocking is not disclosure consent.
-
-### Document attachment
-
-Recommendation never authorizes automatic attachment or submission.
-
-## 15. Copy
-
-Operational copy is factual and short. Prefer state + data + action.
-
-Default budget:
-
-- page subtitle: 0–1 short sentence;
-- section description: omit when title/data already explain it;
-- helper text: one short line for a non-obvious constraint;
-- empty state: one concise sentence + direct action;
-- warning: reason + consequence + next action.
-
-Avoid marketing claims, generic AI-assistant language, and repeated explanations of local-first behavior when the interface already makes it clear.
-
-## 16. Responsive, motion, accessibility
-
-- Desktop remains the primary density target for the options workspace.
-- Mobile exposes the same core navigation destinations through the same navigation owner.
-- Preserve keyboard access and visible focus states.
-- Color is never the only indicator of critical state.
-- Coarse-pointer controls raise targets to at least 44px.
-- Respect `prefers-reduced-motion` globally and inside Shadow DOM.
-- Avoid noisy live announcements during background/local refresh.
-
-### Motion ownership
-
-Use **Motion for React** (`motion/react`) only when motion materially improves spatial orientation or explains presence/state change.
-
-Approved Motion owners:
-
-- desktop sidebar width transition and sidebar-label reveal;
-- true overlay/popover enter/exit presence;
-- in-page assistant panel enter/exit;
-- in-page assistant view changes where the user moves between Home, Pipeline, Review, and Sensitive contexts.
-
-Keep these as CSS transitions instead of Motion:
-
-- hover/focus color and stroke changes;
-- button press feedback;
-- field focus/validation styling;
-- ordinary table/list rows;
-- static forms and section layout;
-- routine loading/status copy.
-
-Motion characteristics:
-
-- sidebar width may use a restrained critically damped spring with no bounce-heavy character;
-- overlays/view changes use short approximately 120–180ms opacity/translation transitions;
-- do not animate large decorative distances, continuous loops, shimmer, glow, or gratuitous scale;
-- one component has one transition owner: do not stack a legacy CSS keyframe on top of Motion;
-- reduced-motion mode collapses these transitions to effectively immediate state changes.
-
-## 17. Explicit anti-patterns
+## 16. Anti-patterns
 
 Do not introduce:
 
-- glassmorphism or backdrop blur as generic hierarchy;
-- first-level card stacks separated by large gaps;
-- alternating neutral section fills;
-- decorative shadows on ordinary sections/records;
-- route-local button/input palettes;
-- route-local control heights;
-- rounded containers at every hierarchy level;
-- tinted pill badges for ordinary metadata;
-- decorative accent colors;
-- 10–11px body/helper text everywhere;
-- full-page loaders for local operations;
-- duplicated navigation/context labels;
-- hover-only persistent navigation state;
-- multiple animation systems owning the same transition;
-- hidden safety/error information for visual cleanliness.
+- glassmorphism/backdrop blur as the main surface language;
+- hard black shadows;
+- glowing neon accents;
+- gradient text;
+- giant marketing-style hero typography inside the product;
+- arbitrary 3-column dashboards for workflows that need full width;
+- pastel color on every card without meaning;
+- unreadably pale body text;
+- deeply nested rounded containers with equal visual weight;
+- decorative animation loops;
+- duplicated navigation trees;
+- hidden validation, failure, destructive, or sensitive state.
 
-## 18. Ownership and change rule
+## 17. Ownership rule
 
-Before implementing UI/layout/styling work:
+When adding or changing UI:
 
-1. Read this file.
-2. Identify the shared token/primitive/shell that owns the visual behavior.
-3. Fix systemic behavior centrally rather than patching many feature files.
-4. Remove migration guards once their feature call-sites have been normalized; do not make compatibility overrides the permanent design architecture.
-5. Keep feature-local overrides only when the workflow is genuinely different.
-6. Preserve product behavior, consent boundaries, accessibility, loading, empty, disabled, focus, and error states.
-7. Use Motion only for the approved presence/geometry transitions above and keep reduced-motion behavior equivalent.
-8. Run repository-owned unit tests, typecheck, lint/format checks, and production build appropriate to the affected frontend/extension scope.
+1. Reuse shared tokens and primitives first.
+2. Preserve the soft-bento depth hierarchy: canvas -> card -> inset entity/control.
+3. Keep workflow semantics and safety behavior unchanged unless the product change explicitly requires it.
+4. Update this contract when intentionally changing the design language.
+5. Verify typecheck, tests, lint/format, and production build for the affected extension surface.
 
-The target is one coherent Jobflow workspace: **same neutral fill, structural strokes, semantic color only when meaningful, one control geometry, repeated entities without decorative elevation, one explicit navigation interaction model, and one consistent overlay/motion grammar.**
+The target is one coherent Jobflow workspace: **soft gray canvas, raised rounded bento surfaces, selective blue emphasis, calm pastel depth, readable operational density, and no loss of product clarity.**
