@@ -11,12 +11,12 @@ export function RecordCard({
   return (
     <article
       className={classes(
-        'relative grid gap-3 rounded-control border border-app-border bg-app-surface p-3 shadow-none',
+        'relative grid gap-3 border-t border-app-border bg-app-surface py-3 shadow-none first:border-t-0',
         className,
       )}
       {...props}
     >
-      {action ? <div className="absolute right-3 top-3">{action}</div> : null}
+      {action ? <div className="absolute right-0 top-3">{action}</div> : null}
       {children}
     </article>
   );
