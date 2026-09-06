@@ -15,6 +15,26 @@ type HelpPopoverProps = {
   help?: ReactNode;
 };
 
+const WORKSPACE_CONTENT_STYLES = [
+  '[&_.workspace-card]:relative [&_.workspace-card]:grid [&_.workspace-card]:gap-3 [&_.workspace-card]:rounded-[8px] [&_.workspace-card]:border [&_.workspace-card]:border-app-border [&_.workspace-card]:bg-app-surface [&_.workspace-card]:p-3 [&_.workspace-card]:shadow-none',
+  '[&_.workspace-brand__mark]:grid [&_.workspace-brand__mark]:h-9 [&_.workspace-brand__mark]:w-9 [&_.workspace-brand__mark]:place-items-center [&_.workspace-brand__mark]:rounded-[6px] [&_.workspace-brand__mark]:bg-app-ink [&_.workspace-brand__mark]:text-sm [&_.workspace-brand__mark]:font-bold [&_.workspace-brand__mark]:text-app-surface',
+  '[&_.cv-dropzone]:grid [&_.cv-dropzone]:min-h-0 [&_.cv-dropzone]:rounded-[8px] [&_.cv-dropzone]:border [&_.cv-dropzone]:border-dashed [&_.cv-dropzone]:border-app-border-strong [&_.cv-dropzone]:bg-app-muted [&_.cv-dropzone]:p-3 [&_.cv-dropzone]:text-left [&_.cv-dropzone]:shadow-none',
+  '[&_.cv-dropzone__content]:grid [&_.cv-dropzone__content]:w-full [&_.cv-dropzone__content]:grid-cols-[auto_minmax(0,1fr)_auto] [&_.cv-dropzone__content]:grid-rows-[auto_auto] [&_.cv-dropzone__content]:items-center [&_.cv-dropzone__content]:gap-x-2.5 [&_.cv-dropzone__content]:gap-y-1',
+  '[&_.cv-dropzone__content>.workspace-brand__mark]:col-start-1 [&_.cv-dropzone__content>.workspace-brand__mark]:row-span-2',
+  '[&_.cv-dropzone__content>h3]:col-start-2 [&_.cv-dropzone__content>h3]:row-start-1 [&_.cv-dropzone__content>h3]:m-0 [&_.cv-dropzone__content>h3]:text-[13px] [&_.cv-dropzone__content>h3]:font-semibold',
+  '[&_.cv-dropzone__content>p]:col-start-2 [&_.cv-dropzone__content>p]:row-start-2 [&_.cv-dropzone__content>p]:m-0 [&_.cv-dropzone__content>p]:text-xs [&_.cv-dropzone__content>p]:leading-4 [&_.cv-dropzone__content>p]:text-app-text',
+  '[&_.cv-dropzone__content>:last-child]:col-start-3 [&_.cv-dropzone__content>:last-child]:row-span-2 [&_.cv-dropzone__content>:last-child]:row-start-1 [&_.cv-dropzone__content>:last-child]:justify-self-end',
+  '[&_.cv-preview]:grid [&_.cv-preview]:gap-0',
+  '[&_.cv-preview__row]:grid [&_.cv-preview__row]:grid-cols-[auto_minmax(120px,0.6fr)_minmax(0,1.4fr)] [&_.cv-preview__row]:items-start [&_.cv-preview__row]:gap-2.5 [&_.cv-preview__row]:border-b [&_.cv-preview__row]:border-app-border [&_.cv-preview__row]:py-2.5 [&_.cv-preview__row]:text-[13px] [&_.cv-preview__row:last-child]:border-b-0',
+  '[&_.cv-preview__value]:min-w-0 [&_.cv-preview__value]:text-[13px] [&_.cv-preview__value]:leading-5 [&_.cv-preview__value]:text-app-text',
+  '[&_.document-list]:grid [&_.document-list]:gap-0',
+  '[&_.document-row]:flex [&_.document-row]:items-start [&_.document-row]:justify-between [&_.document-row]:gap-3 [&_.document-row]:border-b [&_.document-row]:border-app-border [&_.document-row]:py-2.5 [&_.document-row]:text-[13px] [&_.document-row:last-child]:border-b-0',
+  '[&_.document-row__meta]:grid [&_.document-row__meta]:min-w-0 [&_.document-row__meta]:gap-1 [&_.document-row__meta]:text-[13px] [&_.document-row__meta]:leading-5 [&_.document-row__meta]:text-app-text',
+  'max-[720px]:[&_.cv-dropzone__content]:grid-cols-[auto_minmax(0,1fr)] max-[720px]:[&_.cv-dropzone__content>:last-child]:col-span-2 max-[720px]:[&_.cv-dropzone__content>:last-child]:col-start-1 max-[720px]:[&_.cv-dropzone__content>:last-child]:row-start-3 max-[720px]:[&_.cv-dropzone__content>:last-child]:mt-1.5 max-[720px]:[&_.cv-dropzone__content>:last-child]:justify-self-stretch',
+  'max-[720px]:[&_.cv-preview__row]:grid-cols-[auto_minmax(0,1fr)] max-[720px]:[&_.cv-preview__value]:col-start-2',
+  'md:[&>label.max-w-md]:inline-grid md:[&>label.max-w-md]:mr-2 md:[&>label.max-w-md]:w-[28rem] md:[&>label.max-w-md+button]:inline-flex',
+].join(' ');
+
 function helpLabel(title: ReactNode): string {
   return typeof title === 'string' ? `About ${title}` : 'About this section';
 }
@@ -106,7 +126,8 @@ export function WorkspaceSection({
   return (
     <details
       className={classes(
-        'group border border-app-border bg-app-surface px-3 pb-3 sm:px-4 sm:pb-4',
+        'group rounded-[8px] border border-app-border bg-app-surface px-3 pb-3 shadow-none sm:px-4 sm:pb-4',
+        WORKSPACE_CONTENT_STYLES,
         className,
       )}
       open={defaultOpen}
@@ -185,12 +206,12 @@ export function WorkspaceSubsection({
   return (
     <details
       className={classes(
-        'group border-t border-app-border bg-app-surface pt-3 first:border-t-0 first:pt-0',
+        'group rounded-[8px] border border-app-border bg-app-surface px-3 pb-3 shadow-none sm:px-4 sm:pb-4',
         className,
       )}
       open={defaultOpen}
     >
-      <summary className="-mx-2 mb-0 flex min-h-9 cursor-pointer list-none items-center justify-between gap-2 rounded-[6px] px-2 outline-none transition-colors hover:bg-app-muted/30 focus-visible:ring-2 focus-visible:ring-app-accent-soft group-open:mb-2.5 [&::-webkit-details-marker]:hidden">
+      <summary className="-mx-3 mb-0 flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 border-b border-transparent px-3 py-2.5 outline-none transition-colors hover:bg-app-muted/30 focus-visible:ring-2 focus-visible:ring-app-accent-soft focus-visible:ring-inset group-open:mb-3 group-open:border-app-border sm:-mx-4 sm:px-4 [&::-webkit-details-marker]:hidden">
         <div className="flex min-w-0 items-center gap-1">
           <h3 className="m-0 min-w-0 truncate text-[13px] font-semibold text-app-ink">
             {title}
