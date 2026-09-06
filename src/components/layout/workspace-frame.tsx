@@ -11,7 +11,7 @@ type WorkspaceFrameProps = {
 };
 
 const SIDEBAR_COLLAPSED_WIDTH = 56;
-const SIDEBAR_EXPANDED_WIDTH = 240;
+const SIDEBAR_EXPANDED_WIDTH = 224;
 const DESKTOP_QUERY = '(min-width: 768px)';
 
 function useDesktopLayout(): boolean {
@@ -53,14 +53,12 @@ export function WorkspaceFrame({
     <div className="jobflow-soft-shell min-h-screen bg-app-bg text-app-ink md:grid md:grid-cols-[56px_minmax(0,1fr)]">
       {desktop ? (
         <aside
-          className="jobflow-sidebar group/sidebar relative z-40 h-[calc(100vh-1.5rem)] w-14 overflow-visible md:sticky md:top-3"
+          className="jobflow-sidebar group/sidebar relative z-40 h-screen w-14 overflow-visible md:sticky md:top-0"
           aria-label="Job Flow sidebar"
           data-expanded={sidebarExpanded}
         >
           <motion.div
-            className={`jobflow-sidebar-surface absolute inset-y-0 left-0 overflow-hidden ${
-              sidebarExpanded ? 'shadow-overlay' : 'shadow-none'
-            }`}
+            className="jobflow-sidebar-surface absolute inset-y-0 left-0 overflow-hidden"
             animate={{
               width: sidebarExpanded
                 ? SIDEBAR_EXPANDED_WIDTH
@@ -69,17 +67,17 @@ export function WorkspaceFrame({
             initial={false}
             transition={sidebarTransition}
           >
-            <div className="flex h-14 w-60 items-center gap-2 border-b border-app-border/70 px-2.5">
+            <div className="flex h-12 w-56 items-center gap-2 border-b border-app-border px-2.5">
               {sidebarExpanded ? (
                 <span
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-[12px] bg-app-accent text-sm font-bold text-white shadow-[0_8px_18px_rgb(var(--app-accent)/0.22)]"
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-[7px] bg-app-accent text-xs font-bold text-white"
                   aria-hidden="true"
                 >
                   J
                 </span>
               ) : (
                 <button
-                  className="jobflow-icon-button grid h-9 w-9 shrink-0 place-items-center text-app-text focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-app-accent-soft"
+                  className="jobflow-icon-button grid h-8 w-8 shrink-0 place-items-center text-app-text focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft"
                   type="button"
                   aria-label="Expand sidebar"
                   aria-expanded={false}
@@ -88,7 +86,7 @@ export function WorkspaceFrame({
                 >
                   <PanelLeftOpen
                     aria-hidden="true"
-                    size={18}
+                    size={17}
                     strokeWidth={1.8}
                   />
                 </button>
@@ -98,19 +96,19 @@ export function WorkspaceFrame({
                 {sidebarExpanded ? (
                   <motion.div
                     className="min-w-0 flex-1"
-                    initial={reduceMotion ? false : { opacity: 0, x: -6 }}
+                    initial={reduceMotion ? false : { opacity: 0, x: -4 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -4 }}
+                    exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -3 }}
                     transition={
                       reduceMotion
                         ? { duration: 0 }
-                        : { duration: 0.14, ease: 'easeOut' }
+                        : { duration: 0.12, ease: 'easeOut' }
                     }
                   >
                     <p className="m-0 truncate text-sm font-semibold tracking-tight text-app-ink">
                       Job Flow
                     </p>
-                    <p className="m-0 text-[13px] font-medium text-app-subtle">
+                    <p className="m-0 text-xs font-medium text-app-subtle">
                       Career workspace
                     </p>
                   </motion.div>
@@ -119,7 +117,7 @@ export function WorkspaceFrame({
 
               {sidebarExpanded ? (
                 <button
-                  className="jobflow-icon-button grid h-9 w-9 shrink-0 place-items-center text-app-text focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-app-accent-soft"
+                  className="jobflow-icon-button grid h-8 w-8 shrink-0 place-items-center text-app-text focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft"
                   type="button"
                   aria-label="Collapse sidebar"
                   aria-expanded={true}
@@ -128,26 +126,26 @@ export function WorkspaceFrame({
                 >
                   <PanelLeftClose
                     aria-hidden="true"
-                    size={18}
+                    size={17}
                     strokeWidth={1.8}
                   />
                 </button>
               ) : null}
             </div>
 
-            <div className="h-[calc(100vh-3.5rem)] w-60 overflow-y-auto px-2 py-3">
+            <div className="h-[calc(100vh-3rem)] w-56 overflow-y-auto px-2 py-2">
               {navigation}
             </div>
           </motion.div>
         </aside>
       ) : (
         <aside
-          className="jobflow-mobile-nav px-4 py-3"
+          className="jobflow-mobile-nav px-3 py-2"
           aria-label="Job Flow sidebar"
         >
-          <div className="mb-3 flex items-center gap-2">
+          <div className="mb-2 flex items-center gap-2">
             <span
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-[12px] bg-app-accent text-sm font-bold text-white shadow-[0_8px_18px_rgb(var(--app-accent)/0.22)]"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-[7px] bg-app-accent text-xs font-bold text-white"
               aria-hidden="true"
             >
               J
@@ -156,7 +154,7 @@ export function WorkspaceFrame({
               <p className="m-0 truncate text-sm font-semibold tracking-tight text-app-ink">
                 Job Flow
               </p>
-              <p className="m-0 text-[13px] font-medium text-app-subtle">
+              <p className="m-0 text-xs font-medium text-app-subtle">
                 Career workspace
               </p>
             </div>
@@ -165,19 +163,19 @@ export function WorkspaceFrame({
         </aside>
       )}
 
-      <div className="min-w-0 bg-transparent">
+      <div className="min-w-0 bg-app-bg">
         <header className="jobflow-header sticky z-30">
-          <div className="flex min-h-14 items-center justify-between gap-3 px-4 sm:px-5">
-            <div className="min-w-0 py-2">
-              <p className="m-0 text-[11px] font-semibold uppercase tracking-[0.08em] text-app-subtle">
+          <div className="flex min-h-12 items-center justify-between gap-3 px-3 sm:px-4">
+            <div className="min-w-0 py-1.5">
+              <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.08em] text-app-subtle">
                 {eyebrow}
               </p>
-              <h1 className="m-0 truncate text-base font-semibold tracking-tight text-app-ink">
+              <h1 className="m-0 truncate text-[15px] font-semibold tracking-tight text-app-ink">
                 {title}
               </h1>
             </div>
             {meta === null ? null : (
-              <div className="shrink-0 text-[13px] font-medium text-app-subtle max-sm:hidden">
+              <div className="shrink-0 text-xs font-medium text-app-subtle max-sm:hidden">
                 {meta}
               </div>
             )}
