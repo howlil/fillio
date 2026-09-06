@@ -106,7 +106,7 @@ export function WorkspaceSection({
   return (
     <details
       className={classes(
-        'group border border-app-border bg-app-surface px-3 pb-3 sm:px-3.5 sm:pb-3.5',
+        'group border border-app-border bg-app-surface px-3 pb-3 sm:px-4 sm:pb-4',
         className,
       )}
       open={defaultOpen}
@@ -135,7 +135,7 @@ export function WorkspaceSectionHeader({
   return (
     <summary
       className={classes(
-        '-mx-3 mb-0 flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 border-b border-transparent px-3 py-2 outline-none transition-colors hover:bg-app-muted/40 focus-visible:ring-2 focus-visible:ring-app-accent-soft focus-visible:ring-inset group-open:mb-2.5 group-open:border-app-border sm:-mx-3.5 sm:px-3.5 [&::-webkit-details-marker]:hidden',
+        '-mx-3 mb-0 flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 border-b border-transparent px-3 py-2.5 outline-none transition-colors hover:bg-app-muted/40 focus-visible:ring-2 focus-visible:ring-app-accent-soft focus-visible:ring-inset group-open:mb-3 group-open:border-app-border sm:-mx-4 sm:px-4 [&::-webkit-details-marker]:hidden',
         className,
       )}
     >
@@ -185,12 +185,12 @@ export function WorkspaceSubsection({
   return (
     <details
       className={classes(
-        'group border-t border-app-border bg-app-surface pt-2.5 first:border-t-0 first:pt-0',
+        'group border-t border-app-border bg-app-surface pt-3 first:border-t-0 first:pt-0',
         className,
       )}
       open={defaultOpen}
     >
-      <summary className="mb-0 flex min-h-8 cursor-pointer list-none items-center justify-between gap-2 outline-none transition-colors hover:bg-app-muted/30 focus-visible:ring-2 focus-visible:ring-app-accent-soft group-open:mb-2 [&::-webkit-details-marker]:hidden">
+      <summary className="-mx-2 mb-0 flex min-h-9 cursor-pointer list-none items-center justify-between gap-2 rounded-[6px] px-2 outline-none transition-colors hover:bg-app-muted/30 focus-visible:ring-2 focus-visible:ring-app-accent-soft group-open:mb-2.5 [&::-webkit-details-marker]:hidden">
         <div className="flex min-w-0 items-center gap-1">
           <h3 className="m-0 min-w-0 truncate text-[13px] font-semibold text-app-ink">
             {title}
