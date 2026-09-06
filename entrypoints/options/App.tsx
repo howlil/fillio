@@ -108,7 +108,10 @@ export default function App() {
           </div>
         ) : null}
 
-        <div hidden={hideProfileSurface}>
+        <div
+          className="[&>.profile-page]:!p-0 [&_.jobflow-visually-hidden]:sr-only"
+          hidden={hideProfileSurface}
+        >
           <ProfilePage
             key={profileRevision}
             repository={profileRepository}
