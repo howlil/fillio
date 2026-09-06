@@ -50,15 +50,15 @@ export function WorkspaceFrame({
     : { type: 'spring' as const, stiffness: 520, damping: 42, mass: 0.72 };
 
   return (
-    <div className="min-h-screen bg-app-bg text-app-ink md:grid md:grid-cols-[56px_minmax(0,1fr)]">
+    <div className="jobflow-soft-shell min-h-screen bg-app-bg text-app-ink md:grid md:grid-cols-[56px_minmax(0,1fr)]">
       {desktop ? (
         <aside
-          className="group/sidebar relative z-40 h-screen w-14 overflow-visible border-r border-app-border bg-app-surface md:sticky md:top-0"
+          className="jobflow-sidebar group/sidebar relative z-40 h-[calc(100vh-1.5rem)] w-14 overflow-visible md:sticky md:top-3"
           aria-label="Job Flow sidebar"
           data-expanded={sidebarExpanded}
         >
           <motion.div
-            className={`absolute inset-y-0 left-0 overflow-hidden border-r border-app-border bg-app-surface ${
+            className={`jobflow-sidebar-surface absolute inset-y-0 left-0 overflow-hidden ${
               sidebarExpanded ? 'shadow-overlay' : 'shadow-none'
             }`}
             animate={{
@@ -69,17 +69,17 @@ export function WorkspaceFrame({
             initial={false}
             transition={sidebarTransition}
           >
-            <div className="flex h-14 w-60 items-center gap-2 border-b border-app-border px-2.5">
+            <div className="flex h-14 w-60 items-center gap-2 border-b border-app-border/70 px-2.5">
               {sidebarExpanded ? (
                 <span
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-control bg-app-ink text-sm font-bold text-app-surface"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-[12px] bg-app-accent text-sm font-bold text-white shadow-[0_8px_18px_rgb(var(--app-accent)/0.22)]"
                   aria-hidden="true"
                 >
                   J
                 </span>
               ) : (
                 <button
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-control border border-app-border bg-transparent text-app-text transition-colors hover:border-app-border-strong hover:text-app-ink focus-visible:border-app-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft"
+                  className="jobflow-icon-button grid h-9 w-9 shrink-0 place-items-center text-app-text focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-app-accent-soft"
                   type="button"
                   aria-label="Expand sidebar"
                   aria-expanded={false}
@@ -119,7 +119,7 @@ export function WorkspaceFrame({
 
               {sidebarExpanded ? (
                 <button
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-control border border-transparent bg-transparent text-app-text transition-colors hover:border-app-border hover:text-app-ink focus-visible:border-app-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft"
+                  className="jobflow-icon-button grid h-9 w-9 shrink-0 place-items-center text-app-text focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-app-accent-soft"
                   type="button"
                   aria-label="Collapse sidebar"
                   aria-expanded={true}
@@ -142,12 +142,12 @@ export function WorkspaceFrame({
         </aside>
       ) : (
         <aside
-          className="border-b border-app-border bg-app-surface px-4 py-3"
+          className="jobflow-mobile-nav px-4 py-3"
           aria-label="Job Flow sidebar"
         >
           <div className="mb-3 flex items-center gap-2">
             <span
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-control bg-app-ink text-sm font-bold text-app-surface"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-[12px] bg-app-accent text-sm font-bold text-white shadow-[0_8px_18px_rgb(var(--app-accent)/0.22)]"
               aria-hidden="true"
             >
               J
@@ -165,8 +165,8 @@ export function WorkspaceFrame({
         </aside>
       )}
 
-      <div className="min-w-0 bg-app-surface">
-        <header className="sticky top-0 z-30 border-b border-app-border bg-app-surface">
+      <div className="min-w-0 bg-transparent">
+        <header className="jobflow-header sticky z-30">
           <div className="flex min-h-14 items-center justify-between gap-3 px-4 sm:px-5">
             <div className="min-w-0 py-2">
               <p className="m-0 text-[11px] font-semibold uppercase tracking-[0.08em] text-app-subtle">
@@ -184,7 +184,7 @@ export function WorkspaceFrame({
           </div>
         </header>
 
-        <main className="w-full bg-app-surface">{children}</main>
+        <main className="jobflow-workspace-canvas w-full">{children}</main>
       </div>
     </div>
   );

@@ -46,7 +46,7 @@ type WorkspaceNavigationProps = {
 };
 
 const navItemBase =
-  'relative flex h-10 min-h-10 w-10 items-center justify-center rounded-control border text-left text-sm font-medium transition-[width,padding,gap,background-color,border-color,color] duration-150 focus-visible:border-app-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft group-data-[expanded=true]/sidebar:w-full group-data-[expanded=true]/sidebar:justify-start group-data-[expanded=true]/sidebar:gap-2 group-data-[expanded=true]/sidebar:px-2';
+  'jobflow-nav-item relative flex h-10 min-h-10 w-10 items-center justify-center rounded-[13px] border text-left text-sm font-medium transition-[width,padding,gap,background-color,border-color,color,transform,box-shadow] duration-150 focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-app-accent-soft group-data-[expanded=true]/sidebar:w-full group-data-[expanded=true]/sidebar:justify-start group-data-[expanded=true]/sidebar:gap-2 group-data-[expanded=true]/sidebar:px-2';
 
 export function WorkspaceNavigation({
   activeSection,
@@ -77,14 +77,11 @@ export function WorkspaceNavigation({
         aria-label="Jobflow workspace sections"
       >
         {groups.map((group) => (
-          <div
-            className="border-t border-app-border pt-3 first:border-t-0 first:pt-0"
-            key={group.label}
-          >
+          <div className="pt-2 first:pt-0" key={group.label}>
             <p className="pointer-events-none m-0 max-h-0 overflow-hidden px-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-app-subtle opacity-0 transition-[max-height,margin,opacity] duration-150 group-data-[expanded=true]/sidebar:mb-1 group-data-[expanded=true]/sidebar:max-h-5 group-data-[expanded=true]/sidebar:opacity-100">
               {group.label}
             </p>
-            <div className="grid gap-1">
+            <div className="grid gap-1.5">
               {group.items.map((item) => {
                 const Icon = item.icon;
                 const active = activeSection === item.id;
@@ -92,8 +89,8 @@ export function WorkspaceNavigation({
                   <button
                     className={`${navItemBase} ${
                       active
-                        ? 'border-app-border-strong bg-app-muted text-app-ink'
-                        : 'border-transparent text-app-text hover:border-app-border hover:text-app-ink'
+                        ? 'border-app-accent/25 bg-app-accent-soft text-app-accent-strong shadow-[inset_0_1px_0_rgb(255_255_255/0.7),0_5px_14px_rgb(var(--app-accent)/0.12)]'
+                        : 'border-transparent bg-transparent text-app-text hover:border-app-border hover:bg-app-raised hover:text-app-ink hover:shadow-[0_4px_12px_rgb(31_41_55/0.05)]'
                     }`}
                     type="button"
                     key={item.id}
