@@ -1,11 +1,6 @@
 import { Plus, Trash2 } from 'lucide-react';
 
-import {
-  EmptyState,
-  FieldGrid,
-  IconButton,
-  TextField,
-} from '../../ui';
+import { EmptyState, FieldGrid, IconButton, TextField } from '../../ui';
 import { WorkspaceSubsection } from '../../layout';
 import {
   CollapsibleRecord,
@@ -65,7 +60,9 @@ export function CertificationsSection({
               }
             >
               <summary className="record-summary pr-8">
-                <span>{certification.name || `Certification ${index + 1}`}</span>
+                <span>
+                  {certification.name || `Certification ${index + 1}`}
+                </span>
                 <span className="record-summary-meta">
                   {certification.issuer || 'Credential'}
                 </span>
