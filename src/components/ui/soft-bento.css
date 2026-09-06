@@ -19,9 +19,12 @@
   --app-info-soft: 232 243 252;
   --app-success: 45 156 106;
   --app-success-soft: 233 247 239;
-  --jobflow-shadow-card: 0 1px 2px rgb(31 41 55 / 0.04), 0 14px 32px rgb(31 41 55 / 0.07);
-  --jobflow-shadow-control: 0 1px 2px rgb(31 41 55 / 0.05), inset 0 1px 0 rgb(255 255 255 / 0.85);
-  --jobflow-shadow-active: 0 8px 20px rgb(76 145 214 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.24);
+  --jobflow-shadow-card:
+    0 1px 2px rgb(31 41 55 / 0.04), 0 14px 32px rgb(31 41 55 / 0.07);
+  --jobflow-shadow-control:
+    0 1px 2px rgb(31 41 55 / 0.05), inset 0 1px 0 rgb(255 255 255 / 0.85);
+  --jobflow-shadow-active:
+    0 8px 20px rgb(76 145 214 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.24);
 }
 
 .dark {
@@ -45,9 +48,12 @@
   --app-info-soft: 35 55 72;
   --app-success: 92 202 149;
   --app-success-soft: 35 67 51;
-  --jobflow-shadow-card: 0 1px 2px rgb(0 0 0 / 0.18), 0 18px 38px rgb(0 0 0 / 0.24);
-  --jobflow-shadow-control: 0 1px 2px rgb(0 0 0 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.05);
-  --jobflow-shadow-active: 0 10px 24px rgb(16 47 78 / 0.48), inset 0 1px 0 rgb(255 255 255 / 0.08);
+  --jobflow-shadow-card:
+    0 1px 2px rgb(0 0 0 / 0.18), 0 18px 38px rgb(0 0 0 / 0.24);
+  --jobflow-shadow-control:
+    0 1px 2px rgb(0 0 0 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.05);
+  --jobflow-shadow-active:
+    0 10px 24px rgb(16 47 78 / 0.48), inset 0 1px 0 rgb(255 255 255 / 0.08);
 }
 
 html,
@@ -57,15 +63,31 @@ body {
 
 body {
   background-image:
-    radial-gradient(circle at 13% 4%, rgb(255 255 255 / 0.56), transparent 30rem),
-    linear-gradient(180deg, rgb(var(--app-bg)) 0%, color-mix(in srgb, rgb(var(--app-bg)) 94%, white 6%) 100%);
+    radial-gradient(
+      circle at 13% 4%,
+      rgb(255 255 255 / 0.56),
+      transparent 30rem
+    ),
+    linear-gradient(
+      180deg,
+      rgb(var(--app-bg)) 0%,
+      color-mix(in srgb, rgb(var(--app-bg)) 94%, white 6%) 100%
+    );
   background-attachment: fixed;
 }
 
 .dark body {
   background-image:
-    radial-gradient(circle at 12% 0%, rgb(118 181 237 / 0.05), transparent 28rem),
-    linear-gradient(180deg, rgb(var(--app-bg)) 0%, color-mix(in srgb, rgb(var(--app-bg)) 92%, black 8%) 100%);
+    radial-gradient(
+      circle at 12% 0%,
+      rgb(118 181 237 / 0.05),
+      transparent 28rem
+    ),
+    linear-gradient(
+      180deg,
+      rgb(var(--app-bg)) 0%,
+      color-mix(in srgb, rgb(var(--app-bg)) 92%, black 8%) 100%
+    );
 }
 
 .jobflow-soft-shell {
@@ -162,13 +184,17 @@ body {
   border: 1px solid rgb(var(--app-border)) !important;
   border-radius: 1rem !important;
   background: rgb(var(--app-surface-raised)) !important;
-  box-shadow: 0 1px 2px rgb(31 41 55 / 0.04), 0 8px 18px rgb(31 41 55 / 0.05) !important;
+  box-shadow:
+    0 1px 2px rgb(31 41 55 / 0.04),
+    0 8px 18px rgb(31 41 55 / 0.05) !important;
 }
 
 .dark .record-card,
 .dark .workspace-card,
 .dark .jobflow-record-card {
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.16), 0 10px 20px rgb(0 0 0 / 0.18) !important;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.16),
+    0 10px 20px rgb(0 0 0 / 0.18) !important;
 }
 
 .record-card {
@@ -212,7 +238,11 @@ body {
 .jobflow-button-primary,
 .jobflow-button-accent {
   border-color: rgb(var(--app-accent)) !important;
-  background: linear-gradient(180deg, color-mix(in srgb, rgb(var(--app-accent)) 92%, white 8%), rgb(var(--app-accent))) !important;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, rgb(var(--app-accent)) 92%, white 8%),
+    rgb(var(--app-accent))
+  ) !important;
   color: white !important;
   box-shadow: var(--jobflow-shadow-active) !important;
 }
@@ -259,7 +289,9 @@ body {
 .workspace-tool-section select:focus,
 .workspace-tool-section textarea:focus {
   border-color: rgb(var(--app-accent)) !important;
-  box-shadow: 0 0 0 4px rgb(var(--app-accent-soft) / 0.92), var(--jobflow-shadow-control) !important;
+  box-shadow:
+    0 0 0 4px rgb(var(--app-accent-soft) / 0.92),
+    var(--jobflow-shadow-control) !important;
 }
 
 .description-preview-list {
