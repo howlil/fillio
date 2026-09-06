@@ -11,7 +11,7 @@ export function RecordCard({
   return (
     <article
       className={classes(
-        'relative grid gap-3 border-t border-app-border bg-app-surface py-3 shadow-none first:border-t-0 first:pt-0',
+        'relative grid gap-3 border-t border-app-border bg-app-surface py-3 shadow-none first:border-t-0',
         className,
       )}
       {...props}
