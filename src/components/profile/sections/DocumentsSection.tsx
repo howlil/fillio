@@ -25,7 +25,7 @@ export function DocumentsSection({
     <WorkspaceSection hidden={activeSection !== 'documents'}>
       <WorkspaceSectionHeader
         title="Reusable answers"
-        description="Keep answers you reuse across application forms. Resume files are managed above as stored documents."
+        description="Answers you reuse in job forms."
         action={
           <IconButton
             size="sm"
@@ -43,15 +43,15 @@ export function DocumentsSection({
               )
             }
           >
-            <Plus aria-hidden="true" size={16} />
+            <Plus aria-hidden="true" size={15} />
           </IconButton>
         }
       />
 
       {profile.baseProfile.customAnswers.length === 0 ? (
-        <EmptyState>No reusable answers added yet.</EmptyState>
+        <EmptyState>No reusable answers yet.</EmptyState>
       ) : (
-        <div className="grid gap-3">
+        <div className="grid gap-0">
           {profile.baseProfile.customAnswers.map((answer, index) => (
             <RecordCard
               key={answer.id}
@@ -67,17 +67,13 @@ export function DocumentsSection({
                     )
                   }
                 >
-                  <Trash2 aria-hidden="true" size={14} />
+                  <Trash2 aria-hidden="true" size={13} />
                 </IconButton>
               }
             >
               <RecordHeader
-                title={answer.question || `Reusable answer ${index + 1}`}
-                context={
-                  answer.tags.length > 0
-                    ? answer.tags.join(' · ')
-                    : 'Reusable application response'
-                }
+                title={answer.question || `Answer ${index + 1}`}
+                context={answer.tags.length > 0 ? answer.tags.join(' · ') : undefined}
               />
               <TextField
                 label="Question"
@@ -100,7 +96,8 @@ export function DocumentsSection({
                 }
               />
               <TextField
-                label="Tags, comma separated"
+                label="Tags"
+                placeholder="visa, sponsorship, notice period"
                 value={listValue(answer.tags)}
                 onChange={(event) =>
                   changeProfile((draft) => {

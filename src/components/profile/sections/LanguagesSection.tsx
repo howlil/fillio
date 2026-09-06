@@ -5,7 +5,6 @@ import {
   FieldGrid,
   IconButton,
   RecordCard,
-  RecordHeader,
   TextField,
 } from '../../ui';
 import { WorkspaceSubsection } from '../../layout';
@@ -24,7 +23,7 @@ export function LanguagesSection({
   return (
     <WorkspaceSubsection
       title="Languages"
-      help="Add languages and proficiency information that Job Flow can use when application forms ask for it."
+      help="Languages and proficiency used when a form asks for them."
       action={
         <IconButton
           size="sm"
@@ -40,16 +39,17 @@ export function LanguagesSection({
             )
           }
         >
-          <Plus aria-hidden="true" size={16} />
+          <Plus aria-hidden="true" size={15} />
         </IconButton>
       }
     >
       {profile.baseProfile.professional.languages.length === 0 ? (
-        <EmptyState>No languages added yet.</EmptyState>
+        <EmptyState>No languages yet.</EmptyState>
       ) : (
-        <div className="grid gap-3">
+        <div className="grid gap-0">
           {profile.baseProfile.professional.languages.map((language, index) => (
             <RecordCard
+              className="pr-8"
               key={language.id}
               action={
                 <IconButton
@@ -63,17 +63,14 @@ export function LanguagesSection({
                     )
                   }
                 >
-                  <Trash2 aria-hidden="true" size={14} />
+                  <Trash2 aria-hidden="true" size={13} />
                 </IconButton>
               }
             >
-              <RecordHeader
-                title={language.name || `Language ${index + 1}`}
-                context={language.proficiency || 'Language proficiency'}
-              />
               <FieldGrid>
                 <TextField
                   label="Language"
+                  placeholder="English"
                   value={language.name}
                   onChange={(event) =>
                     changeProfile((draft) => {
@@ -85,6 +82,7 @@ export function LanguagesSection({
                 />
                 <TextField
                   label="Proficiency"
+                  placeholder="Professional working"
                   value={language.proficiency}
                   onChange={(event) =>
                     changeProfile((draft) => {

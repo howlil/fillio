@@ -21,8 +21,8 @@ function helpLabel(title: ReactNode): string {
 
 function fallbackHelp(title: ReactNode): ReactNode {
   return typeof title === 'string'
-    ? `Manage ${title.toLowerCase()} information used by Job Flow.`
-    : 'Learn what information belongs in this section.';
+    ? `How ${title.toLowerCase()} is used by Job Flow.`
+    : 'More about this section.';
 }
 
 function HelpPopover({ title, help }: HelpPopoverProps) {
@@ -57,33 +57,33 @@ function HelpPopover({ title, help }: HelpPopoverProps) {
     >
       <button
         type="button"
-        className="grid h-9 w-9 place-items-center rounded-control border border-transparent bg-transparent text-app-subtle transition-colors hover:border-app-border hover:text-app-ink focus-visible:border-app-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft"
+        className="grid h-7 w-7 place-items-center rounded-[6px] border border-transparent bg-transparent text-app-subtle transition-colors hover:border-app-border hover:bg-app-muted hover:text-app-ink focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft"
         aria-label={helpLabel(title)}
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
       >
-        <CircleHelp aria-hidden="true" size={16} strokeWidth={1.8} />
+        <CircleHelp aria-hidden="true" size={14} strokeWidth={1.8} />
       </button>
       <AnimatePresence initial={false}>
         {open ? (
           <motion.div
-            className="absolute left-0 top-10 z-50 w-64 max-w-[calc(100vw-2rem)] rounded-overlay border border-app-border bg-app-surface p-3 text-left shadow-overlay"
+            className="absolute left-0 top-8 z-50 w-60 max-w-[calc(100vw-2rem)] rounded-[8px] border border-app-border bg-app-surface p-2.5 text-left shadow-overlay"
             role="dialog"
             aria-label={helpLabel(title)}
-            initial={reduceMotion ? false : { opacity: 0, y: -4, scale: 0.985 }}
+            initial={reduceMotion ? false : { opacity: 0, y: -3, scale: 0.99 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={
               reduceMotion
                 ? { opacity: 0 }
-                : { opacity: 0, y: -3, scale: 0.985 }
+                : { opacity: 0, y: -2, scale: 0.99 }
             }
             transition={
               reduceMotion
                 ? { duration: 0 }
-                : { duration: 0.12, ease: 'easeOut' }
+                : { duration: 0.1, ease: 'easeOut' }
             }
           >
-            <p className="m-0 text-[13px] font-normal leading-5 text-app-text">
+            <p className="m-0 text-xs font-normal leading-5 text-app-text">
               {help ?? fallbackHelp(title)}
             </p>
           </motion.div>
@@ -108,7 +108,7 @@ export function WorkspaceSection({
   return (
     <details
       className={classes(
-        'group border-b border-app-border bg-app-surface px-4 pb-4 sm:px-5 sm:pb-5',
+        'group border border-app-border bg-app-surface px-3 pb-3 sm:px-3.5 sm:pb-3.5',
         className,
       )}
       open={defaultOpen}
@@ -137,32 +137,32 @@ export function WorkspaceSectionHeader({
   return (
     <summary
       className={classes(
-        '-mx-4 mb-0 flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 border-b border-transparent px-4 py-2.5 outline-none transition-colors hover:bg-transparent focus-visible:ring-2 focus-visible:ring-app-accent-soft focus-visible:ring-inset group-open:mb-4 group-open:border-app-border sm:-mx-5 sm:px-5 sm:group-open:mb-5 [&::-webkit-details-marker]:hidden',
+        '-mx-3 mb-0 flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 border-b border-transparent px-3 py-2 outline-none transition-colors hover:bg-app-muted/40 focus-visible:ring-2 focus-visible:ring-app-accent-soft focus-visible:ring-inset group-open:mb-2.5 group-open:border-app-border sm:-mx-3.5 sm:px-3.5 [&::-webkit-details-marker]:hidden',
         className,
       )}
     >
-      <div className="grid min-w-0 gap-1">
+      <div className="grid min-w-0 gap-0.5">
         {eyebrow ? (
-          <p className="m-0 text-[11px] font-semibold uppercase tracking-[0.08em] text-app-subtle">
+          <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.07em] text-app-subtle">
             {eyebrow}
           </p>
         ) : null}
-        <div className="flex min-w-0 items-center gap-1.5">
-          <h2 className="m-0 min-w-0 truncate text-[15px] font-semibold tracking-tight text-app-ink">
+        <div className="flex min-w-0 items-center gap-1">
+          <h2 className="m-0 min-w-0 truncate text-sm font-semibold tracking-tight text-app-ink">
             {title}
           </h2>
           <HelpPopover title={title} help={helpContent} />
         </div>
       </div>
-      <div className="flex shrink-0 items-center gap-1.5">
+      <div className="flex shrink-0 items-center gap-1">
         {action ? (
           <div onClick={(event) => event.stopPropagation()}>{action}</div>
         ) : null}
         <span
-          className="grid h-9 w-9 place-items-center text-app-subtle transition-transform group-open:rotate-180"
+          className="grid h-7 w-7 place-items-center text-app-subtle transition-transform group-open:rotate-180"
           aria-hidden="true"
         >
-          <ChevronDown size={16} strokeWidth={1.8} />
+          <ChevronDown size={14} strokeWidth={1.8} />
         </span>
       </div>
     </summary>
@@ -187,27 +187,27 @@ export function WorkspaceSubsection({
   return (
     <details
       className={classes(
-        'group border-t border-app-border bg-app-surface pt-4 first:border-t-0 first:pt-0',
+        'group border-t border-app-border bg-app-surface pt-2.5 first:border-t-0 first:pt-0',
         className,
       )}
       open={defaultOpen}
     >
-      <summary className="mb-0 flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-app-accent-soft group-open:mb-3 [&::-webkit-details-marker]:hidden">
-        <div className="flex min-w-0 items-center gap-1.5">
-          <h3 className="m-0 min-w-0 truncate text-sm font-semibold text-app-ink">
+      <summary className="mb-0 flex min-h-8 cursor-pointer list-none items-center justify-between gap-2 outline-none transition-colors hover:bg-app-muted/30 focus-visible:ring-2 focus-visible:ring-app-accent-soft group-open:mb-2 [&::-webkit-details-marker]:hidden">
+        <div className="flex min-w-0 items-center gap-1">
+          <h3 className="m-0 min-w-0 truncate text-[13px] font-semibold text-app-ink">
             {title}
           </h3>
           <HelpPopover title={title} help={help} />
         </div>
-        <div className="flex shrink-0 items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1">
           {action ? (
             <div onClick={(event) => event.stopPropagation()}>{action}</div>
           ) : null}
           <span
-            className="grid h-9 w-9 place-items-center text-app-subtle transition-transform group-open:rotate-180"
+            className="grid h-7 w-7 place-items-center text-app-subtle transition-transform group-open:rotate-180"
             aria-hidden="true"
           >
-            <ChevronDown size={16} strokeWidth={1.8} />
+            <ChevronDown size={14} strokeWidth={1.8} />
           </span>
         </div>
       </summary>

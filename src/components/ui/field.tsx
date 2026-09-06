@@ -26,7 +26,7 @@ export function FieldFrame({
   return (
     <label
       className={classes(
-        'grid min-w-0 content-start gap-1.5 text-[13px] font-medium text-app-text',
+        'grid min-w-0 content-start gap-1 text-xs font-medium text-app-text',
         className,
       )}
       {...props}
@@ -34,11 +34,11 @@ export function FieldFrame({
       <span>{label}</span>
       {children}
       {error ? (
-        <span className="text-[13px] font-medium leading-4 text-app-danger">
+        <span className="text-xs font-medium leading-4 text-app-danger">
           {error}
         </span>
       ) : hint ? (
-        <span className="text-[13px] font-normal leading-4 text-app-subtle">
+        <span className="text-xs font-normal leading-4 text-app-subtle">
           {hint}
         </span>
       ) : null}
@@ -98,7 +98,7 @@ export const TextareaField = forwardRef<
         ref={ref}
         className={classes(
           CONTROL_CLASS,
-          'min-h-24 resize-y leading-5',
+          'min-h-[72px] resize-y leading-5',
           textareaClassName,
         )}
         {...props}

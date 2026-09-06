@@ -32,11 +32,12 @@ export function ProjectsSection({
     ...profile.baseProfile.professional.skills.map((skill) => skill.name),
     ...deriveActiveSkillNames(profile.baseProfile),
   ];
+  const projects = profile.baseProfile.professional.projects;
 
   return (
     <WorkspaceSubsection
       title="Projects"
-      help="Add career-relevant projects. Skills added here contribute to your unique active skill inventory."
+      help="Projects, roles, dates, skills, and outcomes used in applications."
       action={
         <IconButton
           size="sm"
@@ -57,20 +58,22 @@ export function ProjectsSection({
             )
           }
         >
-          <Plus aria-hidden="true" size={16} />
+          <Plus aria-hidden="true" size={15} />
         </IconButton>
       }
     >
-      {profile.baseProfile.professional.projects.length === 0 ? (
-        <EmptyState>No projects added yet.</EmptyState>
+      {projects.length === 0 ? (
+        <EmptyState>No projects yet.</EmptyState>
       ) : (
-        <div className="grid gap-3">
-          {profile.baseProfile.professional.projects.map((project, index) => (
+        <div className="grid gap-0">
+          {projects.map((project, index) => (
             <CollapsibleRecord
               key={project.id}
-              initialOpen={project.name.trim() === ''}
+              initialOpen={
+                project.name.trim() === '' && index === projects.length - 1
+              }
             >
-              <summary className="record-summary pr-10">
+              <summary className="record-summary pr-8">
                 <span>{project.name || 'Untitled project'}</span>
                 <span className="record-summary-meta">
                   {project.role ||
@@ -79,7 +82,7 @@ export function ProjectsSection({
                 </span>
               </summary>
               <IconButton
-                className="absolute right-3 top-3 z-10"
+                className="absolute right-0 top-1 z-10"
                 size="xs"
                 tone="danger"
                 aria-label={`Remove project ${index + 1}`}
@@ -90,9 +93,9 @@ export function ProjectsSection({
                   )
                 }
               >
-                <Trash2 aria-hidden="true" size={14} />
+                <Trash2 aria-hidden="true" size={13} />
               </IconButton>
-              <div className="grid gap-3 border-t border-app-border pt-3">
+              <div className="grid gap-2 border-t border-app-border pt-2">
                 <FieldGrid>
                   <TextField
                     label="Project"
@@ -204,8 +207,8 @@ export function ProjectsSection({
                   }
                 />
                 <TextareaField
-                  label="Description"
-                  placeholder="Use one project result per line."
+                  label="Highlights"
+                  placeholder="One result per line"
                   value={project.description}
                   onChange={(event) =>
                     changeProfile((draft) => {

@@ -1,287 +1,146 @@
 # Jobflow Visual Design Contract
 
-This file is the visual source of truth for Jobflow. Product behavior lives in `PROJECT.md`; software/runtime boundaries live in `ARCHITECTURE.md`.
+Jobflow uses a **Compact Workbench UI**. It should feel like a focused desktop utility: dense enough for repeated career data, calm enough for long editing sessions, and explicit around validation, documents, autofill, and sensitive data.
 
-## 1. Design direction
+## 1. Hierarchy
 
-Jobflow uses a **Compact Workbench UI**: dense, calm, operational, and hierarchy-first. The product should feel closer to a professional desktop utility or editor than a decorative SaaS dashboard.
+Use three structural levels only:
 
-The visual system prioritizes:
+1. application shell — navigation, top bar, workspace background;
+2. task section — one bounded region for one meaningful job;
+3. rows and controls — content inside that section.
 
-- compact information density;
-- flat structural hierarchy;
-- clear grouping through spacing and 1px dividers;
-- small radii used only where a container truly needs a boundary;
-- minimal elevation;
-- selective blue for active state and primary action;
-- stable alignment across forms, records, and workspace tools.
+Do not create another visual card merely because a component has a React boundary.
 
-The design must not rely on repeated rounded cards, ambient shadows, decorative gradients, or nested surfaces to create hierarchy.
+Repeated records such as projects, certifications, languages, applications, documents, and corrections should normally be divider rows. A record may collapse when its edit form is large.
 
-## 2. Core hierarchy
+## 2. Density
 
-Use only three structural levels:
-
-1. **Application shell** — sidebar, top bar, workspace background.
-2. **Task section** — one bounded region for a meaningful module.
-3. **Row / field / control** — content inside the section.
-
-Repeated records inside a section are rows separated by dividers, not another layer of floating cards.
-
-A subsection inside a section should normally use a heading + top divider. Do not wrap it in another rounded surface unless it is an independent interaction boundary.
-
-## 3. Foundation palette
-
-### Light
+Desktop targets:
 
 ```text
-background        #F6F7F8
-surface           #FFFFFF
-surface-muted     #F2F4F6
-border            #E2E5E9
-border-strong     #C7CCD3
-ink               #1F242B
-text              #535B66
-subtle            #808893
-accent            #3D7EC1
-accent-strong     #27629E
-accent-soft       #E6EFF8
-success           #278F5F
-warning           #B7791C
-danger            #C94343
+workspace gutter       8–12px
+section padding        12–14px
+section radius         8px
+row vertical padding   8px
+field gap               8px
+input/button height    ~32px
+label/body              12–13px
+section title           13–15px
+page title              15–17px
 ```
 
-### Dark
+Touch targets may expand to 44px for coarse pointers without changing the desktop density.
+
+Long editor pages should use a readable working width instead of stretching controls across arbitrary ultrawide screens. The normal maximum content width is about `1180px`.
+
+## 3. Surfaces
+
+Default elevation is none.
+
+Prefer, in order:
+
+1. spacing;
+2. typography;
+3. a 1px divider;
+4. subtle background contrast;
+5. a bounded section when the task genuinely needs one.
+
+Shadows are for real overlays such as popovers, dialogs, and the in-page assistant. Ordinary sections, records, fields, and navigation items do not float.
+
+## 4. Repeated records
+
+A repeated record must not repeat the same information twice in adjacent hierarchy levels. If `Language` and `Proficiency` are already editable fields, do not add a second summary immediately above them unless the record is collapsed.
+
+Large records such as projects and certifications use compact summaries when collapsed. When several new blank records exist, do not automatically expand all of them. At most the newest unfinished record should open by default.
+
+Delete actions stay aligned to the record edge and should not consume a full column.
+
+## 5. Forms
+
+- controls use 6px radius and quiet 1px borders;
+- desktop controls are approximately 32px high;
+- textareas start around 72px unless the task needs more room;
+- labels are short nouns or direct questions;
+- related fields use compact 2- or 3-column grids where width permits;
+- focus uses the product blue and a clear 2px ring;
+- no inset highlights, ambient control shadows, or hover lift.
+
+## 6. Copy
+
+Product copy should sound like a utility, not generated marketing prose.
+
+Use direct labels and short helpers. State what the user can do, what will happen, or what constraint matters. Prefer one concise sentence over an explanatory paragraph.
+
+Avoid filler such as:
+
+- seamless;
+- powerful;
+- intelligent;
+- effortless;
+- smart workflow;
+- built for you;
+- supercharge;
+- unlock your potential;
+- vague “AI-powered” claims when no model behavior is being explained.
+
+Do not repeat safety prose at every level. Keep important consent or privacy information where the decision is made.
+
+## 7. Documents
+
+Document storage and import are operational tools, not hero surfaces.
+
+- stored files are compact rows;
+- the CV picker is a short horizontal action surface on desktop, not a large empty dropzone;
+- extraction/review state appears directly below the action;
+- empty states are one line when no recovery instruction is required.
+
+## 8. Sensitive vault
+
+The locked state is a compact credential action: passphrase and unlock action should read as one local workflow, not two disconnected blocks.
+
+Sensitive state, destructive reset, errors, and consent remain explicit. Compactness must never hide a security boundary.
+
+## 9. In-page assistant
+
+The Shadow DOM assistant follows the same workbench language while remaining an overlay:
 
 ```text
-background        #141619
-surface           #1B1E22
-surface-raised    #1E2226
-surface-muted     #22262B
-border            #30353B
-border-strong     #484F57
-ink               #F2F4F6
-text              #BCC2C9
-subtle            #89919A
-accent            #68A5DD
-accent-strong     #8BBBE7
-accent-soft       #233444
+panel width             ~340–360px
+body/control text       12–13px
+control height          ~30–32px desktop
+panel radius            8–10px
 ```
 
-Semantic colors keep their normal meanings. Decorative color is not a hierarchy primitive.
+Use one panel boundary, divider-based internal grouping, quiet blue selected tabs, and one overlay shadow. Do not use a black chat-like surface as the default light-mode experience, oversized tabs, stacked internal cards, or decorative assistant chrome.
 
-## 4. Geometry
+The launcher remains small and identifiable. Motion is limited to open/close and meaningful view changes.
 
-Canonical geometry:
+## 10. Color
 
-```text
-application shell          0px radius
-first-level section        8–10px radius
-subsection                  0px; divider-based
-record row                  0px; divider-based
-input / button              6–8px radius
-pill                        999px only for true tags/status
-control height              ~34–36px desktop
-coarse-pointer target       44px minimum where needed
-```
+Blue is reserved for primary action, focus, selection, and product state. Green, amber, and red retain semantic meanings. Neutral structure should remain neutral.
 
-Large 16–30px radii are not part of the default product language.
+Dark mode preserves the same hierarchy and density rather than switching to a different visual product.
 
-## 5. Elevation
-
-Default elevation is **none**.
-
-Use borders, background contrast, spacing, and typography before shadows. Shadows are reserved for surfaces that physically overlay another surface, such as popovers, dialogs, or the temporarily expanded desktop navigation.
-
-Never stack shadows between parent section, child subsection, repeated record, and control.
-
-## 6. Application shell
-
-### Desktop
-
-- navigation rail remains 56px collapsed;
-- expanded navigation overlays content rather than resizing it;
-- expanded navigation width stays compact, approximately 224px;
-- top bar is approximately 48px high;
-- sidebar and top bar are edge-aligned structural chrome, not floating cards;
-- workspace starts immediately below the top bar;
-- outer workspace padding is small, normally 12px;
-- no rounded outer workspace canvas.
-
-### Mobile
-
-- navigation uses the same destinations and ownership;
-- remove floating-card shell treatment;
-- workspace gutter is normally 8px;
-- controls remain readable and tappable.
-
-## 7. Sections and records
-
-### First-level section
-
-Use one section boundary per independently understandable task area:
-
-- 1px border;
-- 8–10px radius;
-- no ambient shadow;
-- 12–16px padding;
-- 8–12px internal gap.
-
-### Subsection
-
-Use:
-
-- top divider;
-- compact heading;
-- 8–12px spacing.
-
-Do not create a card inside a card for ordinary subsection grouping.
-
-### Repeated records
-
-Use list rows:
-
-- top divider between records;
-- transparent or parent surface background;
-- no radius;
-- no shadow;
-- approximately 10px vertical padding.
-
-This rule applies to application records, experience, education, documents, corrections, and similar repeated entities unless the record is itself an independent draggable/interactive object.
-
-## 8. Typography
-
-Primary family remains:
-
-```text
-Inter Variable -> Inter -> system sans
-```
-
-Technical identifiers may use:
-
-```text
-IBM Plex Mono -> system monospace
-```
-
-Targets:
-
-```text
-body/control/table      13–14px
-section title           14–15px
-supporting text         12–13px
-technical mono          12–13px
-page title              15–18px
-```
-
-Avoid oversized headings inside operational surfaces.
-
-## 9. Controls
-
-### Primary action
-
-- blue fill;
-- white text;
-- 6–8px radius;
-- no glow or ambient shadow;
-- one dominant primary action per local workflow.
-
-### Secondary/default
-
-- surface or transparent background;
-- 1px border where needed;
-- no shadow;
-- subtle background change on hover.
-
-### Inputs
-
-- 6–8px radius;
-- 1px border;
-- no inset highlight or ambient shadow;
-- blue 2px focus ring;
-- compact horizontal padding.
-
-### Danger
-
-Danger remains semantic red. Never recolor destructive actions as the product accent.
-
-## 10. Navigation
-
-- collapsed navigation is icon-first and keyboard accessible;
-- active destination uses a quiet blue tint, not a raised tile;
-- inactive destinations stay transparent until hover;
-- no hover lift or hover shadow;
-- group headings are compact metadata;
-- generic icons come from `lucide-react`;
-- icon-only controls require accessible labels/titles.
-
-## 11. Motion
-
-Use Motion for React only where it clarifies spatial change:
-
-- sidebar expansion/collapse;
-- overlay/panel enter and exit;
-- meaningful view transitions.
-
-Do not animate routine cards, rows, fields, or hover elevation. Keep transitions short and respect reduced motion.
-
-## 12. In-page assistant
-
-The assistant remains isolated in Shadow DOM and overlays the host page.
-
-When visually converged, apply the same compact rules:
-
-- one panel boundary;
-- compact tabs and controls;
-- minimal shadow only because the panel overlays the host page;
-- blue active/primary states;
-- divider-based internal grouping;
-- explicit semantic warning and sensitive states.
-
-Do not convert it into a permanent host-page sidebar or decorative chat surface.
-
-## 13. Accessibility and safety invariants
-
-The visual system must preserve:
-
-- keyboard operation;
-- visible focus;
-- readable text contrast;
-- explicit disabled/loading states;
-- screen-reader labels;
-- error and validation visibility;
-- sensitive-data consent boundaries;
-- explicit document attachment actions;
-- explicit application-state changes;
-- reduced-motion behavior.
-
-Compact must never mean ambiguous or undersized to the point of harming operation.
-
-## 14. Anti-patterns
+## 11. Anti-slop rules
 
 Do not introduce:
 
-- card-inside-card-inside-card hierarchy;
+- card inside card inside card;
 - equal visual weight for parent and child containers;
-- large rounded bento tiles as the default layout;
-- repeated ambient shadows;
-- decorative gradients or glow;
-- glassmorphism/backdrop blur as a primary surface language;
-- hover lift on routine controls;
+- giant rounded dashboard tiles;
+- repeated shadows, gradients, glow, or glass blur;
+- full-width inputs on very wide monitors without a working-width reason;
+- oversized empty states or upload areas;
+- every repeated record expanded at once;
+- duplicated summary text directly above the same editable value;
 - arbitrary dashboard grids;
-- excessive whitespace between related fields;
-- oversized product headings;
-- pastel color without semantic meaning;
-- hidden validation, failure, destructive, or sensitive state.
+- generic hero copy inside an operational product;
+- decorative motion on routine controls;
+- a visually separate design system for the in-page assistant.
 
-## 15. Ownership rule
+## 12. Accessibility and product invariants
 
-When adding or changing UI:
+Preserve keyboard operation, visible focus, readable contrast, disabled/loading states, screen-reader labels, validation, destructive-action clarity, sensitive-data consent, explicit document attachment, application-state ownership, and reduced-motion behavior.
 
-1. Reuse shared tokens and primitives first.
-2. Prefer spacing/dividers over another container.
-3. Keep one strong boundary per task region.
-4. Keep workflow semantics and safety behavior unchanged unless explicitly requested.
-5. Update this contract when intentionally changing the design language.
-6. Verify typecheck, tests, lint/format, and production build for the affected extension surface.
-
-Target: **compact shell, one section boundary, flat repeated rows, small controls, selective blue emphasis, and no decorative container stacking.**
+When extending Jobflow, prefer the smallest visual structure that makes the current task clear. More containers are not more hierarchy.
