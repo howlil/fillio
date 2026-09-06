@@ -46,7 +46,7 @@ type WorkspaceNavigationProps = {
 };
 
 const navItemBase =
-  'flex h-9 min-h-9 w-full items-center gap-2 rounded-control border px-2 text-left text-sm font-medium transition-colors focus-visible:border-app-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft';
+  'relative flex h-10 min-h-10 w-10 items-center justify-center rounded-control border text-left text-sm font-medium transition-[width,padding,gap,background-color,border-color,color] duration-150 focus-visible:border-app-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft group-data-[expanded=true]/sidebar:w-full group-data-[expanded=true]/sidebar:justify-start group-data-[expanded=true]/sidebar:gap-2 group-data-[expanded=true]/sidebar:px-2';
 
 export function WorkspaceNavigation({
   activeSection,
@@ -73,12 +73,15 @@ export function WorkspaceNavigation({
       </SelectField>
 
       <nav
-        className="hidden space-y-4 md:block"
+        className="hidden space-y-3 md:block"
         aria-label="Jobflow workspace sections"
       >
         {groups.map((group) => (
-          <div key={group.label}>
-            <p className="pointer-events-none mb-1 px-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-app-subtle opacity-0 transition-opacity duration-100 group-data-[expanded=true]/sidebar:opacity-100">
+          <div
+            className="border-t border-app-border pt-3 first:border-t-0 first:pt-0"
+            key={group.label}
+          >
+            <p className="pointer-events-none m-0 max-h-0 overflow-hidden px-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-app-subtle opacity-0 transition-[max-height,margin,opacity] duration-150 group-data-[expanded=true]/sidebar:mb-1 group-data-[expanded=true]/sidebar:max-h-5 group-data-[expanded=true]/sidebar:opacity-100">
               {group.label}
             </p>
             <div className="grid gap-1">
@@ -89,22 +92,23 @@ export function WorkspaceNavigation({
                   <button
                     className={`${navItemBase} ${
                       active
-                        ? 'border-app-border bg-app-muted text-app-ink'
+                        ? 'border-app-border-strong bg-app-muted text-app-ink'
                         : 'border-transparent text-app-text hover:border-app-border hover:text-app-ink'
                     }`}
                     type="button"
                     key={item.id}
                     aria-current={active ? 'page' : undefined}
+                    aria-label={item.label}
                     title={item.label}
                     onClick={() => onChange(item.id)}
                   >
                     <Icon
                       className="shrink-0"
                       aria-hidden="true"
-                      size={18}
-                      strokeWidth={1.8}
+                      size={19}
+                      strokeWidth={active ? 2 : 1.8}
                     />
-                    <span className="pointer-events-none truncate opacity-0 transition-opacity duration-100 group-data-[expanded=true]/sidebar:opacity-100">
+                    <span className="pointer-events-none max-w-0 overflow-hidden truncate whitespace-nowrap opacity-0 transition-[max-width,opacity] duration-150 group-data-[expanded=true]/sidebar:max-w-[168px] group-data-[expanded=true]/sidebar:opacity-100">
                       {item.label}
                     </span>
                   </button>
