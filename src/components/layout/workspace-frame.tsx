@@ -58,7 +58,9 @@ export function WorkspaceFrame({
           data-expanded={sidebarExpanded}
         >
           <motion.div
-            className="absolute inset-y-0 left-0 overflow-hidden border-r border-app-border bg-app-surface"
+            className={`absolute inset-y-0 left-0 overflow-hidden border-r border-app-border bg-app-surface ${
+              sidebarExpanded ? 'shadow-overlay' : 'shadow-none'
+            }`}
             animate={{
               width: sidebarExpanded
                 ? SIDEBAR_EXPANDED_WIDTH
@@ -77,10 +79,11 @@ export function WorkspaceFrame({
                 </span>
               ) : (
                 <button
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-control border border-transparent bg-transparent text-app-text transition-colors hover:border-app-border hover:text-app-ink focus-visible:border-app-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-control border border-app-border bg-transparent text-app-text transition-colors hover:border-app-border-strong hover:text-app-ink focus-visible:border-app-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft"
                   type="button"
                   aria-label="Expand sidebar"
                   aria-expanded={false}
+                  title="Expand sidebar"
                   onClick={() => setSidebarExpanded(true)}
                 >
                   <PanelLeftOpen
@@ -120,6 +123,7 @@ export function WorkspaceFrame({
                   type="button"
                   aria-label="Collapse sidebar"
                   aria-expanded={true}
+                  title="Collapse sidebar"
                   onClick={() => setSidebarExpanded(false)}
                 >
                   <PanelLeftClose
@@ -131,7 +135,7 @@ export function WorkspaceFrame({
               ) : null}
             </div>
 
-            <div className="h-[calc(100vh-3.5rem)] w-60 overflow-y-auto px-2 py-2.5">
+            <div className="h-[calc(100vh-3.5rem)] w-60 overflow-y-auto px-2 py-3">
               {navigation}
             </div>
           </motion.div>
