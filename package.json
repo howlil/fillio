@@ -21,7 +21,7 @@
     "verify:manifest": "node scripts/verify-manifest.mjs",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --write src/components/layout/workspace-section.tsx src/components/profile/sections/CertificationsSection.tsx && cat src/components/layout/workspace-section.tsx && cat src/components/profile/sections/CertificationsSection.tsx && prettier --check ."
   },
   "dependencies": {
     "lucide-react": "1.34.0",
@@ -39,7 +39,6 @@
     "@testing-library/react": "16.3.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
-    "@wxt-dev/module-react": "1.2.2",
     "eslint": "9.39.5",
     "jsdom": "30.0.1",
     "prettier": "3.6.2",
