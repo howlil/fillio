@@ -12,17 +12,17 @@ Use three structural levels only:
 
 Do not create another visual card merely because a component has a React boundary.
 
-Repeated records such as projects, certifications, languages, applications, documents, and corrections should normally be divider rows. A record may collapse when its edit form is large.
+Repeated simple records such as languages, application rows, documents, and corrections should normally use compact rows inside one section. Large editable records such as projects, certifications, education, and experience may use one inset bounded record when collapse/expand is useful.
 
-## 2. Density
+## 2. Density and width
 
 Desktop targets:
 
 ```text
 workspace gutter       8–12px
-section padding        12–14px
+section padding        12–16px
 section radius         8px
-row vertical padding   8px
+row vertical padding   8–10px
 field gap               8px
 input/button height    ~32px
 label/body              12–13px
@@ -30,11 +30,25 @@ section title           13–15px
 page title              15–17px
 ```
 
-Touch targets may expand to 44px for coarse pointers without changing the desktop density.
+Touch targets may expand to 44px for coarse pointers without changing desktop density.
 
-Long editor pages should use a readable working width instead of stretching controls across arbitrary ultrawide screens. The normal maximum content width is about `1180px`.
+The options workspace uses the available canvas width, matching Pipeline. Do **not** add an arbitrary page-level `max-width` that makes Experience, Documents, or other workspaces narrower than Pipeline. Control readability with section padding, field grids, and sensible local field widths instead of shrinking the whole workspace.
 
-## 3. Surfaces
+## 3. Style ownership
+
+The options/workspace visual system is **Tailwind-owned**.
+
+- Component layout, spacing, borders, radius, color, state, and responsive behavior live in React/TSX Tailwind utility classes or shared TypeScript class constants.
+- Shared visual behavior belongs in React primitives such as `Section`, `WorkspaceSection`, `RecordCard`, `Field`, `Button`, and `IconButton`.
+- `src/components/ui/tailwind.css` is only the Tailwind entry point plus semantic light/dark token declarations.
+- Do not add `@apply`, `@layer components`, component selectors, page selectors, or `!important` patches to the workspace stylesheet.
+- Do not add a second options/workspace stylesheet.
+- Marker classes used for tests or DOM identification may remain, but they must not own appearance through CSS.
+- If a component looks wrong, fix the owning component or primitive rather than adding a global cascade override.
+
+The in-page assistant is a separate Shadow DOM surface. Its scoped style mechanism must remain isolated and must never be used to patch or override the options workspace.
+
+## 4. Surfaces
 
 Default elevation is none.
 
@@ -48,15 +62,17 @@ Prefer, in order:
 
 Shadows are for real overlays such as popovers, dialogs, and the in-page assistant. Ordinary sections, records, fields, and navigation items do not float.
 
-## 4. Repeated records
+Sibling top-level task sections must have visible separation. Content must never sit directly against a section border; bounded surfaces always keep explicit inset padding.
+
+## 5. Repeated records
 
 A repeated record must not repeat the same information twice in adjacent hierarchy levels. If `Language` and `Proficiency` are already editable fields, do not add a second summary immediately above them unless the record is collapsed.
 
 Large records such as projects and certifications use compact summaries when collapsed. When several new blank records exist, do not automatically expand all of them. At most the newest unfinished record should open by default.
 
-Delete actions stay aligned to the record edge and should not consume a full column.
+Delete actions stay inset from the record edge and should not consume a full column. Sibling records must not visually touch each other when they are meant to be independent bounded records.
 
-## 5. Forms
+## 6. Forms
 
 - controls use 6px radius and quiet 1px borders;
 - desktop controls are approximately 32px high;
@@ -66,7 +82,7 @@ Delete actions stay aligned to the record edge and should not consume a full col
 - focus uses the product blue and a clear 2px ring;
 - no inset highlights, ambient control shadows, or hover lift.
 
-## 6. Copy
+## 7. Copy
 
 Product copy should sound like a utility, not generated marketing prose.
 
@@ -86,24 +102,25 @@ Avoid filler such as:
 
 Do not repeat safety prose at every level. Keep important consent or privacy information where the decision is made.
 
-## 7. Documents
+## 8. Documents
 
 Document storage and import are operational tools, not hero surfaces.
 
 - stored files are compact rows;
 - the CV picker is a short horizontal action surface on desktop, not a large empty dropzone;
 - extraction/review state appears directly below the action;
-- empty states are one line when no recovery instruction is required.
+- empty states are one line when no recovery instruction is required;
+- Stored resumes, picker, and extracted-data review use consistent inset spacing and borders.
 
-## 8. Sensitive vault
+## 9. Sensitive vault
 
 The locked state is a compact credential action: passphrase and unlock action should read as one local workflow, not two disconnected blocks.
 
 Sensitive state, destructive reset, errors, and consent remain explicit. Compactness must never hide a security boundary.
 
-## 9. In-page assistant
+## 10. In-page assistant
 
-The Shadow DOM assistant follows the same workbench language while remaining an overlay:
+The Shadow DOM assistant follows the same workbench language while remaining an isolated overlay:
 
 ```text
 panel width             ~340–360px
@@ -112,17 +129,17 @@ control height          ~30–32px desktop
 panel radius            8–10px
 ```
 
-Use one panel boundary, divider-based internal grouping, quiet blue selected tabs, and one overlay shadow. Do not use a black chat-like surface as the default light-mode experience, oversized tabs, stacked internal cards, or decorative assistant chrome.
+Use one panel boundary, divider-based internal grouping, quiet blue selected tabs, and one overlay shadow. Do not use oversized tabs, stacked internal cards, decorative assistant chrome, or a visually unrelated design language.
 
 The launcher remains small and identifiable. Motion is limited to open/close and meaningful view changes.
 
-## 10. Color
+## 11. Color
 
 Blue is reserved for primary action, focus, selection, and product state. Green, amber, and red retain semantic meanings. Neutral structure should remain neutral.
 
 Dark mode preserves the same hierarchy and density rather than switching to a different visual product.
 
-## 11. Anti-slop rules
+## 12. Anti-slop rules
 
 Do not introduce:
 
@@ -130,16 +147,18 @@ Do not introduce:
 - equal visual weight for parent and child containers;
 - giant rounded dashboard tiles;
 - repeated shadows, gradients, glow, or glass blur;
-- full-width inputs on very wide monitors without a working-width reason;
+- an arbitrary page-width cap that makes sibling workspaces inconsistent;
 - oversized empty states or upload areas;
 - every repeated record expanded at once;
 - duplicated summary text directly above the same editable value;
 - arbitrary dashboard grids;
 - generic hero copy inside an operational product;
 - decorative motion on routine controls;
-- a visually separate design system for the in-page assistant.
+- a visually separate design system for the in-page assistant;
+- global CSS patches to repair a broken component primitive;
+- `!important` chains that fight component-owned Tailwind utilities.
 
-## 12. Accessibility and product invariants
+## 13. Accessibility and product invariants
 
 Preserve keyboard operation, visible focus, readable contrast, disabled/loading states, screen-reader labels, validation, destructive-action clarity, sensitive-data consent, explicit document attachment, application-state ownership, and reduced-motion behavior.
 

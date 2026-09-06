@@ -19,6 +19,7 @@
     "test:e2e:smoke": "node e2e/extension-smoke.mjs",
     "test:e2e": "node e2e/extension-smoke.mjs && node e2e/autofill-acceptance.mjs && node e2e/vault-acceptance.mjs && node e2e/ui-acceptance.mjs && node e2e/workspace-cv-acceptance.mjs && node e2e/application-pipeline-acceptance.mjs",
     "verify:manifest": "node scripts/verify-manifest.mjs",
+    "verify:workspace-styles": "node scripts/verify-tailwind-workspace.mjs",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

@@ -34,6 +34,9 @@ function useDesktopLayout(): boolean {
   return desktop;
 }
 
+const SIDEBAR_BUTTON_CLASS =
+  'grid h-8 w-8 shrink-0 place-items-center rounded-[6px] border border-app-border bg-app-surface text-app-text transition-colors duration-150 hover:border-app-border-strong hover:bg-app-muted focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft';
+
 export function WorkspaceFrame({
   navigation,
   children,
@@ -50,15 +53,15 @@ export function WorkspaceFrame({
     : { type: 'spring' as const, stiffness: 520, damping: 42, mass: 0.72 };
 
   return (
-    <div className="jobflow-soft-shell min-h-screen bg-app-bg text-app-ink md:grid md:grid-cols-[56px_minmax(0,1fr)]">
+    <div className="min-h-screen bg-app-bg font-sans text-app-ink md:grid md:grid-cols-[56px_minmax(0,1fr)]">
       {desktop ? (
         <aside
-          className="jobflow-sidebar group/sidebar relative z-40 h-screen w-14 overflow-visible md:sticky md:top-0"
+          className="group/sidebar relative z-40 h-screen w-14 overflow-visible bg-transparent md:sticky md:top-0"
           aria-label="Job Flow sidebar"
           data-expanded={sidebarExpanded}
         >
           <motion.div
-            className="jobflow-sidebar-surface absolute inset-y-0 left-0 overflow-hidden"
+            className="absolute inset-y-0 left-0 overflow-hidden border-r border-app-border bg-app-surface shadow-none"
             animate={{
               width: sidebarExpanded
                 ? SIDEBAR_EXPANDED_WIDTH
@@ -77,7 +80,7 @@ export function WorkspaceFrame({
                 </span>
               ) : (
                 <button
-                  className="jobflow-icon-button grid h-8 w-8 shrink-0 place-items-center text-app-text focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft"
+                  className={SIDEBAR_BUTTON_CLASS}
                   type="button"
                   aria-label="Expand sidebar"
                   aria-expanded={false}
@@ -117,7 +120,7 @@ export function WorkspaceFrame({
 
               {sidebarExpanded ? (
                 <button
-                  className="jobflow-icon-button grid h-8 w-8 shrink-0 place-items-center text-app-text focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft"
+                  className={SIDEBAR_BUTTON_CLASS}
                   type="button"
                   aria-label="Collapse sidebar"
                   aria-expanded={true}
@@ -140,7 +143,7 @@ export function WorkspaceFrame({
         </aside>
       ) : (
         <aside
-          className="jobflow-mobile-nav px-3 py-2"
+          className="border-b border-app-border bg-app-surface px-3 py-2"
           aria-label="Job Flow sidebar"
         >
           <div className="mb-2 flex items-center gap-2">
@@ -164,7 +167,7 @@ export function WorkspaceFrame({
       )}
 
       <div className="min-w-0 bg-app-bg">
-        <header className="jobflow-header sticky z-30">
+        <header className="sticky top-0 z-30 overflow-hidden border-b border-app-border bg-app-surface shadow-none">
           <div className="flex min-h-12 items-center justify-between gap-3 px-3 sm:px-4">
             <div className="min-w-0 py-1.5">
               <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.08em] text-app-subtle">
@@ -182,7 +185,9 @@ export function WorkspaceFrame({
           </div>
         </header>
 
-        <main className="jobflow-workspace-canvas w-full">{children}</main>
+        <main className="min-h-[calc(100vh-3rem)] w-full overflow-x-hidden bg-app-bg p-3">
+          {children}
+        </main>
       </div>
     </div>
   );

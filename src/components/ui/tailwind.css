@@ -5,417 +5,49 @@
 @layer base {
   :root {
     color-scheme: light;
-    --app-bg: 250 250 250;
+    --app-bg: 247 248 249;
     --app-surface: 255 255 255;
     --app-surface-raised: 255 255 255;
-    --app-surface-muted: 247 247 247;
-    --app-border: 222 222 222;
-    --app-border-strong: 201 201 201;
-    --app-ink: 23 23 23;
-    --app-muted: 82 82 82;
-    --app-subtle: 115 115 115;
-    --app-accent: 23 23 23;
-    --app-accent-strong: 10 10 10;
-    --app-accent-soft: 229 229 229;
-    --app-danger: 220 38 38;
-    --app-danger-soft: 254 242 242;
-    --app-warning: 217 119 6;
-    --app-warning-soft: 255 251 235;
-    --app-info: 2 132 199;
-    --app-info-soft: 240 249 255;
-    --app-success: 5 150 105;
-    --app-success-soft: 236 253 245;
+    --app-surface-muted: 243 245 247;
+    --app-border: 226 229 233;
+    --app-border-strong: 199 204 211;
+    --app-ink: 31 36 43;
+    --app-muted: 83 91 102;
+    --app-subtle: 128 136 147;
+    --app-accent: 61 126 193;
+    --app-accent-strong: 39 98 158;
+    --app-accent-soft: 230 239 248;
+    --app-danger: 201 67 67;
+    --app-danger-soft: 252 239 239;
+    --app-warning: 183 121 28;
+    --app-warning-soft: 250 244 229;
+    --app-info: 61 126 193;
+    --app-info-soft: 234 242 250;
+    --app-success: 39 143 95;
+    --app-success-soft: 234 247 239;
   }
 
   .dark {
     color-scheme: dark;
-    --app-bg: 10 10 10;
-    --app-surface: 20 20 20;
-    --app-surface-raised: 23 23 23;
-    --app-surface-muted: 26 26 26;
-    --app-border: 48 48 48;
-    --app-border-strong: 74 74 74;
-    --app-ink: 250 250 250;
-    --app-muted: 163 163 163;
-    --app-subtle: 115 115 115;
-    --app-accent: 250 250 250;
-    --app-accent-strong: 255 255 255;
-    --app-accent-soft: 51 51 51;
-    --app-danger: 248 113 113;
-    --app-danger-soft: 69 10 10;
-    --app-warning: 251 191 36;
-    --app-warning-soft: 69 26 3;
-    --app-info: 56 189 248;
-    --app-info-soft: 8 47 73;
-    --app-success: 52 211 153;
-    --app-success-soft: 6 78 59;
-  }
-
-  * {
-    @apply box-border;
-  }
-
-  [hidden] {
-    display: none !important;
-  }
-
-  html {
-    @apply bg-app-bg font-sans text-app-ink antialiased;
-    font-size: 16px;
-    text-rendering: optimizeLegibility;
-  }
-
-  body {
-    @apply m-0 min-w-80 bg-app-bg text-app-ink;
-  }
-
-  button,
-  input,
-  select,
-  textarea {
-    font: inherit;
-  }
-
-  input,
-  select,
-  textarea {
-    @apply text-app-ink;
-    background: transparent;
-  }
-
-  ::selection {
-    @apply bg-app-accent-strong text-app-surface;
-  }
-}
-
-@layer components {
-  /* Compatibility grammar. Repeated visual behavior belongs in shared React
-     primitives; these selectors keep legacy call sites on the same system. */
-  .jobflow-button {
-    @apply inline-flex h-9 min-h-9 items-center justify-center gap-2 whitespace-nowrap rounded-control border border-app-border bg-transparent px-3 text-sm font-medium text-app-ink shadow-none transition-colors hover:border-app-border-strong focus-visible:border-app-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft disabled:cursor-not-allowed disabled:opacity-50;
-  }
-
-  .jobflow-button:active:not(:disabled) {
-    @apply translate-y-px;
-  }
-
-  .jobflow-button-primary,
-  .jobflow-button-accent {
-    @apply border-app-ink bg-app-ink text-app-surface hover:border-app-accent-strong hover:bg-app-accent-strong;
-  }
-
-  .jobflow-button-secondary {
-    @apply bg-transparent;
-  }
-
-  .jobflow-button-ghost {
-    @apply border-transparent bg-transparent text-app-text hover:border-app-border hover:text-app-ink;
-  }
-
-  .jobflow-button-danger {
-    @apply border-app-danger bg-app-danger text-white hover:brightness-95;
-  }
-
-  .jobflow-icon-button {
-    @apply grid h-9 w-9 place-items-center rounded-control border border-app-border bg-transparent text-app-ink transition-colors hover:border-app-border-strong focus-visible:border-app-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft;
-  }
-
-  .jobflow-chip {
-    @apply inline-flex min-h-6 items-center gap-1.5 rounded-control border border-app-border bg-app-muted px-2 py-0.5 text-[13px] font-medium leading-5 text-app-text;
-  }
-
-  .jobflow-chip-strong {
-    @apply border-app-border-strong bg-app-surface font-semibold text-app-ink;
-  }
-
-  .jobflow-status,
-  .profile-section > [role='status'],
-  .profile-section > [role='alert'] {
-    @apply m-0 w-full rounded-control border border-app-border bg-app-muted px-3 py-2.5 text-sm leading-5 text-app-text;
-  }
-
-  .jobflow-status-success,
-  .profile-section > [role='status'] {
-    @apply border-app-success/30 bg-app-success-soft text-app-success;
-  }
-
-  .jobflow-status-danger,
-  .profile-section > [role='alert'] {
-    @apply border-app-danger/30 bg-app-danger-soft text-app-danger;
-  }
-
-  .workspace-section-wrap {
-    @apply w-full;
-  }
-
-  .profile-page h2,
-  .workspace-tool-section__header h2 {
-    @apply m-0 text-[15px] font-semibold tracking-tight text-app-ink;
-  }
-
-  .profile-page h3,
-  .workspace-tool-section h3 {
-    @apply m-0 text-sm font-semibold text-app-ink;
-  }
-
-  .eyebrow,
-  .workspace-kicker {
-    @apply m-0 text-[11px] font-semibold uppercase tracking-[0.08em] text-app-subtle;
-  }
-
-  .muted,
-  .profile-readiness-intro,
-  .workspace-tool-section__header p,
-  .cv-dropzone p {
-    @apply m-0 text-[13px] leading-5 text-app-text;
-  }
-
-  /* First-level operational regions are structural, not floating cards. */
-  .profile-readiness,
-  .workspace-tool-section {
-    @apply grid gap-4 border-b border-app-border bg-app-surface px-5 py-4 shadow-none;
-  }
-
-  .profile-readiness {
-    @apply mb-0 gap-3;
-  }
-
-  .jobflow-section-heading,
-  .section-heading,
-  .workspace-tool-section__header {
-    @apply flex items-start justify-between gap-3;
-  }
-
-  .jobflow-section-heading > div,
-  .section-heading > div,
-  .workspace-tool-section__header > div {
-    @apply grid min-w-0 gap-1;
-  }
-
-  .profile-readiness-details {
-    @apply grid gap-2;
-  }
-
-  .profile-readiness-label {
-    @apply m-0 text-[13px] font-medium text-app-ink;
-  }
-
-  .profile-readiness-list {
-    @apply m-0 flex list-none flex-wrap gap-x-4 gap-y-2 p-0;
-  }
-
-  .profile-readiness-list li {
-    @apply relative pl-3 text-[13px] text-app-text;
-  }
-
-  .profile-readiness-list li::before {
-    content: '';
-    @apply absolute left-0 top-[0.55em] h-1 w-1 rounded-full bg-app-warning;
-  }
-
-  .profile-readiness-actions,
-  .button-row,
-  .vault-actions {
-    @apply flex flex-wrap items-center gap-2;
-  }
-
-  .profile-section {
-    @apply grid gap-4 border-b border-app-border pb-5 last:border-b-0 last:pb-0;
-  }
-
-  details.profile-section > summary {
-    @apply cursor-pointer list-none text-[15px] font-semibold tracking-tight text-app-ink;
-  }
-
-  details.profile-section > summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .form-grid {
-    @apply grid grid-cols-1 gap-3 sm:grid-cols-2;
-  }
-
-  .profile-page label,
-  .workspace-tool-section label {
-    @apply grid gap-1.5 text-[13px] font-medium text-app-text;
-  }
-
-  .profile-page input:not([type='checkbox']):not([type='file']),
-  .profile-page select,
-  .profile-page textarea,
-  .workspace-tool-section input:not([type='checkbox']):not([type='file']),
-  .workspace-tool-section select,
-  .workspace-tool-section textarea {
-    @apply w-full rounded-control border border-app-border bg-transparent px-3 py-1.5 text-sm text-app-ink outline-none transition-colors placeholder:text-app-subtle hover:border-app-border-strong focus:border-app-ink focus:ring-2 focus:ring-app-accent-soft disabled:cursor-not-allowed disabled:bg-app-muted disabled:text-app-subtle;
-  }
-
-  .profile-page input:not([type='checkbox']):not([type='file']),
-  .profile-page select,
-  .workspace-tool-section input:not([type='checkbox']):not([type='file']),
-  .workspace-tool-section select {
-    @apply min-h-9;
-  }
-
-  .profile-page textarea,
-  .workspace-tool-section textarea {
-    @apply min-h-24 resize-y leading-5;
-  }
-
-  .profile-page input[type='checkbox'],
-  .workspace-tool-section input[type='checkbox'] {
-    @apply h-[18px] w-[18px] rounded-control border-app-border-strong accent-app-ink;
-  }
-
-  .record-list {
-    @apply grid gap-3;
-  }
-
-  /* Repeated entities retain an explicit inset boundary, but no elevation. */
-  .record-card,
-  .workspace-card {
-    @apply relative grid gap-3 rounded-control border border-app-border bg-app-surface p-3 shadow-none;
-  }
-
-  details.record-card {
-    @apply block;
-  }
-
-  details.record-card[open] {
-    @apply grid gap-3;
-  }
-
-  .record-summary {
-    @apply flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-app-ink;
-  }
-
-  .record-summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .record-summary-meta {
-    @apply shrink-0 text-[13px] font-medium text-app-subtle;
-  }
-
-  .description-preview-list {
-    @apply m-0 grid gap-1 rounded-control border border-app-border bg-app-surface px-3 py-2 text-[13px] leading-5 text-app-text;
-  }
-
-  .description-preview-list li {
-    @apply pl-1;
-  }
-
-  .jobflow-empty-row {
-    @apply flex min-h-10 items-center justify-between gap-3 border-y border-app-border py-2 text-[13px] text-app-text;
-  }
-
-  .default-variant {
-    @apply max-w-md;
-  }
-
-  .vault-section,
-  .cv-import-grid {
-    @apply grid gap-3;
-  }
-
-  .workspace-tool-section__header {
-    @apply mb-0;
-  }
-
-  .workspace-brand__mark {
-    @apply grid h-9 w-9 place-items-center rounded-control bg-app-ink text-sm font-bold text-app-surface;
-  }
-
-  .cv-dropzone {
-    @apply grid min-h-[136px] place-items-center rounded-control border border-dashed border-app-border-strong bg-app-surface p-4 text-center shadow-none;
-  }
-
-  .cv-dropzone__content {
-    @apply grid max-w-xl justify-items-center gap-2;
-  }
-
-  .cv-preview {
-    @apply grid gap-0;
-  }
-
-  .cv-preview__row {
-    @apply grid grid-cols-[auto_minmax(120px,0.6fr)_minmax(0,1.4fr)] items-start gap-2.5 border-b border-app-border py-2.5 text-[13px] last:border-b-0;
-  }
-
-  .cv-preview__row > input[type='checkbox'] {
-    @apply mt-0.5;
-  }
-
-  .cv-preview__value {
-    @apply min-w-0 text-[13px] leading-5 text-app-text;
-  }
-
-  .document-row {
-    @apply flex items-start justify-between gap-3 border-b border-app-border py-2.5 text-[13px] last:border-b-0;
-  }
-
-  .document-row__meta {
-    @apply grid min-w-0 gap-1 text-[13px] leading-5 text-app-text;
-  }
-
-  .document-list {
-    @apply grid gap-0;
-  }
-
-  .workspace-card-title {
-    @apply text-sm font-semibold text-app-ink;
-  }
-
-  .jobflow-visually-hidden {
-    @apply absolute h-px w-px overflow-hidden whitespace-nowrap border-0 p-0;
-    clip: rect(0, 0, 0, 0);
-    margin: -1px;
-  }
-
-  @media (max-width: 720px) {
-    .jobflow-section-heading,
-    .section-heading,
-    .workspace-tool-section__header,
-    .jobflow-empty-row {
-      @apply flex-col items-stretch;
-    }
-
-    .profile-readiness,
-    .workspace-tool-section {
-      @apply px-4 py-4;
-    }
-
-    .cv-preview__row {
-      @apply grid-cols-[auto_minmax(0,1fr)];
-    }
-
-    .cv-preview__value {
-      @apply col-start-2;
-    }
-  }
-
-  @media (any-pointer: coarse) {
-    .jobflow-button,
-    .jobflow-icon-button,
-    .profile-page input:not([type='checkbox']):not([type='file']),
-    .profile-page select,
-    .workspace-tool-section input:not([type='checkbox']):not([type='file']),
-    .workspace-tool-section select {
-      min-height: 44px;
-    }
-
-    .jobflow-icon-button {
-      min-width: 44px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      scroll-behavior: auto !important;
-      transition-duration: 0.01ms !important;
-    }
+    --app-bg: 20 22 25;
+    --app-surface: 27 30 34;
+    --app-surface-raised: 30 34 38;
+    --app-surface-muted: 34 38 43;
+    --app-border: 48 53 59;
+    --app-border-strong: 72 79 87;
+    --app-ink: 242 244 246;
+    --app-muted: 188 194 201;
+    --app-subtle: 137 145 154;
+    --app-accent: 104 165 221;
+    --app-accent-strong: 139 187 231;
+    --app-accent-soft: 35 52 68;
+    --app-danger: 235 112 112;
+    --app-danger-soft: 70 37 37;
+    --app-warning: 224 171 80;
+    --app-warning-soft: 67 53 30;
+    --app-info: 104 165 221;
+    --app-info-soft: 34 52 68;
+    --app-success: 87 194 139;
+    --app-success-soft: 34 64 49;
   }
 }

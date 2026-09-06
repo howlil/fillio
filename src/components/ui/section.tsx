@@ -6,7 +6,7 @@ export function Section({ className, ...props }: HTMLAttributes<HTMLElement>) {
   return (
     <section
       className={classes(
-        'jobflow-bento-card grid gap-3 px-3 py-3 sm:px-4 sm:py-4',
+        'grid gap-3 rounded-[8px] border border-app-border bg-app-surface px-3 py-3 shadow-none sm:px-4 sm:py-4',
         className,
       )}
       {...props}
