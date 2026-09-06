@@ -60,7 +60,8 @@ export function CertificationsSection({
             <CollapsibleRecord
               key={certification.id}
               initialOpen={
-                certification.name.trim() === '' && index === certifications.length - 1
+                certification.name.trim() === '' &&
+                index === certifications.length - 1
               }
             >
               <summary className="record-summary pr-8">
@@ -77,7 +78,10 @@ export function CertificationsSection({
                 title={`Remove certification ${index + 1}`}
                 onClick={() =>
                   changeProfile((draft) =>
-                    draft.baseProfile.professional.certifications.splice(index, 1),
+                    draft.baseProfile.professional.certifications.splice(
+                      index,
+                      1,
+                    ),
                   )
                 }
               >

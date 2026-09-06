@@ -73,7 +73,9 @@ export function DocumentsSection({
             >
               <RecordHeader
                 title={answer.question || `Answer ${index + 1}`}
-                context={answer.tags.length > 0 ? answer.tags.join(' · ') : undefined}
+                context={
+                  answer.tags.length > 0 ? answer.tags.join(' · ') : undefined
+                }
               />
               <TextField
                 label="Question"
@@ -96,14 +98,15 @@ export function DocumentsSection({
                 }
               />
               <TextField
-                label="Tags"
+                label="Tags, comma separated"
                 placeholder="visa, sponsorship, notice period"
                 value={listValue(answer.tags)}
                 onChange={(event) =>
                   changeProfile((draft) => {
                     const item = draft.baseProfile.customAnswers[index];
-                    if (item !== undefined)
+                    if (item !== undefined) {
                       item.tags = parseList(event.target.value);
+                    }
                   })
                 }
               />

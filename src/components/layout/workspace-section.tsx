@@ -70,7 +70,9 @@ function HelpPopover({ title, help }: HelpPopoverProps) {
             className="absolute left-0 top-8 z-50 w-60 max-w-[calc(100vw-2rem)] rounded-[8px] border border-app-border bg-app-surface p-2.5 text-left shadow-overlay"
             role="dialog"
             aria-label={helpLabel(title)}
-            initial={reduceMotion ? false : { opacity: 0, y: -3, scale: 0.99 }}
+            initial={
+              reduceMotion ? false : { opacity: 0, y: -3, scale: 0.99 }
+            }
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={
               reduceMotion
