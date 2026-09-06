@@ -155,7 +155,7 @@ export function CollapsibleRecord({
 
   return (
     <details
-      className={`record-card ${className}`}
+      className={`record-card rounded-none border-x-0 border-b-0 p-0 pt-3 first:border-t-0 first:pt-0 ${className}`}
       open={open}
       onToggle={(event) => setOpen(event.currentTarget.open)}
     >
