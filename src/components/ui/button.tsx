@@ -24,7 +24,7 @@ export function Button({
   return (
     <button
       className={classes(
-        'inline-flex h-[34px] min-h-[34px] items-center justify-center gap-1.5 whitespace-nowrap rounded-[7px] border px-2.5 text-[13px] font-medium shadow-none transition-colors duration-[120ms] focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex h-8 min-h-8 items-center justify-center gap-1.5 whitespace-nowrap rounded-[6px] border px-2.5 text-[13px] font-medium transition-[background-color,border-color,color] duration-150 focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft disabled:cursor-not-allowed disabled:opacity-50',
         BUTTON_VARIANT_CLASS[variant],
         className,
       )}
