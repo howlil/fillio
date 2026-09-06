@@ -247,14 +247,14 @@ export function ProfilePage({
 
   if (error !== null && profile === null) {
     return (
-      <section className="profile-page w-full px-4 py-4 text-sm text-app-danger sm:px-5">
+      <section className="profile-page w-full px-6 py-5 text-sm text-app-danger lg:px-8">
         {error}
       </section>
     );
   }
   if (profile === null) {
     return (
-      <section className="profile-page w-full px-4 py-4 text-sm text-app-text sm:px-5">
+      <section className="profile-page w-full px-6 py-5 text-sm text-app-text lg:px-8">
         Loading profile…
       </section>
     );
@@ -263,7 +263,7 @@ export function ProfilePage({
   const statusText = saveStateText(saveState);
 
   return (
-    <section className="profile-page w-full">
+    <section className="profile-page w-full px-3 py-3 sm:px-4 lg:px-5">
       <span
         className="profile-save-indicator jobflow-visually-hidden"
         data-state={saveState}
@@ -277,7 +277,7 @@ export function ProfilePage({
 
       {error !== null ? (
         <p
-          className="mx-4 my-4 rounded-control border border-app-danger/30 bg-app-danger-soft px-3 py-2.5 text-sm text-app-danger sm:mx-5"
+          className="my-4 rounded-control border border-app-danger/30 bg-app-danger-soft px-3 py-2.5 text-sm text-app-danger"
           role="alert"
         >
           {error}
