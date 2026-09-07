@@ -122,7 +122,7 @@ function PipelineCard({
     >
       <button
         aria-label={`View ${application.company} ${application.role} details`}
-        className="absolute inset-0 z-10 rounded-control focus-visible:outline-none"
+        className="absolute inset-0 z-10 cursor-pointer rounded-control focus-visible:outline-none"
         onClick={() => onOpen(application)}
         type="button"
       />
@@ -157,7 +157,7 @@ function PipelineCard({
             className={
               urgent
                 ? 'rounded-control border border-app-warning/30 bg-app-warning-soft px-2 py-1 text-app-warning'
-                : 'rounded-control border border-app-border bg-app-surface-muted px-2 py-1 text-app-text'
+                : 'rounded-control border border-app-border bg-app-muted px-2 py-1 text-app-text'
             }
           >
             {dueStatus}
