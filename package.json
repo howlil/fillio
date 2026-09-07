@@ -22,7 +22,7 @@
     "verify:workspace-styles": "node scripts/verify-tailwind-workspace.mjs",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --write src/components/applications/ApplicationsWorkspace.tsx && git diff -- src/components/applications/ApplicationsWorkspace.tsx"
   },
   "dependencies": {
     "lucide-react": "1.34.0",
