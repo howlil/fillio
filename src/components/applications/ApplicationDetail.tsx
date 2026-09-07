@@ -188,9 +188,7 @@ export function ApplicationDetail({
     substage: ApplicationSubstage | undefined,
   ) => void | Promise<void>;
   onCompleteAction: () => void | Promise<void>;
-  onUpdateOperational: (
-    changes: OperationalChanges,
-  ) => void | Promise<void>;
+  onUpdateOperational: (changes: OperationalChanges) => void | Promise<void>;
 }) {
   const closed = applicationIsClosed(application);
   const previousStage = previousPipelineStage(application.stage);
@@ -363,10 +361,7 @@ export function ApplicationDetail({
             </p>
           </div>
           <ActionRow>
-            <Button
-              variant="ghost"
-              onClick={() => setDeleteConfirmOpen(false)}
-            >
+            <Button variant="ghost" onClick={() => setDeleteConfirmOpen(false)}>
               Cancel
             </Button>
             <Button variant="danger" onClick={() => void onDelete()}>
