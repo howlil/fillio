@@ -651,9 +651,7 @@ export function ApplicationsWorkspace({
             </Button>
             <Button
               aria-pressed={applicationView === 'needs-action'}
-              variant={
-                applicationView === 'needs-action' ? 'primary' : 'ghost'
-              }
+              variant={applicationView === 'needs-action' ? 'primary' : 'ghost'}
               onClick={() => setApplicationView('needs-action')}
             >
               Needs action {actionableCount}
