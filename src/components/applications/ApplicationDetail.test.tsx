@@ -74,7 +74,10 @@ describe('ApplicationDetail', () => {
     expect(screen.getByLabelText('Applied reached')).not.toBeNull();
     expect(screen.getByLabelText('Interview not reached')).not.toBeNull();
     expect(screen.getByLabelText('Offer not reached')).not.toBeNull();
-    expect(screen.getByText('Closed after Applied · Rejected.')).not.toBeNull();
+    expect(
+      screen.getByText('This opportunity is closed as Rejected.'),
+    ).not.toBeNull();
+    expect(screen.getByText('Last active stage: Applied.')).not.toBeNull();
   });
 
   it('persists next-action edits from the execution surface', () => {
