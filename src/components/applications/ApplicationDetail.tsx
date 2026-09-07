@@ -111,6 +111,7 @@ function ProgressTrack({ application }: { application: JobApplication }) {
             : reached
               ? 'reached'
               : 'not reached';
+
           return (
             <div
               className="grid min-w-0 gap-1"
@@ -134,16 +135,21 @@ function ProgressTrack({ application }: { application: JobApplication }) {
           );
         })}
       </div>
+
       {closed ? (
-        <p className="m-0 text-[13px] text-app-subtle">
-          Closed
-          {lastActiveEntry === undefined
-            ? ''
-            : ` after ${STAGE_LABELS[lastActiveEntry.stage]}`}
-          {application.substage === undefined
-            ? '.'
-            : ` · ${SUBSTAGE_LABELS[application.substage]}.`}
-        </p>
+        <div className="grid gap-1 text-[13px] text-app-subtle">
+          <p className="m-0">
+            This opportunity is closed
+            {application.substage === undefined
+              ? '.'
+              : ` as ${SUBSTAGE_LABELS[application.substage]}.`}
+          </p>
+          {lastActiveEntry !== undefined ? (
+            <p className="m-0">
+              Last active stage: {STAGE_LABELS[lastActiveEntry.stage]}.
+            </p>
+          ) : null}
+        </div>
       ) : null}
     </div>
   );
@@ -190,6 +196,8 @@ export function ApplicationDetail({
   const previousStage = previousPipelineStage(application.stage);
   const nextStage = nextPipelineStage(application.stage);
   const dueStatus = closed ? null : nextActionStatus(application, todayKey);
+  const urgentDue =
+    dueStatus === 'Due today' || dueStatus?.startsWith('Overdue') === true;
   const suggestedAction = recommendedLifecycleAction(application);
   const substages = APPLICATION_SUBSTAGES_BY_STAGE[application.stage];
   const contact = [application.contactName, application.contactEmail]
@@ -201,10 +209,10 @@ export function ApplicationDetail({
     application.interviewAt !== undefined ||
     application.offerAt !== undefined ||
     application.closedAt !== undefined;
+  const hasJobContext = application.source !== undefined || contact !== '';
 
   const [moreOpen, setMoreOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [closeOpen, setCloseOpen] = useState(false);
   const [actionEditing, setActionEditing] = useState(false);
   const [notesEditing, setNotesEditing] = useState(false);
   const [datesEditing, setDatesEditing] = useState(false);
@@ -278,7 +286,7 @@ export function ApplicationDetail({
           <div className="relative flex items-center gap-1.5">
             {application.jobUrl !== undefined ? (
               <a
-                className="inline-flex h-9 items-center gap-1.5 rounded-control border border-app-border px-3 text-[13px] font-medium text-app-ink hover:bg-app-muted"
+                className="inline-flex h-8 items-center gap-1.5 rounded-control border border-app-border px-2.5 text-[13px] font-medium text-app-ink hover:bg-app-muted"
                 href={application.jobUrl}
                 target="_blank"
                 rel="noreferrer"
@@ -289,7 +297,7 @@ export function ApplicationDetail({
             ) : null}
             <Button variant="default" onClick={onEdit}>
               <Pencil aria-hidden="true" size={14} />
-              Edit job
+              Edit details
             </Button>
             <Button
               variant="ghost"
@@ -404,7 +412,10 @@ export function ApplicationDetail({
                   >
                     Cancel
                   </Button>
-                  <Button variant="primary" onClick={() => void saveNextAction()}>
+                  <Button
+                    variant="primary"
+                    onClick={() => void saveNextAction()}
+                  >
                     Save action
                   </Button>
                 </ActionRow>
@@ -429,13 +440,21 @@ export function ApplicationDetail({
                     Lifecycle complete.
                   </p>
                 )}
+
                 <div className="flex flex-wrap items-center gap-2 text-[13px] text-app-subtle">
                   {dueStatus !== null ? (
-                    <span className="rounded-control border border-app-warning/30 bg-app-warning-soft px-2 py-1 text-app-warning">
+                    <span
+                      className={
+                        urgentDue
+                          ? 'rounded-control border border-app-warning/30 bg-app-warning-soft px-2 py-1 text-app-warning'
+                          : 'rounded-control border border-app-border bg-app-muted px-2 py-1 text-app-text'
+                      }
+                    >
                       {dueStatus}
                     </span>
                   ) : null}
-                  {application.nextActionAt !== undefined && dueStatus === null ? (
+                  {application.nextActionAt !== undefined &&
+                  dueStatus === null ? (
                     <span>Due {displayDate(application.nextActionAt)}</span>
                   ) : null}
                   {application.deadline !== undefined ? (
@@ -444,6 +463,7 @@ export function ApplicationDetail({
                     </span>
                   ) : null}
                 </div>
+
                 {applicationHasCompletableAction(application) ? (
                   <ActionRow>
                     <Button
@@ -514,40 +534,27 @@ export function ApplicationDetail({
                       Mark accepted
                     </Button>
                   ) : null}
-                  <Button
-                    variant="ghost"
-                    aria-expanded={closeOpen}
-                    onClick={() => setCloseOpen((current) => !current)}
-                  >
-                    Close opportunity
-                  </Button>
                 </ActionRow>
 
-                {closeOpen ? (
-                  <div className="grid gap-2 border-l-2 border-app-border pl-3">
-                    <span className="text-[13px] text-app-subtle">
-                      Record a terminal outcome without advancing the pipeline.
-                    </span>
-                    <ActionRow>
-                      <Button
-                        variant="ghost"
-                        onClick={() =>
-                          void onChangeStage('closed', 'rejected')
-                        }
-                      >
-                        Mark rejected
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={() =>
-                          void onChangeStage('closed', 'withdrawn')
-                        }
-                      >
-                        Withdraw
-                      </Button>
-                    </ActionRow>
-                  </div>
-                ) : null}
+                <div className="grid gap-2 border-t border-app-border pt-3">
+                  <span className="text-[13px] font-medium text-app-subtle">
+                    Close opportunity
+                  </span>
+                  <ActionRow>
+                    <Button
+                      variant="ghost"
+                      onClick={() => void onChangeStage('closed', 'rejected')}
+                    >
+                      Mark rejected
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() => void onChangeStage('closed', 'withdrawn')}
+                    >
+                      Withdraw
+                    </Button>
+                  </ActionRow>
+                </div>
               </div>
             ) : null}
           </DetailBlock>
@@ -704,29 +711,18 @@ export function ApplicationDetail({
             )}
           </DetailBlock>
 
-          <DetailBlock title="Job context">
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-              {application.source !== undefined ? (
-                <DetailValue label="Source">{application.source}</DetailValue>
-              ) : null}
-              {contact !== '' ? (
-                <DetailValue label="Contact">{contact}</DetailValue>
-              ) : null}
-              {application.jobUrl !== undefined ? (
-                <DetailValue label="Job posting">
-                  <a
-                    className="inline-flex items-center gap-1 font-medium text-app-ink underline underline-offset-4"
-                    href={application.jobUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Open job
-                    <ExternalLink aria-hidden="true" size={13} />
-                  </a>
-                </DetailValue>
-              ) : null}
-            </div>
-          </DetailBlock>
+          {hasJobContext ? (
+            <DetailBlock title="Job context">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+                {application.source !== undefined ? (
+                  <DetailValue label="Source">{application.source}</DetailValue>
+                ) : null}
+                {contact !== '' ? (
+                  <DetailValue label="Contact">{contact}</DetailValue>
+                ) : null}
+              </div>
+            </DetailBlock>
+          ) : null}
         </div>
       </div>
     </div>
