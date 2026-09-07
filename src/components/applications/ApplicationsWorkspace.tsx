@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus } from 'lucide-react';
+import { ChevronRight, Plus } from 'lucide-react';
 
 import {
   APPLICATION_PRIORITIES,
@@ -19,8 +19,6 @@ import {
   Button,
   EmptyState,
   FieldGrid,
-  RecordCard,
-  RecordHeader,
   Section,
   SectionHeader,
   SelectField,
@@ -101,76 +99,99 @@ function PipelineCard({
 }) {
   const closed = applicationIsClosed(application);
   const dueStatus = closed ? null : nextActionStatus(application, todayKey);
+  const urgent =
+    dueStatus === 'Due today' || dueStatus?.startsWith('Overdue') === true;
+  const lifecycleLabel =
+    application.substage !== undefined
+      ? SUBSTAGE_LABELS[application.substage]
+      : showStage
+        ? STAGE_LABELS[application.stage]
+        : null;
   const contextualDetail = application.contactName
-    ? `Contact: ${application.contactName}`
+    ? `Contact · ${application.contactName}`
     : application.source
-      ? `Source: ${application.source}`
+      ? `Source · ${application.source}`
       : null;
   const followUpNote = application.notes?.trim();
 
   return (
-    <RecordCard>
-      <RecordHeader
-        title={application.role}
-        context={application.company}
-        meta={`Updated ${displayDate(application.updatedAt)}`}
+    <article
+      className={`group relative grid gap-2.5 rounded-control border bg-app-surface px-3 py-3 text-left transition-[background-color,border-color,box-shadow] duration-150 hover:border-app-border-strong hover:bg-app-muted focus-within:border-app-accent focus-within:ring-2 focus-within:ring-app-accent-soft ${
+        urgent ? 'border-app-warning/40' : 'border-app-border'
+      }`}
+    >
+      <button
+        aria-label={`View ${application.company} ${application.role} details`}
+        className="absolute inset-0 z-10 cursor-pointer rounded-control focus-visible:outline-none"
+        onClick={() => onOpen(application)}
+        type="button"
       />
 
-      <div className="flex flex-wrap items-center gap-2 text-[13px] font-medium text-app-subtle">
+      <div className="flex min-w-0 items-start justify-between gap-3">
+        <div className="grid min-w-0 gap-0.5">
+          <strong className="truncate text-[13px] font-semibold text-app-ink">
+            {application.role}
+          </strong>
+          <span className="truncate text-xs font-medium text-app-subtle">
+            {application.company}
+          </span>
+        </div>
+        <ChevronRight
+          aria-hidden="true"
+          className="mt-0.5 shrink-0 text-app-subtle transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-app-text"
+          size={15}
+        />
+      </div>
+
+      {application.nextAction ? (
+        <p className="m-0 rounded-[6px] bg-app-muted px-2.5 py-2 text-[13px] font-medium leading-5 text-app-ink">
+          Next: {application.nextAction}
+        </p>
+      ) : !closed ? (
+        <p className="m-0 text-[13px] text-app-subtle">No next action set</p>
+      ) : null}
+
+      <div className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-app-subtle">
+        {dueStatus !== null ? (
+          <span
+            className={
+              urgent
+                ? 'rounded-control border border-app-warning/30 bg-app-warning-soft px-2 py-1 text-app-warning'
+                : 'rounded-control border border-app-border bg-app-muted px-2 py-1 text-app-text'
+            }
+          >
+            {dueStatus}
+          </span>
+        ) : null}
         {application.priority !== undefined ? (
           <span className="rounded-control border border-app-border px-2 py-1 text-app-ink">
             {PRIORITY_LABELS[application.priority]}
           </span>
         ) : null}
-        {showStage ? (
+        {lifecycleLabel !== null ? (
           <span className="rounded-control border border-app-border px-2 py-1 text-app-text">
-            {STAGE_LABELS[application.stage]}
-          </span>
-        ) : null}
-        {application.substage !== undefined ? (
-          <span className="rounded-control border border-app-border px-2 py-1 text-app-text">
-            {SUBSTAGE_LABELS[application.substage]}
-          </span>
-        ) : null}
-        {dueStatus !== null ? (
-          <span className="rounded-control border border-app-warning/30 bg-app-warning-soft px-2 py-1 text-app-warning">
-            {dueStatus}
+            {lifecycleLabel}
           </span>
         ) : null}
       </div>
 
-      {application.nextAction ? (
-        <p className="m-0 text-[13px] font-medium text-app-text">
-          Next: {application.nextAction}
-        </p>
-      ) : null}
-
-      {application.deadline ? (
-        <p className="m-0 text-[13px] text-app-subtle">
-          Deadline: {displayDate(application.deadline)}
-        </p>
-      ) : null}
-
       {showFollowUpNote && followUpNote ? (
-        <p className="m-0 whitespace-pre-wrap text-[13px] leading-5 text-app-text">
+        <p className="m-0 whitespace-pre-wrap border-t border-app-border pt-2 text-[13px] leading-5 text-app-text">
           {followUpNote}
         </p>
       ) : null}
 
-      {contextualDetail !== null ? (
-        <p className="m-0 text-[13px] text-app-subtle">{contextualDetail}</p>
+      {application.deadline || contextualDetail !== null ? (
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-app-border pt-2 text-xs text-app-subtle">
+          {application.deadline ? (
+            <span>Deadline {displayDate(application.deadline)}</span>
+          ) : (
+            <span />
+          )}
+          {contextualDetail !== null ? <span>{contextualDetail}</span> : null}
+        </div>
       ) : null}
-
-      <ActionRow>
-        <Button
-          aria-label={`View ${application.company} ${application.role} details`}
-          variant="default"
-          onClick={() => onOpen(application)}
-        >
-          View details
-        </Button>
-      </ActionRow>
-    </RecordCard>
+    </article>
   );
 }
 
@@ -606,10 +627,10 @@ export function ApplicationsWorkspace({
       {feedback}
       {form}
 
-      <div className="grid gap-3">
+      <div className="grid gap-2 border-y border-app-border py-3">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <TextField
-            className="min-w-0 flex-1"
+            className="min-w-0 flex-1 lg:max-w-sm"
             label="Search jobs"
             placeholder="Company or role"
             type="search"
@@ -618,37 +639,35 @@ export function ApplicationsWorkspace({
           />
           <div
             aria-label="Pipeline view"
-            className="flex shrink-0 flex-wrap gap-2"
+            className="flex shrink-0 flex-wrap gap-1.5"
             role="group"
           >
             <Button
               aria-pressed={applicationView === 'board'}
-              variant={applicationView === 'board' ? 'primary' : 'default'}
+              variant={applicationView === 'board' ? 'primary' : 'ghost'}
               onClick={() => setApplicationView('board')}
             >
               Board
             </Button>
             <Button
               aria-pressed={applicationView === 'needs-action'}
-              variant={
-                applicationView === 'needs-action' ? 'primary' : 'default'
-              }
+              variant={applicationView === 'needs-action' ? 'primary' : 'ghost'}
               onClick={() => setApplicationView('needs-action')}
             >
               Needs action {actionableCount}
             </Button>
             <Button
               aria-pressed={applicationView === 'closed'}
-              variant={applicationView === 'closed' ? 'primary' : 'default'}
+              variant={applicationView === 'closed' ? 'primary' : 'ghost'}
               onClick={() => setApplicationView('closed')}
             >
               Closed {closedCount}
             </Button>
           </div>
         </div>
-        <p className="m-0 text-[13px] text-app-subtle">
-          {activeCount} active {opportunityLabel} · {actionableCount} need
-          action
+        <p className="m-0 text-xs text-app-subtle">
+          {activeCount} active {opportunityLabel}
+          {actionableCount > 0 ? ` · ${actionableCount} need action` : ''}
         </p>
       </div>
 
@@ -660,28 +679,28 @@ export function ApplicationsWorkspace({
         <EmptyState>No jobs match this view.</EmptyState>
       ) : applicationView === 'board' ? (
         <div className="overflow-x-auto pb-2">
-          <div className="grid min-w-[1100px] grid-cols-5 gap-3">
+          <div className="grid min-w-[1100px] grid-cols-5 divide-x divide-app-border">
             {ACTIVE_APPLICATION_STAGES.map((stage) => {
               const items = visibleApplications.filter(
                 (application) => application.stage === stage,
               );
               return (
                 <section
-                  className="grid content-start gap-3 rounded-control border border-app-border bg-app-surface p-3"
+                  className="grid content-start gap-2.5 px-3 first:pl-0 last:pr-0"
                   key={stage}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="m-0 text-[13px] font-semibold uppercase tracking-[0.05em] text-app-ink">
+                  <div className="flex items-center justify-between gap-3 border-b border-app-border pb-2">
+                    <h3 className="m-0 text-[13px] font-semibold text-app-ink">
                       {STAGE_LABELS[stage]}
                     </h3>
-                    <span className="text-[13px] font-medium text-app-subtle">
+                    <span className="inline-flex min-w-6 items-center justify-center rounded-control bg-app-muted px-1.5 py-0.5 text-xs font-medium text-app-subtle">
                       {items.length}
                     </span>
                   </div>
                   {items.length === 0 ? (
-                    <EmptyState className="min-h-16 py-3">No jobs</EmptyState>
+                    <p className="m-0 py-3 text-xs text-app-subtle">No jobs</p>
                   ) : (
-                    <div className="grid gap-3">
+                    <div className="grid gap-2">
                       {items.map((application) => (
                         <PipelineCard
                           key={application.id}
@@ -700,7 +719,7 @@ export function ApplicationsWorkspace({
           </div>
         </div>
       ) : applicationView === 'needs-action' ? (
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
           {visibleApplications.map((application) => (
             <PipelineCard
               key={application.id}
@@ -713,28 +732,28 @@ export function ApplicationsWorkspace({
           ))}
         </div>
       ) : (
-        <div className="grid gap-3 lg:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-3 lg:gap-0 lg:divide-x lg:divide-app-border">
           {CLOSED_APPLICATION_SUBSTAGES.map((substage) => {
             const items = visibleApplications.filter(
               (application) => application.substage === substage,
             );
             return (
               <section
-                className="grid content-start gap-3 rounded-control border border-app-border bg-app-surface p-3"
+                className="grid content-start gap-2.5 border-t border-app-border pt-3 first:border-t-0 first:pt-0 lg:border-t-0 lg:px-3 lg:pt-0 lg:first:pl-0 lg:last:pr-0"
                 key={substage}
               >
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="m-0 text-[13px] font-semibold uppercase tracking-[0.05em] text-app-ink">
+                <div className="flex items-center justify-between gap-3 border-b border-app-border pb-2">
+                  <h3 className="m-0 text-[13px] font-semibold text-app-ink">
                     {SUBSTAGE_LABELS[substage]}
                   </h3>
-                  <span className="text-[13px] font-medium text-app-subtle">
+                  <span className="inline-flex min-w-6 items-center justify-center rounded-control bg-app-muted px-1.5 py-0.5 text-xs font-medium text-app-subtle">
                     {items.length}
                   </span>
                 </div>
                 {items.length === 0 ? (
-                  <EmptyState className="min-h-16 py-3">No jobs</EmptyState>
+                  <p className="m-0 py-3 text-xs text-app-subtle">No jobs</p>
                 ) : (
-                  <div className="grid gap-3">
+                  <div className="grid gap-2">
                     {items.map((application) => (
                       <PipelineCard
                         key={application.id}
