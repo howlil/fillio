@@ -347,6 +347,19 @@ export function ApplicationsWorkspace({
     }
   }
 
+  async function updateOperational(
+    id: string,
+    changes: Partial<ApplicationDraft>,
+  ) {
+    try {
+      await service.update(id, changes);
+      setStatus('Application updated.');
+      await reload();
+    } catch {
+      setError('Could not update these application details.');
+    }
+  }
+
   async function deleteApplication(id: string) {
     try {
       await service.delete(id);
@@ -600,6 +613,9 @@ export function ApplicationsWorkspace({
             changeSubstage(selectedApplication.id, substage)
           }
           onCompleteAction={() => completeFollowUp(selectedApplication.id)}
+          onUpdateOperational={(changes) =>
+            updateOperational(selectedApplication.id, changes)
+          }
         />
       </Section>
     );

@@ -1,5 +1,11 @@
-import type { ReactNode } from 'react';
-import { ArrowLeft, ExternalLink, Pencil, Trash2 } from 'lucide-react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  ArrowLeft,
+  ExternalLink,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from 'lucide-react';
 
 import {
   APPLICATION_SUBSTAGES_BY_STAGE,
@@ -7,7 +13,14 @@ import {
   type ApplicationSubstage,
   type JobApplication,
 } from '../../domain/applications/application-schema';
-import { ActionRow, Button, SectionHeader, SelectField } from '../ui';
+import {
+  ActionRow,
+  Button,
+  SectionHeader,
+  SelectField,
+  TextareaField,
+  TextField,
+} from '../ui';
 import {
   ACTIVE_APPLICATION_STAGES,
   applicationIsClosed,
@@ -25,18 +38,33 @@ import {
   stageActionLabel,
 } from './application-display';
 
+type OperationalChanges = {
+  nextAction?: string;
+  nextActionAt?: string;
+  notes?: string;
+  deadline?: string;
+  appliedAt?: string;
+  interviewAt?: string;
+  offerAt?: string;
+};
+
 function DetailBlock({
   title,
+  action,
   children,
 }: {
   title: string;
+  action?: ReactNode;
   children: ReactNode;
 }) {
   return (
     <section className="grid gap-3 border-t border-app-border pt-4 first:border-t-0 first:pt-0">
-      <h3 className="m-0 text-[13px] font-semibold uppercase tracking-[0.08em] text-app-subtle">
-        {title}
-      </h3>
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="m-0 text-[13px] font-semibold uppercase tracking-[0.08em] text-app-subtle">
+          {title}
+        </h3>
+        {action}
+      </div>
       {children}
     </section>
   );
@@ -59,20 +87,37 @@ function DetailValue({
 
 function ProgressTrack({ application }: { application: JobApplication }) {
   const closed = applicationIsClosed(application);
-  const activeStageIndex = closed
-    ? ACTIVE_APPLICATION_STAGES.length - 1
-    : ACTIVE_APPLICATION_STAGES.findIndex(
-        (stage) => stage === application.stage,
-      );
+  const activeStageIndex = ACTIVE_APPLICATION_STAGES.findIndex(
+    (stage) => stage === application.stage,
+  );
+  const reachedFromHistory = useMemo(
+    () => new Set(application.stageHistory.map((entry) => entry.stage)),
+    [application.stageHistory],
+  );
+  const lastActiveEntry = [...application.stageHistory]
+    .reverse()
+    .find((entry) => entry.stage !== 'closed');
 
   return (
     <div className="grid gap-3">
       <div className="grid grid-cols-5 gap-1" aria-label="Application progress">
         {ACTIVE_APPLICATION_STAGES.map((stage, index) => {
-          const current = application.stage === stage;
-          const reached = activeStageIndex >= index;
+          const current = !closed && application.stage === stage;
+          const reached = closed
+            ? reachedFromHistory.has(stage)
+            : activeStageIndex >= index;
+          const stateLabel = current
+            ? 'current'
+            : reached
+              ? 'reached'
+              : 'not reached';
+
           return (
-            <div className="grid min-w-0 gap-1" key={stage}>
+            <div
+              className="grid min-w-0 gap-1"
+              key={stage}
+              aria-label={`${STAGE_LABELS[stage]} ${stateLabel}`}
+            >
               <span
                 aria-hidden="true"
                 className={`h-1 rounded-full ${
@@ -90,13 +135,21 @@ function ProgressTrack({ application }: { application: JobApplication }) {
           );
         })}
       </div>
+
       {closed ? (
-        <p className="m-0 text-[13px] text-app-subtle">
-          This opportunity is closed
-          {application.substage === undefined
-            ? '.'
-            : ` as ${SUBSTAGE_LABELS[application.substage]}.`}
-        </p>
+        <div className="grid gap-1 text-[13px] text-app-subtle">
+          <p className="m-0">
+            This opportunity is closed
+            {application.substage === undefined
+              ? '.'
+              : ` as ${SUBSTAGE_LABELS[application.substage]}.`}
+          </p>
+          {lastActiveEntry !== undefined ? (
+            <p className="m-0">
+              Last active stage: {STAGE_LABELS[lastActiveEntry.stage]}.
+            </p>
+          ) : null}
+        </div>
       ) : null}
     </div>
   );
@@ -120,6 +173,7 @@ export function ApplicationDetail({
   onChangeStage,
   onChangeSubstage,
   onCompleteAction,
+  onUpdateOperational,
 }: {
   application: JobApplication;
   todayKey: string;
@@ -134,21 +188,82 @@ export function ApplicationDetail({
     substage: ApplicationSubstage | undefined,
   ) => void | Promise<void>;
   onCompleteAction: () => void | Promise<void>;
+  onUpdateOperational: (changes: OperationalChanges) => void | Promise<void>;
 }) {
   const closed = applicationIsClosed(application);
   const previousStage = previousPipelineStage(application.stage);
   const nextStage = nextPipelineStage(application.stage);
   const dueStatus = closed ? null : nextActionStatus(application, todayKey);
+  const urgentDue =
+    dueStatus === 'Due today' || dueStatus?.startsWith('Overdue') === true;
   const suggestedAction = recommendedLifecycleAction(application);
   const substages = APPLICATION_SUBSTAGES_BY_STAGE[application.stage];
   const contact = [application.contactName, application.contactEmail]
     .filter(Boolean)
     .join(' · ');
   const hasImportantDates =
+    application.deadline !== undefined ||
     application.appliedAt !== undefined ||
     application.interviewAt !== undefined ||
     application.offerAt !== undefined ||
     application.closedAt !== undefined;
+  const hasJobContext = application.source !== undefined || contact !== '';
+
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [actionEditing, setActionEditing] = useState(false);
+  const [notesEditing, setNotesEditing] = useState(false);
+  const [datesEditing, setDatesEditing] = useState(false);
+  const [nextActionDraft, setNextActionDraft] = useState(
+    application.nextAction ?? '',
+  );
+  const [nextActionAtDraft, setNextActionAtDraft] = useState(
+    application.nextActionAt ?? '',
+  );
+  const [notesDraft, setNotesDraft] = useState(application.notes ?? '');
+  const [deadlineDraft, setDeadlineDraft] = useState(
+    application.deadline ?? '',
+  );
+  const [appliedAtDraft, setAppliedAtDraft] = useState(
+    application.appliedAt ?? '',
+  );
+  const [interviewAtDraft, setInterviewAtDraft] = useState(
+    application.interviewAt ?? '',
+  );
+  const [offerAtDraft, setOfferAtDraft] = useState(application.offerAt ?? '');
+
+  useEffect(() => {
+    setNextActionDraft(application.nextAction ?? '');
+    setNextActionAtDraft(application.nextActionAt ?? '');
+    setNotesDraft(application.notes ?? '');
+    setDeadlineDraft(application.deadline ?? '');
+    setAppliedAtDraft(application.appliedAt ?? '');
+    setInterviewAtDraft(application.interviewAt ?? '');
+    setOfferAtDraft(application.offerAt ?? '');
+  }, [application]);
+
+  async function saveNextAction() {
+    await onUpdateOperational({
+      nextAction: nextActionDraft,
+      nextActionAt: nextActionAtDraft,
+    });
+    setActionEditing(false);
+  }
+
+  async function saveNotes() {
+    await onUpdateOperational({ notes: notesDraft });
+    setNotesEditing(false);
+  }
+
+  async function saveDates() {
+    await onUpdateOperational({
+      deadline: deadlineDraft,
+      appliedAt: appliedAtDraft,
+      interviewAt: interviewAtDraft,
+      offerAt: offerAtDraft,
+    });
+    setDatesEditing(false);
+  }
 
   return (
     <div
@@ -166,10 +281,51 @@ export function ApplicationDetail({
         title={application.role}
         description={application.company}
         action={
-          <Button variant="default" onClick={onEdit}>
-            <Pencil aria-hidden="true" size={14} />
-            Edit details
-          </Button>
+          <div className="relative flex items-center gap-1.5">
+            {application.jobUrl !== undefined ? (
+              <a
+                className="inline-flex h-8 items-center gap-1.5 rounded-control border border-app-border px-2.5 text-[13px] font-medium text-app-ink hover:bg-app-muted"
+                href={application.jobUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open job
+                <ExternalLink aria-hidden="true" size={13} />
+              </a>
+            ) : null}
+            <Button variant="default" onClick={onEdit}>
+              <Pencil aria-hidden="true" size={14} />
+              Edit details
+            </Button>
+            <Button
+              variant="ghost"
+              aria-expanded={moreOpen}
+              aria-haspopup="menu"
+              aria-label="More application actions"
+              onClick={() => setMoreOpen((current) => !current)}
+            >
+              <MoreHorizontal aria-hidden="true" size={16} />
+            </Button>
+            {moreOpen ? (
+              <div
+                className="absolute right-0 top-full z-10 mt-1 min-w-40 rounded-control border border-app-border bg-app-surface p-1 shadow-sm"
+                role="menu"
+              >
+                <button
+                  className="flex w-full items-center gap-2 rounded-control px-2.5 py-2 text-left text-[13px] font-medium text-app-danger hover:bg-app-danger-soft"
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setMoreOpen(false);
+                    setDeleteConfirmOpen(true);
+                  }}
+                >
+                  <Trash2 aria-hidden="true" size={14} />
+                  Delete job
+                </button>
+              </div>
+            ) : null}
+          </div>
         }
       />
 
@@ -187,55 +343,137 @@ export function ApplicationDetail({
             {PRIORITY_LABELS[application.priority]}
           </span>
         ) : null}
-        <span className="text-app-subtle">
-          Updated {displayDate(application.updatedAt)}
-        </span>
       </div>
 
-      <div className="grid gap-5 border-t border-app-border pt-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] xl:gap-8">
+      {deleteConfirmOpen ? (
+        <div
+          className="grid gap-3 rounded-control border border-app-danger/30 bg-app-danger-soft p-3"
+          role="alertdialog"
+          aria-label="Delete application confirmation"
+        >
+          <div className="grid gap-1">
+            <p className="m-0 text-sm font-semibold text-app-danger">
+              Delete this application?
+            </p>
+            <p className="m-0 text-[13px] text-app-text">
+              {application.company} · {application.role}. This removes its notes
+              and application history.
+            </p>
+          </div>
+          <ActionRow>
+            <Button variant="ghost" onClick={() => setDeleteConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="danger" onClick={() => void onDelete()}>
+              Delete job
+            </Button>
+          </ActionRow>
+        </div>
+      ) : null}
+
+      <div className="grid gap-5 border-t border-app-border pt-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)] xl:gap-8">
         <div className="grid content-start gap-4">
-          <DetailBlock title="Next action">
-            {application.nextAction !== undefined ? (
-              <p className="m-0 text-base font-semibold text-app-ink">
-                {application.nextAction}
-              </p>
-            ) : suggestedAction !== null ? (
-              <div className="grid gap-1">
-                <span className="text-[13px] font-semibold uppercase tracking-[0.06em] text-app-subtle">
-                  Suggested next
-                </span>
-                <p className="m-0 text-sm font-medium text-app-text">
-                  {suggestedAction}
-                </p>
+          <DetailBlock
+            title="Next action"
+            action={
+              !closed && !actionEditing ? (
+                <Button variant="ghost" onClick={() => setActionEditing(true)}>
+                  Edit
+                </Button>
+              ) : null
+            }
+          >
+            {actionEditing ? (
+              <div className="grid gap-3">
+                <TextField
+                  label="Next action"
+                  value={nextActionDraft}
+                  onChange={(event) => setNextActionDraft(event.target.value)}
+                />
+                <TextField
+                  label="Next action date"
+                  type="date"
+                  value={nextActionAtDraft}
+                  onChange={(event) => setNextActionAtDraft(event.target.value)}
+                />
+                <ActionRow>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setNextActionDraft(application.nextAction ?? '');
+                      setNextActionAtDraft(application.nextActionAt ?? '');
+                      setActionEditing(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={() => void saveNextAction()}
+                  >
+                    Save action
+                  </Button>
+                </ActionRow>
               </div>
             ) : (
-              <p className="m-0 text-sm text-app-subtle">Lifecycle complete.</p>
+              <>
+                {application.nextAction !== undefined ? (
+                  <p className="m-0 text-base font-semibold text-app-ink">
+                    {application.nextAction}
+                  </p>
+                ) : suggestedAction !== null ? (
+                  <div className="grid gap-1">
+                    <span className="text-[13px] font-semibold uppercase tracking-[0.06em] text-app-subtle">
+                      Suggested next
+                    </span>
+                    <p className="m-0 text-sm font-medium text-app-text">
+                      {suggestedAction}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="m-0 text-sm text-app-subtle">
+                    Lifecycle complete.
+                  </p>
+                )}
+
+                <div className="flex flex-wrap items-center gap-2 text-[13px] text-app-subtle">
+                  {dueStatus !== null ? (
+                    <span
+                      className={
+                        urgentDue
+                          ? 'rounded-control border border-app-warning/30 bg-app-warning-soft px-2 py-1 text-app-warning'
+                          : 'rounded-control border border-app-border bg-app-muted px-2 py-1 text-app-text'
+                      }
+                    >
+                      {dueStatus}
+                    </span>
+                  ) : null}
+                  {application.nextActionAt !== undefined &&
+                  dueStatus === null ? (
+                    <span>Due {displayDate(application.nextActionAt)}</span>
+                  ) : null}
+                  {application.deadline !== undefined ? (
+                    <span>
+                      Application deadline {displayDate(application.deadline)}
+                    </span>
+                  ) : null}
+                </div>
+
+                {applicationHasCompletableAction(application) ? (
+                  <ActionRow>
+                    <Button
+                      variant="primary"
+                      onClick={() => void onCompleteAction()}
+                    >
+                      Mark done
+                    </Button>
+                  </ActionRow>
+                ) : null}
+              </>
             )}
-            <div className="flex flex-wrap items-center gap-2 text-[13px] text-app-subtle">
-              {dueStatus !== null ? (
-                <span className="rounded-control border border-app-warning/30 bg-app-warning-soft px-2 py-1 text-app-warning">
-                  {dueStatus}
-                </span>
-              ) : null}
-              {application.deadline !== undefined ? (
-                <span>
-                  Application deadline {displayDate(application.deadline)}
-                </span>
-              ) : null}
-            </div>
-            {applicationHasCompletableAction(application) ? (
-              <ActionRow>
-                <Button
-                  variant="primary"
-                  onClick={() => void onCompleteAction()}
-                >
-                  Mark done
-                </Button>
-              </ActionRow>
-            ) : null}
           </DetailBlock>
 
-          <DetailBlock title="Progress">
+          <DetailBlock title="Pipeline">
             <ProgressTrack application={application} />
 
             {substages.length > 0 ? (
@@ -260,7 +498,7 @@ export function ApplicationDetail({
             ) : null}
 
             {!closed ? (
-              <>
+              <div className="grid gap-3">
                 <ActionRow>
                   {previousStage !== null ? (
                     <Button
@@ -272,7 +510,7 @@ export function ApplicationDetail({
                   ) : null}
                   {nextStage !== null ? (
                     <Button
-                      variant="default"
+                      variant="primary"
                       onClick={() =>
                         void onChangeStage(
                           nextStage,
@@ -283,6 +521,14 @@ export function ApplicationDetail({
                       {stageActionLabel(nextStage)}
                     </Button>
                   ) : null}
+                  {application.stage === 'offer' ? (
+                    <Button
+                      variant="primary"
+                      onClick={() => void onChangeStage('closed', 'accepted')}
+                    >
+                      Mark accepted
+                    </Button>
+                  ) : null}
                 </ActionRow>
 
                 <div className="grid gap-2 border-t border-app-border pt-3">
@@ -290,14 +536,6 @@ export function ApplicationDetail({
                     Close opportunity
                   </span>
                   <ActionRow>
-                    {application.stage === 'offer' ? (
-                      <Button
-                        variant="default"
-                        onClick={() => void onChangeStage('closed', 'accepted')}
-                      >
-                        Mark accepted
-                      </Button>
-                    ) : null}
                     <Button
                       variant="ghost"
                       onClick={() => void onChangeStage('closed', 'rejected')}
@@ -312,11 +550,11 @@ export function ApplicationDetail({
                     </Button>
                   </ActionRow>
                 </div>
-              </>
+              </div>
             ) : null}
           </DetailBlock>
 
-          <DetailBlock title="Timeline">
+          <DetailBlock title="Activity">
             <ol className="m-0 grid list-none gap-3 p-0">
               {[...application.stageHistory].reverse().map((entry, index) => (
                 <li
@@ -336,8 +574,39 @@ export function ApplicationDetail({
             </ol>
           </DetailBlock>
 
-          <DetailBlock title="Notes">
-            {application.notes !== undefined ? (
+          <DetailBlock
+            title="Notes"
+            action={
+              !notesEditing ? (
+                <Button variant="ghost" onClick={() => setNotesEditing(true)}>
+                  Edit
+                </Button>
+              ) : null
+            }
+          >
+            {notesEditing ? (
+              <div className="grid gap-3">
+                <TextareaField
+                  label="Notes"
+                  value={notesDraft}
+                  onChange={(event) => setNotesDraft(event.target.value)}
+                />
+                <ActionRow>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setNotesDraft(application.notes ?? '');
+                      setNotesEditing(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button variant="primary" onClick={() => void saveNotes()}>
+                    Save notes
+                  </Button>
+                </ActionRow>
+              </div>
+            ) : application.notes !== undefined ? (
               <p className="m-0 whitespace-pre-wrap text-sm leading-6 text-app-text">
                 {application.notes}
               </p>
@@ -348,9 +617,67 @@ export function ApplicationDetail({
         </div>
 
         <div className="grid content-start gap-4 xl:border-l xl:border-app-border xl:pl-8">
-          <DetailBlock title="Important dates">
-            {hasImportantDates ? (
+          <DetailBlock
+            title="Important dates"
+            action={
+              !datesEditing ? (
+                <Button variant="ghost" onClick={() => setDatesEditing(true)}>
+                  Edit
+                </Button>
+              ) : null
+            }
+          >
+            {datesEditing ? (
+              <div className="grid gap-3">
+                <TextField
+                  label="Application deadline"
+                  type="date"
+                  value={deadlineDraft}
+                  onChange={(event) => setDeadlineDraft(event.target.value)}
+                />
+                <TextField
+                  label="Applied date"
+                  type="date"
+                  value={appliedAtDraft}
+                  onChange={(event) => setAppliedAtDraft(event.target.value)}
+                />
+                <TextField
+                  label="Interview date"
+                  type="date"
+                  value={interviewAtDraft}
+                  onChange={(event) => setInterviewAtDraft(event.target.value)}
+                />
+                <TextField
+                  label="Offer date"
+                  type="date"
+                  value={offerAtDraft}
+                  onChange={(event) => setOfferAtDraft(event.target.value)}
+                />
+                <ActionRow>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setDeadlineDraft(application.deadline ?? '');
+                      setAppliedAtDraft(application.appliedAt ?? '');
+                      setInterviewAtDraft(application.interviewAt ?? '');
+                      setOfferAtDraft(application.offerAt ?? '');
+                      setDatesEditing(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button variant="primary" onClick={() => void saveDates()}>
+                    Save dates
+                  </Button>
+                </ActionRow>
+              </div>
+            ) : hasImportantDates ? (
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+                {application.deadline !== undefined ? (
+                  <DetailValue label="Deadline">
+                    {displayDate(application.deadline)}
+                  </DetailValue>
+                ) : null}
                 {application.appliedAt !== undefined ? (
                   <DetailValue label="Applied">
                     {displayDate(application.appliedAt)}
@@ -379,61 +706,18 @@ export function ApplicationDetail({
             )}
           </DetailBlock>
 
-          <DetailBlock title="Job context">
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-              {application.source !== undefined ? (
-                <DetailValue label="Source">{application.source}</DetailValue>
-              ) : null}
-              {contact !== '' ? (
-                <DetailValue label="Contact">{contact}</DetailValue>
-              ) : null}
-              {application.jobUrl !== undefined ? (
-                <DetailValue label="Job posting">
-                  <a
-                    className="inline-flex items-center gap-1 font-medium text-app-ink underline underline-offset-4"
-                    href={application.jobUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Open job
-                    <ExternalLink aria-hidden="true" size={13} />
-                  </a>
-                </DetailValue>
-              ) : null}
-              {application.deadline !== undefined ? (
-                <DetailValue label="Application deadline">
-                  {displayDate(application.deadline)}
-                </DetailValue>
-              ) : null}
-            </div>
-          </DetailBlock>
-
-          <DetailBlock title="Application">
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-              <DetailValue label="Company">{application.company}</DetailValue>
-              <DetailValue label="Role">{application.role}</DetailValue>
-              <DetailValue label="Stage">
-                {STAGE_LABELS[application.stage]}
-              </DetailValue>
-              {application.substage !== undefined ? (
-                <DetailValue label="Lifecycle detail">
-                  {SUBSTAGE_LABELS[application.substage]}
-                </DetailValue>
-              ) : null}
-              {application.priority !== undefined ? (
-                <DetailValue label="Priority">
-                  {PRIORITY_LABELS[application.priority]}
-                </DetailValue>
-              ) : null}
-            </div>
-          </DetailBlock>
-
-          <div className="flex justify-end border-t border-app-border pt-4">
-            <Button variant="danger" onClick={() => void onDelete()}>
-              <Trash2 aria-hidden="true" size={14} />
-              Delete job
-            </Button>
-          </div>
+          {hasJobContext ? (
+            <DetailBlock title="Job context">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+                {application.source !== undefined ? (
+                  <DetailValue label="Source">{application.source}</DetailValue>
+                ) : null}
+                {contact !== '' ? (
+                  <DetailValue label="Contact">{contact}</DetailValue>
+                ) : null}
+              </div>
+            </DetailBlock>
+          ) : null}
         </div>
       </div>
     </div>
