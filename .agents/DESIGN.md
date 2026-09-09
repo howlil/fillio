@@ -48,6 +48,29 @@ The options/workspace visual system is **Tailwind-owned**.
 
 The in-page assistant is a separate Shadow DOM surface. Its scoped style mechanism must remain isolated and must never be used to patch or override the options workspace.
 
+### Token source
+
+Jobflow reuses the Notespace semantic design-token grammar for its application workspace. The runtime source is `src/components/ui/tailwind.css`; Tailwind aliases in `tailwind.config.ts` map Jobflow component names onto those tokens.
+
+Canonical shared semantics:
+
+```text
+--bg           application background
+--surface      panels, inputs, top bar
+--sidebar      secondary navigation surface
+--ink          primary text and icons
+--muted        supporting text
+--line         quiet 1px borders
+--accent       focus, links, selected foreground
+--tint         hover and selected background
+--button       primary action background
+--button-text  content on primary action
+--danger       destructive/error state
+--success      healthy/completed state
+```
+
+Jobflow may keep additional semantic state tokens such as warning or stronger borders when the domain needs them, but shared semantics must not be redefined with a competing palette.
+
 ## 4. Surfaces
 
 Default elevation is none.
@@ -79,7 +102,7 @@ Delete actions stay inset from the record edge and should not consume a full col
 - textareas start around 72px unless the task needs more room;
 - labels are short nouns or direct questions;
 - related fields use compact 2- or 3-column grids where width permits;
-- focus uses the product blue and a clear 2px ring;
+- focus uses the steel-blue accent and a clear 2px ring;
 - no inset highlights, ambient control shadows, or hover lift.
 
 ## 7. Copy
@@ -129,15 +152,23 @@ control height          ~30–32px desktop
 panel radius            8–10px
 ```
 
-Use one panel boundary, divider-based internal grouping, quiet blue selected tabs, and one overlay shadow. Do not use oversized tabs, stacked internal cards, decorative assistant chrome, or a visually unrelated design language.
+Use one panel boundary, divider-based internal grouping, quiet selected tabs, and one overlay shadow. Do not use oversized tabs, stacked internal cards, decorative assistant chrome, or a visually unrelated design language.
 
 The launcher remains small and identifiable. Motion is limited to open/close and meaningful view changes.
 
-## 11. Color
+## 11. Color and interaction
 
-Blue is reserved for primary action, focus, selection, and product state. Green, amber, and red retain semantic meanings. Neutral structure should remain neutral.
+The shared Notespace neutral + steel-blue palette is canonical for the workspace.
 
-Dark mode preserves the same hierarchy and density rather than switching to a different visual product.
+- neutral `--button` is the primary-action background;
+- steel-blue `--accent` is for focus, links, active icons, and selected state;
+- `--tint` is the low-emphasis hover/active background paired with accent or ink foreground;
+- green, amber, and red retain semantic meanings;
+- ordinary structure remains neutral.
+
+Do not make every important control blue. Action hierarchy and selection hierarchy must remain distinguishable. Dark mode preserves the same hierarchy and density rather than switching to a different visual product.
+
+Control motion follows the Notespace grammar: immediate local feedback is about 100ms; navigation/panel continuity may use about 160ms. Motion must respect reduced-motion preferences.
 
 ## 12. Anti-slop rules
 
