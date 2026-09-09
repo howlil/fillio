@@ -75,7 +75,9 @@ jobs:
             pnpm verify:workspace-styles &&
             pnpm typecheck &&
             pnpm lint &&
-            pnpm format:check &&
+            pnpm exec prettier --write src/components/ui/button.tsx src/components/floating/floating-styles.ts &&
+            git diff -- src/components/ui/button.tsx src/components/floating/floating-styles.ts &&
+            false &&
             pnpm build
           ) &
           quality_pid=$!
