@@ -9,7 +9,7 @@ export function Surface({
   return (
     <div
       className={classes(
-        'grid gap-3 rounded-control border border-app-border bg-app-surface p-3 shadow-none',
+        'grid gap-3 rounded-lg border border-app-border bg-app-surface p-3 shadow-none',
         className,
       )}
       {...props}

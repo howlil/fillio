@@ -41,17 +41,17 @@ export function RecordHeader({
       )}
     >
       <div className="grid min-w-0 gap-0.5">
-        <strong className="truncate text-[13px] font-semibold text-app-ink">
+        <strong className="truncate text-[12px] font-semibold text-app-ink">
           {title}
         </strong>
         {context ? (
-          <span className="truncate text-xs font-medium text-app-subtle">
+          <span className="truncate text-[10px] font-medium text-app-subtle">
             {context}
           </span>
         ) : null}
       </div>
       {meta ? (
-        <span className="text-xs font-medium text-app-subtle sm:text-right">
+        <span className="text-[10px] font-medium text-app-subtle sm:text-right">
           {meta}
         </span>
       ) : null}

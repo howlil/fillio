@@ -16,17 +16,19 @@ Repeated simple records such as languages, application rows, documents, and corr
 
 ## 2. Density and width
 
-Desktop targets:
+Desktop targets follow the Notespace application grammar:
 
 ```text
-workspace gutter       8–12px
+workspace gutter       8–16px
 section padding        12–16px
 section radius         8px
 row vertical padding   8–10px
 field gap               8px
-input/button height    ~32px
-label/body              12–13px
-section title           13–15px
+input/button height    28–32px
+control text            11px
+supporting text         9–10px
+record/subsection       12px
+section title           12–14px
 page title              15–17px
 ```
 
@@ -46,7 +48,42 @@ The options/workspace visual system is **Tailwind-owned**.
 - Marker classes used for tests or DOM identification may remain, but they must not own appearance through CSS.
 - If a component looks wrong, fix the owning component or primitive rather than adding a global cascade override.
 
-The in-page assistant is a separate Shadow DOM surface. Its scoped style mechanism must remain isolated and must never be used to patch or override the options workspace.
+The in-page assistant is a separate Shadow DOM surface. Its scoped stylesheet must express the same visual grammar directly because workspace CSS variables cannot cross that boundary.
+
+### Token source
+
+Jobflow reuses the Notespace semantic design-token grammar for its application workspace. The runtime source is `src/components/ui/tailwind.css`; Tailwind aliases in `tailwind.config.ts` map Jobflow component names onto those tokens.
+
+Canonical shared semantics:
+
+```text
+--bg           application background
+--surface      panels, inputs, top bar
+--sidebar      secondary navigation surface
+--ink          primary text and icons
+--muted        supporting text
+--line         quiet 1px borders
+--accent       focus, links, selected foreground
+--tint         hover and selected background
+--button       primary action background
+--button-text  content on primary action
+--danger       destructive/error state
+--success      healthy/completed state
+```
+
+Jobflow may keep additional semantic state tokens such as warning or stronger borders when the domain needs them, but shared semantics must not be redefined with a competing palette.
+
+### Component parity rule
+
+Do not copy Notespace product structure blindly. Jobflow-specific components such as `RecordCard`, `StatusMessage`, CV review rows, pipeline items, and sensitive-data controls may keep their domain-specific structure, but their visual primitives must follow Notespace:
+
+- 6px controls, 8px ordinary surfaces, 12px dialogs only;
+- neutral primary buttons; steel-blue is selection/focus, not generic importance;
+- 11px compact controls, 9–10px supporting metadata, 12–14px local headings;
+- 1px quiet borders and flat ordinary surfaces;
+- tint + accent for selected state;
+- 100ms local control feedback and about 160ms panel/view continuity;
+- keyboard focus uses a visible 2px accent outline; form fields may use an accent border without a glow.
 
 ## 4. Surfaces
 
@@ -75,11 +112,12 @@ Delete actions stay inset from the record edge and should not consume a full col
 ## 6. Forms
 
 - controls use 6px radius and quiet 1px borders;
-- desktop controls are approximately 32px high;
-- textareas start around 72px unless the task needs more room;
+- desktop controls are approximately 28–32px high;
+- control text is 11px; helper/error metadata is normally 9–10px;
+- textareas start around 64–72px unless the task needs more room;
 - labels are short nouns or direct questions;
 - related fields use compact 2- or 3-column grids where width permits;
-- focus uses the product blue and a clear 2px ring;
+- field focus uses an accent border without a decorative glow; keyboard-only controls use a clear 2px accent outline;
 - no inset highlights, ambient control shadows, or hover lift.
 
 ## 7. Copy
@@ -110,7 +148,7 @@ Document storage and import are operational tools, not hero surfaces.
 - the CV picker is a short horizontal action surface on desktop, not a large empty dropzone;
 - extraction/review state appears directly below the action;
 - empty states are one line when no recovery instruction is required;
-- Stored resumes, picker, and extracted-data review use consistent inset spacing and borders.
+- stored resumes, picker, and extracted-data review use consistent inset spacing and borders.
 
 ## 9. Sensitive vault
 
@@ -120,24 +158,33 @@ Sensitive state, destructive reset, errors, and consent remain explicit. Compact
 
 ## 10. In-page assistant
 
-The Shadow DOM assistant follows the same workbench language while remaining an isolated overlay:
+The Shadow DOM assistant follows the same Notespace-derived workbench language while remaining an isolated overlay:
 
 ```text
 panel width             ~340–360px
-body/control text       12–13px
+body/control text       11px
+supporting text         9–10px
 control height          ~30–32px desktop
-panel radius            8–10px
+panel radius            8px
 ```
 
-Use one panel boundary, divider-based internal grouping, quiet blue selected tabs, and one overlay shadow. Do not use oversized tabs, stacked internal cards, decorative assistant chrome, or a visually unrelated design language.
+Use one panel boundary, divider-based internal grouping, tint + steel-blue selected tabs, neutral primary actions, and one overlay shadow. Do not use oversized tabs, stacked internal cards, decorative assistant chrome, or a visually unrelated design language.
 
 The launcher remains small and identifiable. Motion is limited to open/close and meaningful view changes.
 
-## 11. Color
+## 11. Color and interaction
 
-Blue is reserved for primary action, focus, selection, and product state. Green, amber, and red retain semantic meanings. Neutral structure should remain neutral.
+The shared Notespace neutral + steel-blue palette is canonical for both workspace and in-page assistant.
 
-Dark mode preserves the same hierarchy and density rather than switching to a different visual product.
+- neutral `--button` is the primary-action background;
+- steel-blue `--accent` is for focus, links, active icons, and selected state;
+- `--tint` is the low-emphasis hover/active background paired with accent or ink foreground;
+- green, amber, and red retain semantic meanings;
+- ordinary structure remains neutral.
+
+Do not make every important control blue. Action hierarchy and selection hierarchy must remain distinguishable. Dark mode preserves the same hierarchy and density rather than switching to a different visual product.
+
+Control motion follows the Notespace grammar: immediate local feedback is about 100ms; navigation/panel continuity may use about 160ms. Motion must respect reduced-motion preferences.
 
 ## 12. Anti-slop rules
 

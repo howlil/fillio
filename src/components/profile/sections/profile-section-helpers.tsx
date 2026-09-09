@@ -155,7 +155,7 @@ export function CollapsibleRecord({
 
   return (
     <details
-      className={`relative mt-2.5 grid gap-3 rounded-[8px] border border-app-border bg-app-surface p-3 shadow-none first:mt-0 [&>.record-summary]:flex [&>.record-summary]:min-h-9 [&>.record-summary]:cursor-pointer [&>.record-summary]:list-none [&>.record-summary]:items-center [&>.record-summary]:justify-between [&>.record-summary]:gap-3 [&>.record-summary]:text-[13px] [&>.record-summary]:font-semibold [&>.record-summary]:text-app-ink [&>.record-summary::-webkit-details-marker]:hidden [&_.record-summary-meta]:shrink-0 [&_.record-summary-meta]:text-xs [&_.record-summary-meta]:font-medium [&_.record-summary-meta]:text-app-subtle [&>button]:!right-2.5 [&>button]:!top-2.5 ${className}`}
+      className={`relative mt-2.5 grid gap-3 rounded-lg border border-app-border bg-app-surface p-3 shadow-none first:mt-0 [&>.record-summary]:flex [&>.record-summary]:min-h-9 [&>.record-summary]:cursor-pointer [&>.record-summary]:list-none [&>.record-summary]:items-center [&>.record-summary]:justify-between [&>.record-summary]:gap-3 [&>.record-summary]:text-[12px] [&>.record-summary]:font-semibold [&>.record-summary]:text-app-ink [&>.record-summary::-webkit-details-marker]:hidden [&_.record-summary-meta]:shrink-0 [&_.record-summary-meta]:text-[10px] [&_.record-summary-meta]:font-medium [&_.record-summary-meta]:text-app-subtle [&>button]:!right-2.5 [&>button]:!top-2.5 ${className}`}
       open={open}
       onToggle={(event) => setOpen(event.currentTarget.open)}
     >

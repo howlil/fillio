@@ -1,2 +1,2 @@
 export const CONTROL_CLASS =
-  'min-h-8 w-full rounded-[6px] border border-app-border bg-app-surface px-2.5 py-1 text-[13px] text-app-ink outline-none transition-[border-color,background-color,box-shadow] duration-150 placeholder:text-app-subtle hover:border-app-border-strong focus:border-app-accent focus:ring-2 focus:ring-app-accent-soft disabled:cursor-not-allowed disabled:bg-app-muted disabled:text-app-subtle';
+  'min-h-8 w-full min-w-0 rounded-control border border-app-border bg-app-surface px-2.5 py-1 text-[11px] text-app-ink outline-none placeholder:text-app-text focus:border-app-accent focus:ring-0 disabled:cursor-not-allowed disabled:bg-app-muted disabled:text-app-subtle';

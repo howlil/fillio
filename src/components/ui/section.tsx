@@ -6,7 +6,7 @@ export function Section({ className, ...props }: HTMLAttributes<HTMLElement>) {
   return (
     <section
       className={classes(
-        'grid gap-3 rounded-[8px] border border-app-border bg-app-surface px-3 py-3 shadow-none sm:px-4 sm:py-4',
+        'grid gap-3 rounded-lg border border-app-border bg-app-surface px-3 py-3 shadow-none sm:px-4 sm:py-4',
         className,
       )}
       {...props}
@@ -41,11 +41,11 @@ export function SectionHeader({
           </p>
         ) : null}
         <div className="grid gap-0.5">
-          <h2 className="m-0 text-[14px] font-semibold tracking-tight text-app-ink">
+          <h2 className="m-0 text-[13px] font-semibold tracking-tight text-app-ink">
             {title}
           </h2>
           {description ? (
-            <p className="m-0 max-w-3xl text-xs leading-5 text-app-subtle">
+            <p className="m-0 max-w-3xl text-[10px] leading-4 text-app-subtle">
               {description}
             </p>
           ) : null}
@@ -75,7 +75,7 @@ export function Subsection({
       )}
     >
       <div className="flex items-center justify-between gap-3 max-sm:items-start">
-        <h3 className="m-0 text-[13px] font-semibold text-app-ink">{title}</h3>
+        <h3 className="m-0 text-[12px] font-semibold text-app-ink">{title}</h3>
         {action ? <div className="shrink-0">{action}</div> : null}
       </div>
       {children}

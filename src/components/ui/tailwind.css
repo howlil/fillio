@@ -5,49 +5,52 @@
 @layer base {
   :root {
     color-scheme: light;
-    --app-bg: 247 248 249;
-    --app-surface: 255 255 255;
-    --app-surface-raised: 255 255 255;
-    --app-surface-muted: 243 245 247;
-    --app-border: 226 229 233;
-    --app-border-strong: 199 204 211;
-    --app-ink: 31 36 43;
-    --app-muted: 83 91 102;
-    --app-subtle: 128 136 147;
-    --app-accent: 61 126 193;
-    --app-accent-strong: 39 98 158;
-    --app-accent-soft: 230 239 248;
-    --app-danger: 201 67 67;
-    --app-danger-soft: 252 239 239;
-    --app-warning: 183 121 28;
-    --app-warning-soft: 250 244 229;
-    --app-info: 61 126 193;
-    --app-info-soft: 234 242 250;
-    --app-success: 39 143 95;
-    --app-success-soft: 234 247 239;
+
+    /* Canonical Notespace semantic tokens. Keep feature components on semantic aliases. */
+    --bg: 247 248 250;
+    --surface: 255 255 255;
+    --sidebar: 241 242 246;
+    --ink: 37 38 48;
+    --muted: 120 123 138;
+    --line: 228 229 236;
+    --accent: 79 115 150;
+    --tint: 232 238 246;
+    --button: 38 38 47;
+    --button-text: 255 255 255;
+    --danger: 177 62 75;
+    --success: 111 148 125;
+
+    /* Jobflow-only semantic extensions for states Notespace does not currently expose. */
+    --line-strong: 201 203 214;
+    --subtle: 145 148 160;
+    --accent-strong: 63 96 128;
+    --danger-soft: 250 236 238;
+    --warning: 174 121 38;
+    --warning-soft: 250 244 231;
+    --success-soft: 236 243 239;
   }
 
   .dark {
     color-scheme: dark;
-    --app-bg: 20 22 25;
-    --app-surface: 27 30 34;
-    --app-surface-raised: 30 34 38;
-    --app-surface-muted: 34 38 43;
-    --app-border: 48 53 59;
-    --app-border-strong: 72 79 87;
-    --app-ink: 242 244 246;
-    --app-muted: 188 194 201;
-    --app-subtle: 137 145 154;
-    --app-accent: 104 165 221;
-    --app-accent-strong: 139 187 231;
-    --app-accent-soft: 35 52 68;
-    --app-danger: 235 112 112;
-    --app-danger-soft: 70 37 37;
-    --app-warning: 224 171 80;
-    --app-warning-soft: 67 53 30;
-    --app-info: 104 165 221;
-    --app-info-soft: 34 52 68;
-    --app-success: 87 194 139;
-    --app-success-soft: 34 64 49;
+    --bg: 24 25 29;
+    --surface: 32 33 38;
+    --sidebar: 28 29 34;
+    --ink: 232 232 239;
+    --muted: 153 155 169;
+    --line: 52 53 62;
+    --accent: 127 166 201;
+    --tint: 27 38 54;
+    --button: 230 230 237;
+    --button-text: 34 35 42;
+    --danger: 255 154 165;
+    --success: 111 148 125;
+
+    --line-strong: 76 78 90;
+    --subtle: 121 123 137;
+    --accent-strong: 153 185 214;
+    --danger-soft: 66 37 42;
+    --warning: 222 174 93;
+    --warning-soft: 64 52 31;
+    --success-soft: 36 55 45;
   }
 }
