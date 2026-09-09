@@ -31,7 +31,7 @@ export function IconButton({
   return (
     <button
       className={classes(
-        'grid shrink-0 place-items-center rounded-[6px] border transition-colors duration-150 focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft disabled:cursor-not-allowed disabled:opacity-50',
+        'grid shrink-0 place-items-center rounded-control border transition-[background-color,border-color,color,transform] duration-100 ease-out focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent/25 active:scale-[0.97] motion-reduce:transform-none disabled:cursor-not-allowed disabled:opacity-50',
         ICON_BUTTON_SIZE_CLASS[size],
         ICON_BUTTON_TONE_CLASS[tone],
         className,
