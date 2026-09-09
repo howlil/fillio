@@ -35,7 +35,7 @@ function useDesktopLayout(): boolean {
 }
 
 const SIDEBAR_BUTTON_CLASS =
-  'grid h-8 w-8 shrink-0 place-items-center rounded-[6px] border border-app-border bg-app-surface text-app-text transition-colors duration-150 hover:border-app-border-strong hover:bg-app-muted focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft';
+  'grid h-8 w-8 shrink-0 place-items-center rounded-control border border-app-border bg-app-surface text-app-text transition-[background-color,border-color,color] duration-100 ease-out hover:border-app-border-strong hover:bg-app-muted hover:text-app-ink focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent/25';
 
 export function WorkspaceFrame({
   navigation,
@@ -61,7 +61,7 @@ export function WorkspaceFrame({
           data-expanded={sidebarExpanded}
         >
           <motion.div
-            className="absolute inset-y-0 left-0 overflow-hidden border-r border-app-border bg-app-surface shadow-none"
+            className="absolute inset-y-0 left-0 overflow-hidden border-r border-app-border bg-app-sidebar shadow-none"
             animate={{
               width: sidebarExpanded
                 ? SIDEBAR_EXPANDED_WIDTH
@@ -73,7 +73,7 @@ export function WorkspaceFrame({
             <div className="flex h-12 w-56 items-center gap-2 border-b border-app-border px-2.5">
               {sidebarExpanded ? (
                 <span
-                  className="grid h-8 w-8 shrink-0 place-items-center rounded-[7px] bg-app-accent text-xs font-bold text-white"
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-control bg-app-accent text-xs font-bold text-white"
                   aria-hidden="true"
                 >
                   J
@@ -143,12 +143,12 @@ export function WorkspaceFrame({
         </aside>
       ) : (
         <aside
-          className="border-b border-app-border bg-app-surface px-3 py-2"
+          className="border-b border-app-border bg-app-sidebar px-3 py-2"
           aria-label="Job Flow sidebar"
         >
           <div className="mb-2 flex items-center gap-2">
             <span
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-[7px] bg-app-accent text-xs font-bold text-white"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-control bg-app-accent text-xs font-bold text-white"
               aria-hidden="true"
             >
               J
@@ -185,7 +185,7 @@ export function WorkspaceFrame({
           </div>
         </header>
 
-        <main className="min-h-[calc(100vh-3rem)] w-full overflow-x-hidden bg-app-bg p-3">
+        <main className="min-h-[calc(100vh-3rem)] w-full overflow-x-hidden bg-app-bg p-3 sm:p-4">
           {children}
         </main>
       </div>
