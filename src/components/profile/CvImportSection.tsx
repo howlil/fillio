@@ -233,10 +233,10 @@ export function CvImportSection({
       <div className="workspace-card">
         <div className="flex items-start justify-between gap-3">
           <div className="grid gap-1">
-            <strong className="text-sm font-semibold text-app-ink">
+            <strong className="text-[12px] font-semibold text-app-ink">
               Stored resumes
             </strong>
-            <p className="m-0 text-[13px] leading-5 text-app-text">
+            <p className="m-0 text-[11px] leading-4 text-app-text">
               Files remain on this browser in extension-owned IndexedDB.
             </p>
           </div>
@@ -278,10 +278,10 @@ export function CvImportSection({
       </div>
 
       <div className="grid gap-2">
-        <h3 className="m-0 text-sm font-semibold text-app-ink">
+        <h3 className="m-0 text-[12px] font-semibold text-app-ink">
           Add or import CV
         </h3>
-        <p className="m-0 max-w-3xl text-[13px] leading-5 text-app-text">
+        <p className="m-0 max-w-3xl text-[11px] leading-4 text-app-text">
           PDF and DOCX extraction runs locally. Choosing a file never overwrites
           your profile; conflicting values stay unselected until you approve
           them.
@@ -322,10 +322,10 @@ export function CvImportSection({
       <div className="workspace-card">
         <div className="flex items-start justify-between gap-3">
           <div className="grid gap-1">
-            <strong className="text-sm font-semibold text-app-ink">
+            <strong className="text-[12px] font-semibold text-app-ink">
               Review extracted data
             </strong>
-            <p className="m-0 text-[13px] leading-5 text-app-text">
+            <p className="m-0 text-[11px] leading-4 text-app-text">
               {conflicts > 0
                 ? `${conflicts} conflicts require an explicit choice.`
                 : 'New values are selected automatically; existing values are preserved.'}
@@ -337,7 +337,7 @@ export function CvImportSection({
         </div>
 
         {busy && draft === null ? (
-          <p className="m-0 text-[13px] leading-5 text-app-text">
+          <p className="m-0 text-[11px] leading-4 text-app-text">
             Extracting locally…
           </p>
         ) : null}
@@ -359,7 +359,7 @@ export function CvImportSection({
             {preview.map((item) => (
               <label className="cv-preview__row" key={item.key}>
                 <input
-                  className="mt-0.5 h-[18px] w-[18px] shrink-0 rounded-control border-app-border-strong accent-app-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft"
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded-[4px] border-app-border-strong accent-app-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-accent"
                   type="checkbox"
                   checked={selected.has(item.key)}
                   onChange={() => toggle(item.key)}
@@ -372,7 +372,7 @@ export function CvImportSection({
                 </span>
                 <span className="cv-preview__value">
                   {item.extracted}
-                  <small className="mt-1 block text-[13px] leading-5 text-app-subtle">
+                  <small className="mt-1 block text-[10px] leading-4 text-app-subtle">
                     {item.evidence}
                     {item.status === 'conflict' && item.current
                       ? ` · current: ${item.current}`

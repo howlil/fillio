@@ -16,17 +16,19 @@ Repeated simple records such as languages, application rows, documents, and corr
 
 ## 2. Density and width
 
-Desktop targets:
+Desktop targets follow the Notespace application grammar:
 
 ```text
-workspace gutter       8–12px
+workspace gutter       8–16px
 section padding        12–16px
 section radius         8px
 row vertical padding   8–10px
 field gap               8px
-input/button height    ~32px
-label/body              12–13px
-section title           13–15px
+input/button height    28–32px
+control text            11px
+supporting text         9–10px
+record/subsection       12px
+section title           12–14px
 page title              15–17px
 ```
 
@@ -46,7 +48,7 @@ The options/workspace visual system is **Tailwind-owned**.
 - Marker classes used for tests or DOM identification may remain, but they must not own appearance through CSS.
 - If a component looks wrong, fix the owning component or primitive rather than adding a global cascade override.
 
-The in-page assistant is a separate Shadow DOM surface. Its scoped style mechanism must remain isolated and must never be used to patch or override the options workspace.
+The in-page assistant is a separate Shadow DOM surface. Its scoped stylesheet must express the same visual grammar directly because workspace CSS variables cannot cross that boundary.
 
 ### Token source
 
@@ -70,6 +72,18 @@ Canonical shared semantics:
 ```
 
 Jobflow may keep additional semantic state tokens such as warning or stronger borders when the domain needs them, but shared semantics must not be redefined with a competing palette.
+
+### Component parity rule
+
+Do not copy Notespace product structure blindly. Jobflow-specific components such as `RecordCard`, `StatusMessage`, CV review rows, pipeline items, and sensitive-data controls may keep their domain-specific structure, but their visual primitives must follow Notespace:
+
+- 6px controls, 8px ordinary surfaces, 12px dialogs only;
+- neutral primary buttons; steel-blue is selection/focus, not generic importance;
+- 11px compact controls, 9–10px supporting metadata, 12–14px local headings;
+- 1px quiet borders and flat ordinary surfaces;
+- tint + accent for selected state;
+- 100ms local control feedback and about 160ms panel/view continuity;
+- keyboard focus uses a visible 2px accent outline; form fields may use an accent border without a glow.
 
 ## 4. Surfaces
 
@@ -98,11 +112,12 @@ Delete actions stay inset from the record edge and should not consume a full col
 ## 6. Forms
 
 - controls use 6px radius and quiet 1px borders;
-- desktop controls are approximately 32px high;
-- textareas start around 72px unless the task needs more room;
+- desktop controls are approximately 28–32px high;
+- control text is 11px; helper/error metadata is normally 9–10px;
+- textareas start around 64–72px unless the task needs more room;
 - labels are short nouns or direct questions;
 - related fields use compact 2- or 3-column grids where width permits;
-- focus uses the steel-blue accent and a clear 2px ring;
+- field focus uses an accent border without a decorative glow; keyboard-only controls use a clear 2px accent outline;
 - no inset highlights, ambient control shadows, or hover lift.
 
 ## 7. Copy
@@ -133,7 +148,7 @@ Document storage and import are operational tools, not hero surfaces.
 - the CV picker is a short horizontal action surface on desktop, not a large empty dropzone;
 - extraction/review state appears directly below the action;
 - empty states are one line when no recovery instruction is required;
-- Stored resumes, picker, and extracted-data review use consistent inset spacing and borders.
+- stored resumes, picker, and extracted-data review use consistent inset spacing and borders.
 
 ## 9. Sensitive vault
 
@@ -143,22 +158,23 @@ Sensitive state, destructive reset, errors, and consent remain explicit. Compact
 
 ## 10. In-page assistant
 
-The Shadow DOM assistant follows the same workbench language while remaining an isolated overlay:
+The Shadow DOM assistant follows the same Notespace-derived workbench language while remaining an isolated overlay:
 
 ```text
 panel width             ~340–360px
-body/control text       12–13px
+body/control text       11px
+supporting text         9–10px
 control height          ~30–32px desktop
-panel radius            8–10px
+panel radius            8px
 ```
 
-Use one panel boundary, divider-based internal grouping, quiet selected tabs, and one overlay shadow. Do not use oversized tabs, stacked internal cards, decorative assistant chrome, or a visually unrelated design language.
+Use one panel boundary, divider-based internal grouping, tint + steel-blue selected tabs, neutral primary actions, and one overlay shadow. Do not use oversized tabs, stacked internal cards, decorative assistant chrome, or a visually unrelated design language.
 
 The launcher remains small and identifiable. Motion is limited to open/close and meaningful view changes.
 
 ## 11. Color and interaction
 
-The shared Notespace neutral + steel-blue palette is canonical for the workspace.
+The shared Notespace neutral + steel-blue palette is canonical for both workspace and in-page assistant.
 
 - neutral `--button` is the primary-action background;
 - steel-blue `--accent` is for focus, links, active icons, and selected state;
