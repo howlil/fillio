@@ -18,7 +18,7 @@ export function StatusMessage({
   return (
     <p
       className={classes(
-        'm-0 w-full rounded-control border px-3 py-2.5 text-sm leading-5',
+        'm-0 w-full rounded-lg border px-2.5 py-2 text-[11px] leading-4',
         toneClass,
         className,
       )}

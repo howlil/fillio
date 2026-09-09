@@ -35,7 +35,7 @@ function useDesktopLayout(): boolean {
 }
 
 const SIDEBAR_BUTTON_CLASS =
-  'grid h-8 w-8 shrink-0 place-items-center rounded-control border border-app-border bg-app-surface text-app-text transition-[background-color,border-color,color] duration-100 ease-out hover:border-app-border-strong hover:bg-app-muted hover:text-app-ink focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent/25';
+  'grid h-8 w-8 shrink-0 place-items-center rounded-control border border-transparent bg-transparent text-app-text transition-[background-color,border-color,color] duration-100 ease-out hover:bg-app-muted hover:text-app-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-accent';
 
 export function WorkspaceFrame({
   navigation,

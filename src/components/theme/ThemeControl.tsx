@@ -48,10 +48,10 @@ export function ThemeControl() {
   }, [preference]);
 
   return (
-    <label className="flex items-center gap-2 whitespace-nowrap text-[13px] font-medium text-app-subtle">
+    <label className="flex items-center gap-2 whitespace-nowrap text-[11px] font-medium text-app-subtle">
       <span>Theme</span>
       <select
-        className="h-8 rounded-control border border-app-border bg-app-surface px-2 text-[13px] text-app-ink outline-none transition-colors hover:border-app-border-strong focus:border-app-ink focus:ring-2 focus:ring-app-accent-soft"
+        className="h-8 rounded-control border border-app-border bg-app-surface px-2 text-[11px] text-app-ink outline-none focus:border-app-accent focus:ring-0"
         aria-label="Theme"
         value={preference}
         onChange={(event) => {

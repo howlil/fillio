@@ -46,7 +46,7 @@ type WorkspaceNavigationProps = {
 };
 
 const navItemBase =
-  'jobflow-nav-item relative flex h-9 min-h-9 w-9 items-center justify-center rounded-control border text-left text-[13px] font-medium transition-[width,padding,gap,background-color,border-color,color] duration-[160ms] ease-out focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent/25 group-data-[expanded=true]/sidebar:w-full group-data-[expanded=true]/sidebar:justify-start group-data-[expanded=true]/sidebar:gap-2 group-data-[expanded=true]/sidebar:px-2';
+  'jobflow-nav-item relative flex h-9 min-h-9 w-9 items-center justify-center rounded-control border text-left text-[11px] font-medium transition-[width,padding,gap,background-color,border-color,color] duration-[160ms] ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-accent group-data-[expanded=true]/sidebar:w-full group-data-[expanded=true]/sidebar:justify-start group-data-[expanded=true]/sidebar:gap-2 group-data-[expanded=true]/sidebar:px-2';
 
 export function WorkspaceNavigation({
   activeSection,
@@ -57,7 +57,7 @@ export function WorkspaceNavigation({
       <SelectField
         className="md:hidden"
         label="Section"
-        selectClassName="text-[13px]"
+        selectClassName="text-[11px]"
         value={activeSection}
         onChange={(event) => onChange(event.target.value as WorkspaceSection)}
       >
@@ -89,8 +89,8 @@ export function WorkspaceNavigation({
                   <button
                     className={`${navItemBase} ${
                       active
-                        ? 'border-app-accent/30 bg-app-muted text-app-accent'
-                        : 'border-transparent bg-transparent text-app-text hover:border-app-border hover:bg-app-muted hover:text-app-ink'
+                        ? 'border-app-accent/20 bg-app-muted text-app-accent'
+                        : 'border-transparent bg-transparent text-app-text hover:bg-app-muted hover:text-app-ink'
                     }`}
                     type="button"
                     key={item.id}

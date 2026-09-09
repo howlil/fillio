@@ -15,13 +15,13 @@ export const CheckboxField = forwardRef<HTMLInputElement, CheckboxFieldProps>(
     return (
       <label
         className={classes(
-          'inline-flex min-h-9 items-center gap-2 text-[13px] font-medium text-app-text',
+          'inline-flex min-h-8 items-center gap-2 text-[11px] font-medium text-app-text',
           className,
         )}
       >
         <input
           ref={ref}
-          className="h-[18px] w-[18px] shrink-0 rounded-control border-app-border-strong accent-app-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent-soft"
+          className="h-4 w-4 shrink-0 rounded-[4px] border-app-border-strong accent-app-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-accent"
           type="checkbox"
           {...props}
         />
