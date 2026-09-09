@@ -19,8 +19,7 @@ const BUTTON_VARIANT_CLASS: Record<ButtonVariant, string> = {
     'border-transparent bg-app-button text-app-button-text hover:opacity-90',
   ghost:
     'border-transparent bg-transparent text-app-text hover:bg-app-muted hover:text-app-ink',
-  danger:
-    'border-transparent bg-app-danger text-white hover:brightness-95',
+  danger: 'border-transparent bg-app-danger text-white hover:brightness-95',
 };
 
 const BUTTON_SIZE_CLASS: Record<ButtonSize, string> = {
